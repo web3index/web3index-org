@@ -1,0 +1,59 @@
+{
+  "name": "web3index-org",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc",
+    "lint-fix": "yarn prettier-fix && yarn eslint-fix",
+    "eslint-fix": "eslint . --ext js,jsx,ts,tsx --fix --max-warnings=0",
+    "prettier-fix": "prettier --write '**/*.{ts,js,css,html,md,tsx,mdx,graphql,gql}'"
+  },
+  "dependencies": {
+    "@modulz/radix-icons": "^4.0.0",
+    "@radix-ui/react-accordion": "^0.0.13",
+    "@stitches/core": "latest",
+    "@stitches/react": "latest",
+    "ajv": "^7.2.1",
+    "dayjs": "^1.10.4",
+    "fast-average-color-node": "^1.0.3",
+    "graphql": "^15.5.0",
+    "graphql-request": "^3.4.0",
+    "lightweight-charts": "^3.3.0",
+    "next": "^10.0.9",
+    "next-themes": "^0.0.14",
+    "react": "17.0.1",
+    "react-dom": "17.0.2",
+    "react-fast-marquee": "^1.1.2",
+    "react-table": "^7.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.33",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.21.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js,css,html,tsx,gql,graphql}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

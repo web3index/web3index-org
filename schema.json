@@ -1,0 +1,137 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1617669888.json",
+  "title": "Root",
+  "type": "object",
+  "required": ["name", "category", "blockchain", "image", "symbol", "usage"],
+  "properties": {
+    "name": {
+      "$id": "#root/name",
+      "title": "Name",
+      "type": "string",
+      "default": "",
+      "examples": ["Livepeer"],
+      "pattern": "^.*$"
+    },
+    "category": {
+      "$id": "#root/category",
+      "title": "Category",
+      "type": "string",
+      "default": "",
+      "examples": ["Compute"],
+      "pattern": "^.*$"
+    },
+    "blockchain": {
+      "$id": "#root/blockchain",
+      "title": "blockchain",
+      "type": "string",
+      "default": "",
+      "examples": ["Ethereum"],
+      "pattern": "^.*$"
+    },
+    "image": {
+      "$id": "#root/image",
+      "title": "Image",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "https://explorer.livepeer.org/img/logos/logo-circle-green.svg"
+      ],
+      "pattern": "^.*$"
+    },
+    "symbol": {
+      "$id": "#root/symbol",
+      "title": "Symbol",
+      "type": "string",
+      "default": "",
+      "examples": ["LPT"],
+      "pattern": "^.*$"
+    },
+    "usage": {
+      "$id": "#root/usage",
+      "title": "Usage",
+      "type": "object",
+      "required": ["revenue", "days"],
+      "properties": {
+        "revenue": {
+          "$id": "#root/usage/revenue",
+          "title": "Revenue",
+          "type": "object",
+          "required": [
+            "now",
+            "oneDayAgo",
+            "twoDaysAgo",
+            "oneWeekAgo",
+            "twoWeeksAgo"
+          ],
+          "properties": {
+            "now": {
+              "$id": "#root/usage/revenue/now",
+              "title": "Now",
+              "type": "number",
+              "examples": [57308.178058455],
+              "default": 0.0
+            },
+            "oneDayAgo": {
+              "$id": "#root/usage/revenue/oneDayAgo",
+              "title": "Onedayago",
+              "type": "number",
+              "examples": [56833.30284091443],
+              "default": 0.0
+            },
+            "twoDaysAgo": {
+              "$id": "#root/usage/revenue/twoDaysAgo",
+              "title": "Twodaysago",
+              "type": "number",
+              "examples": [56833.30284091443],
+              "default": 0.0
+            },
+            "oneWeekAgo": {
+              "$id": "#root/usage/revenue/oneWeekAgo",
+              "title": "Oneweekago",
+              "type": "number",
+              "examples": [53635.261005459484],
+              "default": 0.0
+            },
+            "twoWeeksAgo": {
+              "$id": "#root/usage/revenue/twoWeeksAgo",
+              "title": "Twoweeksago",
+              "type": "number",
+              "examples": [50443.188826853555],
+              "default": 0.0
+            }
+          }
+        },
+        "days": {
+          "$id": "#root/usage/days",
+          "title": "Days",
+          "type": "array",
+          "default": [],
+          "items": {
+            "$id": "#root/usage/days/items",
+            "title": "Items",
+            "type": "object",
+            "required": ["date", "revenue"],
+            "properties": {
+              "date": {
+                "$id": "#root/usage/days/items/date",
+                "title": "Date",
+                "type": "integer",
+                "examples": [1578960000],
+                "default": 0
+              },
+              "revenue": {
+                "$id": "#root/usage/days/items/revenue",
+                "title": "Revenue",
+                "type": "number",
+                "examples": [1.2272572650564288],
+                "default": 0.0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
