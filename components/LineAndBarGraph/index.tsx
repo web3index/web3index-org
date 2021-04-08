@@ -56,7 +56,7 @@ const LineAndBarGraph = ({ color, days }) => {
         lastValueVisible: false,
         lineStyle: 0,
         lineWidth: 2,
-        color: color.rgba,
+        color,
         crosshairMarkerVisible: false,
       });
 
@@ -65,8 +65,8 @@ const LineAndBarGraph = ({ color, days }) => {
           top: 0.32,
           bottom: 0,
         },
-        lineColor: color.rgba,
-        color: color.rgba,
+        lineColor: color,
+        color: color,
         priceFormat: {
           type: "volume",
         },
