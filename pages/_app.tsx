@@ -45,7 +45,7 @@ const App = ({ Component, pageProps }) => {
     <ThemeProvider
       disableTransitionOnChange
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="dark"
       value={{ dark: darkThemeClass.className }}
     >
       <Component {...pageProps} />
