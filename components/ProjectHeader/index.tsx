@@ -4,7 +4,7 @@ const ProjectHeader = ({ color, ...props }) => {
   return (
     <Box
       css={{
-        background: color.rgba,
+        background: color,
         height: 150,
         width: "100%",
       }}

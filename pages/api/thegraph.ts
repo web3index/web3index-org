@@ -95,6 +95,7 @@ export const getProject = async () => {
     symbol: "GRT",
     everestID: "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",
     image: "https://cryptologos.cc/logos/the-graph-grt-logo.svg",
+    color: "#6f4cff",
     usage: {
       revenue: {
         now: +data.protocol.revenueUSD,

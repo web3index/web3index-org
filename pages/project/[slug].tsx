@@ -3,17 +3,16 @@ import schema from "../../schema.json";
 import registry from "../../registry.json";
 import { getProjects } from "../../lib/utils";
 import Layout from "../../layouts";
-import { getAverageColor } from "fast-average-color-node";
 import ProjectHeader from "../../components/ProjectHeader";
 import Box from "../../components/Box";
 import Section from "../../components/Section";
 import Container from "../../components/Container";
 import LineAndBarGraph from "../../components/LineAndBarGraph";
 
-const Project = ({ projects, project, color }) => {
+const Project = ({ projects, project }) => {
   return (
     <Layout data={{ projects }}>
-      <ProjectHeader color={color} />
+      <ProjectHeader color={project.color} />
       <Section css={{ mb: "$6" }}>
         <Container size="4">
           <Box css={{ display: "flex", justifyContent: "space-between" }}>
@@ -62,7 +61,7 @@ const Project = ({ projects, project, color }) => {
                 Ethereum
               </Box>
             </Box>
-            <LineAndBarGraph color={color} days={project.usage.days} />
+            <LineAndBarGraph color={project.color} days={project.usage.days} />
           </Box>
         </Container>
       </Section>
@@ -104,13 +103,11 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const { projects } = await getProjects();
   const project = projects.filter((project) => project.slug === params.slug)[0];
-  const color = await getAverageColor(project.image);
 
   return {
     props: {
       project,
       projects,
-      color,
     },
   };
 }
