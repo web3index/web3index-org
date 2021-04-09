@@ -92,6 +92,7 @@ export const getProject = async () => {
     category: "Work Protocol",
     subcategory: "Bandwidth, Indexing",
     blockchain: "Ethereum",
+    stack: "Middleware",
     symbol: "GRT",
     everestID: "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",
     image: "https://cryptologos.cc/logos/the-graph-grt-logo.svg",

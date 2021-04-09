@@ -94,6 +94,7 @@ export const getProject = async () => {
     category: "Work Protocol",
     subcategory: "Compute, Video",
     blockchain: "Ethereum",
+    stack: "Middleware",
     everestID: "0x49f6e21a4e3f20580624669acd83dac39a339042",
     image: "https://explorer.livepeer.org/img/logos/logo-circle-green.svg",
     color: "#00eb88",

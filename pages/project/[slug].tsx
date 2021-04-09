@@ -150,7 +150,7 @@ const Project = ({ index, projects, project }) => {
                   }}
                 >
                   <Box css={{ fontWeight: 600, mr: "$3" }}>Stack:</Box>
-                  Middleware
+                  {project.stack}
                 </Box>
                 <Box
                   css={{
