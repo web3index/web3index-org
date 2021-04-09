@@ -17,15 +17,53 @@ const Footer = ({ ...props }) => {
       {...props}
     >
       <Box css={{ textAlign: "left", display: "flex", alignItems: "center" }}>
-        <Box css={{ display: "flex", alignItems: "center", mr: "$3" }}>
+        <Box
+          as="a"
+          href="https://twitter.com/web3index"
+          target="_blank"
+          rel="noopener noreferrer"
+          css={{
+            textDecoration: "none",
+            color: "initial",
+            display: "flex",
+            alignItems: "center",
+            mr: "$3",
+            fontWeight: 500,
+          }}
+        >
           <TwitterLogoIcon />
           <Box css={{ ml: "$2" }}>Twitter</Box>
         </Box>
-        <Box css={{ display: "flex", alignItems: "center", mr: "$3" }}>
+        <Box
+          as="a"
+          href="https://github.com/web3index"
+          target="_blank"
+          rel="noopener noreferrer"
+          css={{
+            textDecoration: "none",
+            color: "initial",
+            display: "flex",
+            alignItems: "center",
+            mr: "$3",
+            fontWeight: 500,
+          }}
+        >
           <GitHubLogoIcon />
           <Box css={{ ml: "$2" }}>Github</Box>
         </Box>
-        <Box css={{ display: "flex", alignItems: "center" }}>
+        <Box
+          as="a"
+          href="https://discord.com/web3index"
+          target="_blank"
+          rel="noopener noreferrer"
+          css={{
+            textDecoration: "none",
+            color: "initial",
+            display: "flex",
+            alignItems: "center",
+            fontWeight: 500,
+          }}
+        >
           <TwitterLogoIcon />
           <Box css={{ ml: "$2" }}>Discord</Box>
         </Box>

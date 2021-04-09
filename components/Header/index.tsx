@@ -1,15 +1,6 @@
 import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
-import { styled } from "../../stitches.config";
-
-const StyledSubmitButton = styled(SubmitButton, {
-  flex: "1 0 auto",
-  backgroundColor: "$loContrast",
-  color: "$hiContrast",
-  border: "1px solid",
-  borderColor: "$border",
-});
 
 const Header = ({ revenue, ...props }) => {
   return (
@@ -50,7 +41,21 @@ const Header = ({ revenue, ...props }) => {
             mx: "$4",
           }}
         />
-        <StyledSubmitButton />
+
+        <SubmitButton
+          css={{
+            flex: "1 0 auto",
+            backgroundColor: "$loContrast",
+            color: "$hiContrast",
+            border: "1px solid",
+            borderColor: "$border",
+            textDecoration: "none",
+          }}
+          as="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/web3index/web3index-org/issues/new"
+        />
       </Box>
     </Box>
   );

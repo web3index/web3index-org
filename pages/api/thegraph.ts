@@ -90,7 +90,7 @@ export const getProject = async () => {
   return {
     name: "The Graph",
     category: "Work Protocol",
-    subcategory: "Indexing, Bandwidth",
+    subcategory: "Bandwidth, Indexing",
     blockchain: "Ethereum",
     symbol: "GRT",
     everestID: "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",

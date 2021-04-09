@@ -4,11 +4,12 @@ import Container from "../components/Container";
 import Ticker from "../components/Ticker";
 import Footer from "../components/Footer";
 
-const Index = ({ data, children }) => {
+const Index = ({ data, key, children }) => {
   const { projects } = data;
 
   return (
     <Box
+      key={key}
       css={{
         height: "100vh",
         color: "$hiContrast",
