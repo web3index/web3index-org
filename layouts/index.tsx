@@ -4,7 +4,7 @@ import Container from "../components/Container";
 import Ticker from "../components/Ticker";
 import Footer from "../components/Footer";
 
-const Index = ({ data, key, children }) => {
+const Index = ({ data, key = 0, children }) => {
   const { projects } = data;
 
   return (
