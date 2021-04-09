@@ -132,7 +132,6 @@ function renderSwitch(cell) {
         <Box css={{ display: "flex" }}>
           <LineGraph color={color} days={cell.row.values.usage.days} />
           <RevenueChange
-            color={color}
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
             }).format(cell.row.values.usage.revenue.oneWeekPercentChange)}

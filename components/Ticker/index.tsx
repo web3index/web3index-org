@@ -37,7 +37,6 @@ const Project = ({ project }) => {
       <Box css={{ display: "flex", alignItems: "center" }}>
         <LineGraph color={color} days={project.usage.days.slice(-15)} />
         <RevenueChange
-          color={color}
           percentChange={Intl.NumberFormat("en-US", {
             maximumFractionDigits: 2,
           }).format(project.usage.revenue.oneWeekPercentChange)}

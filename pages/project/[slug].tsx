@@ -128,7 +128,29 @@ const Project = ({ index, projects, project }) => {
                   }}
                 >
                   <Box css={{ fontWeight: 600, mr: "$3" }}>Category:</Box>
-                  Compute
+                  {project.category}
+                </Box>
+                <Box
+                  css={{
+                    fontSize: "$2",
+                    mb: "$3",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box css={{ fontWeight: 600, mr: "$3" }}>Subcategory:</Box>
+                  {project.subcategory}
+                </Box>
+                <Box
+                  css={{
+                    fontSize: "$2",
+                    mb: "$3",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box css={{ fontWeight: 600, mr: "$3" }}>Stack:</Box>
+                  Middleware
                 </Box>
                 <Box
                   css={{
@@ -139,7 +161,7 @@ const Project = ({ index, projects, project }) => {
                   }}
                 >
                   <Box css={{ fontWeight: 700, mr: "$3" }}>Blockchain:</Box>
-                  Ethereum
+                  {project.blockchain}
                 </Box>
               </Box>
               <Box css={{ width: 300 }}>
