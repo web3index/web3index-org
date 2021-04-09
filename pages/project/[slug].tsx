@@ -229,6 +229,9 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const { projects } = await getProjects();
   const project = projects.filter((project) => project.slug === params.slug)[0];
+  projects.sort((a, b) => {
+    return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;
+  });
   const index = projects.findIndex((p) => p.slug === params.slug);
   const {
     project: { description, website, github, twitter },
