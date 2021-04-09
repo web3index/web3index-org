@@ -1,5 +1,7 @@
 import { darkThemeClass, global } from "../stitches.config";
 import { ThemeProvider } from "next-themes";
+import { DefaultSeo } from "next-seo";
+import SEO from "../next-seo.config";
 
 const globalStyles = global({
   body: {
@@ -50,6 +52,7 @@ const App = ({ Component, pageProps }) => {
       defaultTheme="system"
       value={{ dark: darkThemeClass.className }}
     >
+      <DefaultSeo {...SEO} />
       <Component {...pageProps} />
     </ThemeProvider>
   );

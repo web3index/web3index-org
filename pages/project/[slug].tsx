@@ -19,6 +19,8 @@ import {
   Link1Icon,
   ExternalLinkIcon,
 } from "@modulz/radix-icons";
+import { NextSeo } from "next-seo";
+import seo from "../../next-seo.config";
 
 const trophies = ["🏆", "🥈", "🥉"];
 
@@ -67,6 +69,11 @@ const Project = ({ index, projects, project }) => {
 
   return (
     <Layout key={index} data={{ projects }}>
+      <NextSeo
+        {...seo}
+        title={`The Web3 Index - ${project.name}`}
+        description={project.description}
+      />
       <ProjectHeader
         rank={index}
         first={projects[0].slug}
