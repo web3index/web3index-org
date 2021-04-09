@@ -1,7 +1,7 @@
 import Box from "../Box";
 import { filterCssFromProps } from "../../lib/utils";
 
-const RevenueChange = ({ percentChange, ...props }) => {
+const RevenueChange = ({ color, percentChange, ...props }) => {
   return (
     <Box
       css={{ display: "flex", alignItems: "center", ...props?.css }}
@@ -14,11 +14,11 @@ const RevenueChange = ({ percentChange, ...props }) => {
           height: "0",
           borderStyle: "solid",
           borderWidth: "0 4px 6px 4px",
-          borderColor: `transparent transparent #26B38D transparent`,
+          borderColor: `transparent transparent ${color} transparent`,
           mr: "$1",
         }}
       />
-      <Box css={{ color: "#26B38D" }}>{percentChange}%</Box>
+      <Box css={{ color }}>{percentChange}%</Box>
     </Box>
   );
 };

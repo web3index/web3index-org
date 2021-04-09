@@ -4,7 +4,7 @@ import Section from "../Section";
 import RevenueChange from "../RevenueChange";
 import LineGraph from "../LineGraph";
 import { ChevronDownIcon, ChevronUpIcon } from "@modulz/radix-icons";
-import { styled } from "../../stitches.config";
+import { defaultTheme, styled } from "../../stitches.config";
 import Link from "next/link";
 
 const Table = ({ columns, data, ...props }) => {
@@ -124,10 +124,15 @@ function renderSwitch(cell) {
       ).toLocaleString()}`;
     }
     case "percentChange": {
+      const color =
+        cell.row.values.usage.revenue.oneWeekPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
       return (
         <Box css={{ display: "flex" }}>
-          <LineGraph days={cell.row.values.usage.days} />
+          <LineGraph color={color} days={cell.row.values.usage.days} />
           <RevenueChange
+            color={color}
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
             }).format(cell.row.values.usage.revenue.oneWeekPercentChange)}

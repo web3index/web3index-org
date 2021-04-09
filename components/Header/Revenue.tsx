@@ -1,7 +1,7 @@
 import Box from "../Box";
 import RevenueChange from "../RevenueChange";
 
-const Revenue = ({ revenue = 0, percentChange = 0 }) => {
+const Revenue = ({ color, revenue = 0, percentChange = 0 }) => {
   return (
     <Box
       css={{
@@ -25,6 +25,7 @@ const Revenue = ({ revenue = 0, percentChange = 0 }) => {
         }).format(revenue)}
       </Box>
       <RevenueChange
+        color={color}
         percentChange={Intl.NumberFormat("en-US", {
           maximumFractionDigits: 2,
         }).format(percentChange)}

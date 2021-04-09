@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { defaultTheme } from "../../stitches.config";
 import Box from "../Box";
 
-const LineGraph = ({ days }) => {
+const LineGraph = ({ color, days }) => {
   const chartRef = useRef(null);
   const [chartCreated, setChartCreated] = useState(null);
+
   useEffect(() => {
     if (!chartCreated) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -55,7 +56,7 @@ const LineGraph = ({ days }) => {
         lastValueVisible: false,
         lineStyle: 0,
         lineWidth: 2,
-        color: defaultTheme.colors.green,
+        color,
         crosshairMarkerVisible: false,
       });
 
@@ -67,9 +68,9 @@ const LineGraph = ({ days }) => {
         };
       });
       lineSeries.setData(formattedData);
-      setChartCreated(chartCreated);
+      setChartCreated(chart);
     }
-  }, [chartCreated]);
+  }, [chartCreated, days, color]);
 
   return <Box ref={chartRef} />;
 };

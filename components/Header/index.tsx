@@ -1,8 +1,14 @@
 import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
+import { defaultTheme } from "../../stitches.config";
 
 const Header = ({ revenue, ...props }) => {
+  const color =
+    revenue.oneWeekPercentChange > 0
+      ? defaultTheme.colors.green
+      : defaultTheme.colors.red;
+
   return (
     <Box {...props}>
       <Box
@@ -30,6 +36,7 @@ const Header = ({ revenue, ...props }) => {
         }}
       >
         <Revenue
+          color={color}
           percentChange={revenue.oneWeekPercentChange}
           revenue={revenue.oneWeekTotal}
         />

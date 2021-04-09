@@ -3,8 +3,14 @@ import RevenueChange from "../RevenueChange";
 import Marquee from "react-fast-marquee";
 import { useTheme } from "next-themes";
 import LineGraph from "../LineGraph";
+import { defaultTheme } from "../../stitches.config";
 
 const Project = ({ project }) => {
+  const color =
+    project.usage.revenue.oneWeekPercentChange > 0
+      ? defaultTheme.colors.green
+      : defaultTheme.colors.red;
+
   return (
     <Box
       css={{
@@ -29,8 +35,9 @@ const Project = ({ project }) => {
         <Box css={{ color: "$gray400" }}>{project.name}</Box>
       </Box>
       <Box css={{ display: "flex", alignItems: "center" }}>
-        <LineGraph days={project.usage.days.slice(-15)} />
+        <LineGraph color={color} days={project.usage.days.slice(-15)} />
         <RevenueChange
+          color={color}
           percentChange={Intl.NumberFormat("en-US", {
             maximumFractionDigits: 2,
           }).format(project.usage.revenue.oneWeekPercentChange)}
