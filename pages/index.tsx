@@ -83,6 +83,7 @@ export async function getStaticProps() {
         return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;
       }),
     },
+    revalidate: 1,
   };
 }
 

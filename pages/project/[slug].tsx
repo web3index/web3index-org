@@ -251,7 +251,7 @@ export async function getStaticPaths() {
   }
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -284,6 +284,7 @@ export async function getStaticProps({ params }) {
       project: { ...project, description, website, github, twitter },
       projects,
     },
+    revalidate: 1,
   };
 }
 
