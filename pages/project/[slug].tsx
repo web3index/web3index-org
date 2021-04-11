@@ -21,6 +21,7 @@ import {
 } from "@modulz/radix-icons";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
+import { useRouter } from "next/router";
 
 const trophies = ["🏆", "🥈", "🥉"];
 
@@ -51,7 +52,7 @@ const SocialButton = ({ icon, children, ...props }) => {
 };
 
 const Project = ({ index, projects, project }) => {
-  // update the width on a window resize
+  const { isFallback } = useRouter();
   const ref = useRef(null);
   const isClient = typeof window === "object";
   const [width, setWidth] = useState(ref?.current?.container?.clientWidth);
@@ -66,6 +67,14 @@ const Project = ({ index, projects, project }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [isClient, width]);
+
+  if (isFallback) {
+    return (
+      <Layout key={index} data={{ projects }}>
+        Loading
+      </Layout>
+    );
+  }
 
   return (
     <Layout key={index} data={{ projects }}>

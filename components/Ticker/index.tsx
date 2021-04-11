@@ -61,19 +61,21 @@ const Ticker = ({ projects }) => {
         fontSize: "$1",
       }}
     >
-      <Marquee
-        gradientColor={resolvedTheme === "dark" ? [0, 0, 0] : [255, 255, 255]}
-      >
-        <Project key={0} project={projects[0]} />
-        <Project key={1} project={projects[1]} />
-        <Project key={2} project={projects[0]} />
-        <Project key={3} project={projects[1]} />
-        <Project key={4} project={projects[0]} />
-        <Project key={5} project={projects[1]} />
-        {/* {projects.map((project, i) => (
+      {projects?.length && (
+        <Marquee
+          gradientColor={resolvedTheme === "dark" ? [0, 0, 0] : [255, 255, 255]}
+        >
+          <Project key={0} project={projects[0]} />
+          <Project key={1} project={projects[1]} />
+          <Project key={2} project={projects[0]} />
+          <Project key={3} project={projects[1]} />
+          <Project key={4} project={projects[0]} />
+          <Project key={5} project={projects[1]} />
+          {/* {projects.map((project, i) => (
           <Project key={i} project={projects} />
         ))} */}
-      </Marquee>
+        </Marquee>
+      )}
     </Box>
   );
 };
