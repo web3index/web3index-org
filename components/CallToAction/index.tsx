@@ -10,7 +10,17 @@ const StyledIcon = styled(PlusCircledIcon, {
 const CallToAction = ({ ...props }) => {
   return (
     <Box {...props}>
-      <Box as="h2" css={{ fontSize: "$9", mb: "$3", fontFamily: "$heading" }}>
+      <Box
+        as="h2"
+        css={{
+          fontSize: "$7",
+          mb: "$3",
+          fontFamily: "$heading",
+          "@bp2": {
+            fontSize: "$9",
+          },
+        }}
+      >
         Help Grow the Index
       </Box>
       <Button

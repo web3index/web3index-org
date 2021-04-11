@@ -10,13 +10,30 @@ const Footer = ({ ...props }) => {
         borderColor: "$border",
         py: "$4",
         display: "grid",
-        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+        gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
         margin: "0 auto",
         fontSize: "$1",
+        "@bp2": {
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+        },
       }}
       {...props}
     >
-      <Box css={{ textAlign: "left", display: "flex", alignItems: "center" }}>
+      <Box
+        css={{
+          textAlign: "left",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mb: "$3",
+          order: 1,
+          "@bp2": {
+            mb: 0,
+            justifyContent: "flex-start",
+            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          },
+        }}
+      >
         <Box
           as="a"
           href="https://twitter.com/web3index"
@@ -27,8 +44,12 @@ const Footer = ({ ...props }) => {
             color: "initial",
             display: "flex",
             alignItems: "center",
-            mr: "$3",
+            px: "$2",
             fontWeight: 500,
+            order: 3,
+            "@bp2": {
+              order: 2,
+            },
           }}
         >
           <TwitterLogoIcon />
@@ -44,7 +65,7 @@ const Footer = ({ ...props }) => {
             color: "initial",
             display: "flex",
             alignItems: "center",
-            mr: "$3",
+            px: "$2",
             fontWeight: 500,
           }}
         >
@@ -61,6 +82,7 @@ const Footer = ({ ...props }) => {
             color: "initial",
             display: "flex",
             alignItems: "center",
+            px: "$2",
             fontWeight: 500,
           }}
         >
@@ -68,13 +90,25 @@ const Footer = ({ ...props }) => {
           <Box css={{ ml: "$2" }}>Discord</Box>
         </Box>
       </Box>
-      <Box css={{ textAlign: "center" }}>
+      <Box
+        css={{
+          textAlign: "center",
+          order: 3,
+          "@bp2": {
+            order: 2,
+          },
+        }}
+      >
         The Web3 Index™. All rights reserved
       </Box>
       <Box
         css={{
           display: "flex",
           justifyContent: "flex-end",
+          order: 2,
+          "@bp2": {
+            order: 3,
+          },
         }}
       >
         <ThemeToggle />

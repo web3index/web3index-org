@@ -57,7 +57,11 @@ const Home = ({ revenue, projects }) => {
       <Section>
         <Container size="4">
           <Header css={{ mb: "$4" }} revenue={revenue} />
-          <Table columns={columns} data={projects} css={{ mb: "$6" }} />
+          <Table
+            columns={columns}
+            data={projects}
+            css={{ mb: "$5", overflow: "scroll" }}
+          />
           <Faq css={{ mb: "$6" }} />
           <CallToAction
             css={{
