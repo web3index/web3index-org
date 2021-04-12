@@ -41,7 +41,7 @@ const Footer = ({ ...props }) => {
           rel="noopener noreferrer"
           css={{
             textDecoration: "none",
-            color: "initial",
+            color: "$hiContrast",
             display: "flex",
             alignItems: "center",
             px: "$2",
@@ -62,7 +62,7 @@ const Footer = ({ ...props }) => {
           rel="noopener noreferrer"
           css={{
             textDecoration: "none",
-            color: "initial",
+            color: "$hiContrast",
             display: "flex",
             alignItems: "center",
             px: "$2",
@@ -79,7 +79,7 @@ const Footer = ({ ...props }) => {
           rel="noopener noreferrer"
           css={{
             textDecoration: "none",
-            color: "initial",
+            color: "$hiContrast",
             display: "flex",
             alignItems: "center",
             px: "$2",

@@ -3,6 +3,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
 import { filterCssFromProps } from "../../lib/utils";
+import ReactMarkdown from "react-markdown";
 
 const AccordionChevron = styled(ChevronDownIcon, {
   transition: "transform 300ms",
@@ -46,7 +47,14 @@ const Item = ({ emoji, question, answer }) => (
           fontWeight: 600,
         }}
       >
-        <Box css={{ display: "flex", alignItems: "center", mr: "auto" }}>
+        <Box
+          css={{
+            display: "flex",
+            color: "$hiContrast",
+            alignItems: "center",
+            mr: "auto",
+          }}
+        >
           <Box css={{ mr: "$3" }}>
             <Box role="img" aria-label="What is Web3">
               {emoji}
@@ -65,6 +73,13 @@ const Item = ({ emoji, question, answer }) => (
     </Box>
   </Box>
 );
+
+const answer4 = `
+* Each listed project gets one vote. Reviews and voting periods coordinated by telegram informally initially.
+* Projects that apply will be evaluated as to whether they have exposed the right API/data for the integration, whether their "fees" are captured truthfully and represent what people are paying to use the services of the network, and whether they fit into "web3 infrastructure" category.
+* There can be a loose description of what web3 infra is, but ultimately it's just up to the discretion of the existing listing projects to vote a new project in.
+* Listed projects can vote to formalize these rules and processes or change them going forward.
+`;
 
 const items = [
   {
@@ -85,19 +100,9 @@ veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
 commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
 velit esse cillum dolore eu fugiat nulla pariatur.`,
   },
-
   {
     emoji: "🔢",
-    question: "How do we calculate total participant revenue (TPR)?",
-    answer: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-velit esse cillum dolore eu fugiat nulla pariatur.`,
-  },
-  {
-    emoji: "🤘🏻",
-    question: "How do I get involved in Web3?",
+    question: "What is the criteria for being listed on Index",
     answer: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
 veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
@@ -106,12 +111,8 @@ velit esse cillum dolore eu fugiat nulla pariatur.`,
   },
   {
     emoji: "✅",
-    question: "How do I get my project listed on The Web3 Index?",
-    answer: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-velit esse cillum dolore eu fugiat nulla pariatur.`,
+    question: "What is the process for getting listed on The Web3 Index?",
+    answer: <ReactMarkdown>{answer4}</ReactMarkdown>,
   },
 ];
 const Faq = ({ ...props }) => {

@@ -146,7 +146,7 @@ function renderSwitch(cell) {
           <Box
             as="a"
             css={{
-              color: "initial",
+              color: "$hiContrast",
               textDecoration: "none",
               display: "flex",
               alignItems: "center",
