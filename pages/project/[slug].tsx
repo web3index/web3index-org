@@ -51,6 +51,40 @@ const SocialButton = ({ icon, children, ...props }) => {
   );
 };
 
+const Everest = ({ ...props }) => {
+  return (
+    <Box
+      as="svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11.9446 23.9418L0.0372314 12.0343L6.56058 5.51074L18.4682 17.4183L11.9446 23.9418Z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0.0371094 12.0343L11.9445 0.126709L23.8523 12.0343H0.0371094Z"
+        fill="currentColor"
+      />
+      <path
+        opacity="0.5"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0.0372314 12.0343L6.56058 5.51074L13 11.9999L0.0372314 12.0343Z"
+        fill="currentColor"
+      />
+    </Box>
+  );
+};
+
 const Project = ({ index, projects, project }) => {
   const { isFallback } = useRouter();
   const ref = useRef(null);
@@ -95,8 +129,12 @@ const Project = ({ index, projects, project }) => {
           <Box
             css={{
               display: "grid",
-              gridTemplateColumns: "33.334% calc(66.667% - 100px)",
-              gap: 100,
+              gridTemplateColumns: "100%",
+              gap: 0,
+              "@bp2": {
+                gap: 100,
+                gridTemplateColumns: "33.334% calc(66.667% - 100px)",
+              },
             }}
           >
             <Box css={{ mt: "$5" }}>
@@ -208,13 +246,35 @@ const Project = ({ index, projects, project }) => {
                 >
                   Website
                 </SocialButton>
-                {/* <SocialButton>
-                  <Box></Box>Everest
-                </SocialButton> */}
+                <SocialButton
+                  href={project.website}
+                  as="a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  icon={
+                    <Everest
+                      css={{ width: 14, height: 14, color: "$hiContrast" }}
+                    />
+                  }
+                >
+                  Everest
+                </SocialButton>
               </Box>
             </Box>
-            <Box css={{ mt: "$5" }}>
-              <ResponsiveContainer aspect={60 / 28} ref={ref}>
+            <Box
+              css={{
+                mt: "$4",
+                borderTop: "1px solid",
+                borderColor: "$border",
+                pt: "$4",
+                "@bp2": {
+                  mt: "$5",
+                  borderTop: 0,
+                  pt: 0,
+                },
+              }}
+            >
+              <ResponsiveContainer height={400} ref={ref}>
                 <LineAndBarGraph
                   base={project.usage.revenue.oneWeekTotal}
                   baseChange={project.usage.revenue.oneWeekPercentChange}

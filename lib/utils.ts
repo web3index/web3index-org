@@ -6,6 +6,7 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
+import { useEffect, useState } from "react";
 
 export const getBlocksFromTimestamps = async (timestamps) => {
   if (!timestamps?.length) {

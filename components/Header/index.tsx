@@ -27,6 +27,9 @@ const Header = ({ revenue, ...props }) => {
             letterSpacing: "-10px",
             mb: "-12px",
           },
+          "@bp4": {
+            fontSize: "180px",
+          },
         }}
       >
         The Web3 Index
