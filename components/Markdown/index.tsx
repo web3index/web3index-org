@@ -87,7 +87,7 @@ const Markdown = ({ children }) => {
 
         p: {
           marginTop: "0",
-          marginBottom: 4,
+          marginBottom: "$4",
         },
 
         ol: {
@@ -171,7 +171,7 @@ const Markdown = ({ children }) => {
 
         "blockquote, details, dl, ol, p, pre, table, ul": {
           marginTop: "0",
-          marginBottom: 4,
+          marginBottom: "$4",
         },
 
         "pre > .codeblock-pre-container": {
