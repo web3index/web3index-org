@@ -87,7 +87,7 @@ const Footer = ({ ...props }) => {
         </Box>
         <Box
           as="a"
-          href="https://discord.com/web3index"
+          href="https://discord.gg/HrgU5ZtD"
           target="_blank"
           rel="noopener noreferrer"
           css={{
