@@ -19,6 +19,7 @@ export const defaultTheme = {
     gray900: "#212121",
     green: "#26B38D",
     red: "#FF4343",
+    blue: "#52a9ff",
     border: "#E0E0E0",
     table: "#FCFCFC",
     highlighter: "#E6A6BE",

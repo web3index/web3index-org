@@ -15,7 +15,7 @@ const Markdown = ({ children }) => {
         a: {
           backgroundColor: "initial",
           fontWeight: "500",
-          color: "docs.secondary",
+          color: "$blue",
           textDecoration: "none",
           "&:hover": {
             outlineWidth: "0",
