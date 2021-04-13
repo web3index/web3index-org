@@ -70,7 +70,15 @@ const Home = ({ faq, revenue, projects }) => {
           <Table
             columns={columns}
             data={projects}
-            css={{ mb: "$5", overflow: "scroll" }}
+            css={{
+              border: "1px solid",
+              borderColor: "$border",
+              borderRadius: "$4",
+              mb: "$5",
+              width: "100%",
+              overflow: "scroll",
+              WebkitOverflowScrolling: "touch",
+            }}
           />
           <Faq items={faq} css={{ mb: "$6" }} />
           <CallToAction

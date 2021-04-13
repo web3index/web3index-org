@@ -32,22 +32,32 @@ const Table = ({ columns, data, ...props }) => {
   return (
     <Section {...props}>
       <Box
-        as="table"
         css={{
-          border: "1px solid",
-          borderColor: "$border",
-          borderRadius: "$4",
           width: "100%",
           backgroundColor: "$table",
+          display: "table",
+          tableLayout: "fixed",
+          borderSpacing: "0",
+          borderCollapse: "collapse",
+          minWidth: "960px",
         }}
         {...getTableProps()}
       >
-        <thead>
+        <Box css={{ display: "table-header-group" }}>
           {headerGroups.map((headerGroup, i) => (
-            <tr key={i} {...headerGroup.getHeaderGroupProps()}>
+            <Box
+              css={{ display: "table-row" }}
+              key={i}
+              {...headerGroup.getHeaderGroupProps()}
+            >
               {headerGroup.headers.map((column, i) => (
-                <th
+                <Box
                   key={i}
+                  css={{
+                    width: i === 0 ? "100px" : "auto",
+                    display: "table-cell",
+                    verticalAlign: "middle",
+                  }}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
                   <Box
@@ -75,12 +85,12 @@ const Table = ({ columns, data, ...props }) => {
                       )}
                     </Box>
                   </Box>
-                </th>
+                </Box>
               ))}
-            </tr>
+            </Box>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </Box>
+        <Box css={{ display: "table-row-group" }} {...getTableBodyProps()}>
           {firstPageRows.map((row, rowIndex) => {
             prepareRow(row);
             return (
@@ -110,7 +120,8 @@ const Table = ({ columns, data, ...props }) => {
                           borderTop: rowIndex ? "1px solid" : 0,
                           borderColor: "$border",
                           display: "table-cell",
-                          verticalAlign: "inherit",
+                          verticalAlign: "middle",
+                          width: "auto",
                         }}
                         key={i}
                         {...cell.getCellProps()}
@@ -123,7 +134,7 @@ const Table = ({ columns, data, ...props }) => {
               </Link>
             );
           })}
-        </tbody>
+        </Box>
       </Box>
     </Section>
   );
