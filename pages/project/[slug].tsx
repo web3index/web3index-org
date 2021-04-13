@@ -241,7 +241,7 @@ const Project = ({ index, projects, project }) => {
                   Website
                 </SocialButton>
                 <SocialButton
-                  href={project.website}
+                  href={`https://everest.link/project/${project.everestID}`}
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
