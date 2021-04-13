@@ -1,97 +1,11 @@
-import { request, gql } from "graphql-request";
-import { getBlocksFromTimestamps } from "../../lib/utils";
-import dayjs from "dayjs";
 import { NextApiRequest, NextApiResponse } from "next";
-
-const getRevenueByBlock = async (blockNumber: number) => {
-  return await request(
-    "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
-    gql`
-      query($id: String!, $block: Block_height) {
-        protocol(id: $id, block: $block) {
-          revenueUSD
-        }
-      }
-    `,
-    {
-      id: "livepeer",
-      block: { number: blockNumber },
-    }
-  );
-};
+import { getUsageFromSubgraph } from "../../lib/utils";
 
 export const getProject = async () => {
-  const data = await request(
-    "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
-    gql`
-      query($id: String!) {
-        protocol(id: $id) {
-          revenueUSD
-          days(first: 1000) {
-            date
-            revenueUSD
-          }
-        }
-      }
-    `,
-    { id: "livepeer" }
-  );
-
-  const utcCurrentTime = dayjs();
-  const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
-  const utcTwoDaysBack = utcCurrentTime.subtract(2, "day").unix();
-  const utcOneWeekBack = utcCurrentTime.subtract(1, "week").unix();
-  const utcTwoWeeksBack = utcCurrentTime.subtract(2, "week").unix();
-
-  const [
-    oneDayBlock,
-    twoDayBlock,
-    oneWeekBlock,
-    twoWeekBlock,
-  ] = await getBlocksFromTimestamps([
-    utcOneDayBack,
-    utcTwoDaysBack,
-    utcOneWeekBack,
-    utcTwoWeeksBack,
-  ]);
-
-  const oneDayResult = await getRevenueByBlock(oneDayBlock);
-  const twoDayResult = await getRevenueByBlock(twoDayBlock);
-  const oneWeekResult = await getRevenueByBlock(oneWeekBlock);
-  const twoWeekResult = await getRevenueByBlock(twoWeekBlock);
-
-  const dayIndexSet = new Set();
-  const oneDay = 24 * 60 * 60;
-
-  let days = [];
-  data.protocol.days.forEach((day) => {
-    dayIndexSet.add((day.date / oneDay).toFixed(0));
-    days.push({
-      date: day.date,
-      revenue: +day.revenueUSD,
-    });
-  });
-
-  let timestamp = days[0].date;
-  while (timestamp < Math.floor(+new Date() / 1000) - oneDay) {
-    const nextDay = timestamp + oneDay;
-    const currentDayIndex = (nextDay / oneDay).toFixed(0);
-
-    if (!dayIndexSet.has(currentDayIndex)) {
-      days.push({
-        date: nextDay,
-        revenue: 0,
-        empty: true,
-      });
-    }
-    timestamp = nextDay;
-  }
-
-  days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
-
-  return {
+  const usage = await getUsageFromSubgraph("livepeer");
+  const project = {
     name: "Livepeer",
-    category: "Work Protocol",
+    category: "Service Protocol",
     subcategory: "Compute, Video",
     blockchain: "Ethereum",
     stack: "Middleware",
@@ -99,17 +13,9 @@ export const getProject = async () => {
     image: "https://explorer.livepeer.org/img/logos/logo-circle-green.svg",
     color: "#00eb88",
     symbol: "LPT",
-    usage: {
-      revenue: {
-        now: +data.protocol.revenueUSD,
-        oneDayAgo: +oneDayResult.protocol.revenueUSD,
-        twoDaysAgo: +twoDayResult.protocol.revenueUSD,
-        oneWeekAgo: +oneWeekResult.protocol.revenueUSD,
-        twoWeeksAgo: +twoWeekResult.protocol.revenueUSD,
-      },
-      days,
-    },
+    usage,
   };
+  return project;
 };
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {

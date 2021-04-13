@@ -1,20 +1,31 @@
 import Layout from "../layouts";
 import { useMemo } from "react";
+import Box from "../components/Box";
 import Table from "../components/Table";
 import Section from "../components/Section";
 import Container from "../components/Container";
 import Header from "../components/Header";
 import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
-import { getProjects } from "../lib/utils";
+import { getProjects, trophies } from "../lib/utils";
+import globby from "globby";
+import matter from "gray-matter";
+import path from "path";
+import fs from "fs";
 
-const Home = ({ revenue, projects }) => {
+const Rank = ({ row }) => (
+  <Box css={{ display: "flex", alignItems: "center" }}>
+    <Box css={{ mr: "$2" }}>{trophies[+row.id]}</Box> {+row.id + 1}
+  </Box>
+);
+
+const Home = ({ faq, revenue, projects }) => {
   const columns = useMemo(
     () => [
       {
         Header: "#",
         accessor: "rank",
-        Cell: ({ row }) => +row.id + 1,
+        Cell: Rank,
       },
       {
         Header: "Name",
@@ -62,7 +73,7 @@ const Home = ({ revenue, projects }) => {
             data={projects}
             css={{ mb: "$5", overflow: "scroll" }}
           />
-          <Faq css={{ mb: "$6" }} />
+          <Faq items={faq} css={{ mb: "$6" }} />
           <CallToAction
             css={{
               maxWidth: 800,
@@ -78,10 +89,19 @@ const Home = ({ revenue, projects }) => {
 };
 
 export async function getStaticProps() {
+  const faq = [];
+  const filePaths = await globby(["faq/**/*"]);
   const { projects, revenue } = await getProjects();
+
+  for (const filePath of filePaths) {
+    const source = fs.readFileSync(path.join(process.cwd(), filePath));
+    const { content, data } = matter(source);
+    faq.push({ content, data });
+  }
 
   return {
     props: {
+      faq,
       revenue,
       projects: projects.sort((a, b) => {
         return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;

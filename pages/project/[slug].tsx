@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import schema from "../../schema.json";
 import registry from "../../registry.json";
-import { getProjects } from "../../lib/utils";
+import { getProjects, trophies } from "../../lib/utils";
 import Layout from "../../layouts";
 import ProjectHeader from "../../components/ProjectHeader";
 import Box from "../../components/Box";
@@ -22,8 +22,6 @@ import {
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { useRouter } from "next/router";
-
-const trophies = ["🏆", "🥈", "🥉"];
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
@@ -330,6 +328,7 @@ export async function getStaticProps({ params }) {
   projects.sort((a, b) => {
     return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;
   });
+
   const index = projects.findIndex((p) => p.slug === params.slug);
   const {
     project: { description, website, github, twitter },
