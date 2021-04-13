@@ -7,6 +7,8 @@ import { filterCssFromProps } from "../../lib/utils";
 import ReactMarkdown from "react-markdown";
 
 const AccordionChevron = styled(ChevronDownIcon, {
+  minWidth: 16,
+  minHeight: 16,
   transition: "transform 300ms",
   "[data-state=open] &": {
     transform: "rotate(180deg)",
