@@ -21,6 +21,7 @@ export const defaultTheme = {
     red: "#FF4343",
     border: "#E0E0E0",
     table: "#FCFCFC",
+    highlighter: "#E6A6BE",
   },
   fonts: {
     heading: "Whyte Inktrap",

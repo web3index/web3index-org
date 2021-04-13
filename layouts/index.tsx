@@ -13,6 +13,12 @@ const Index = ({ data, children }) => {
         height: "100vh",
         color: "$hiContrast",
         background: "$loContrast",
+        "::selection": {
+          background: "$highlighter",
+        },
+        "::-moz-selection": {
+          background: "$highlighter",
+        },
       }}
     >
       <Ticker projects={projects} />
