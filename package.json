@@ -21,7 +21,6 @@
     "ajv": "^7.2.1",
     "dayjs": "^1.10.4",
     "fast-average-color-node": "^1.0.3",
-    "globby": "^11.0.3",
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "gray-matter": "^4.0.2",

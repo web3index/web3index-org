@@ -7,6 +7,7 @@ const Markdown = ({ children }) => {
         details: {
           display: "block",
         },
+
         summary: {
           display: "list-item",
         },

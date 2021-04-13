@@ -8,7 +8,6 @@ import Header from "../components/Header";
 import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
 import { getProjects, trophies } from "../lib/utils";
-import globby from "globby";
 import matter from "gray-matter";
 import path from "path";
 import fs from "fs";
@@ -90,11 +89,14 @@ const Home = ({ faq, revenue, projects }) => {
 
 export async function getStaticProps() {
   const faq = [];
-  const filePaths = await globby(["faq/**/*"]);
   const { projects, revenue } = await getProjects();
+  const faqDirectory = path.join(process.cwd(), "faq");
+  const fileNames = fs.readdirSync(faqDirectory);
 
-  for (const filePath of filePaths) {
-    const source = fs.readFileSync(path.join(process.cwd(), filePath));
+  for (const fileName of fileNames) {
+    const source = fs.readFileSync(
+      path.join(process.cwd(), `./faq/${fileName}`)
+    );
     const { content, data } = matter(source);
     faq.push({ content, data });
   }
