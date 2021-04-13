@@ -1,14 +1,8 @@
 import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
-import { defaultTheme } from "../../stitches.config";
 
 const Header = ({ revenue, ...props }) => {
-  const color =
-    revenue.oneWeekPercentChange > 0
-      ? defaultTheme.colors.green
-      : defaultTheme.colors.red;
-
   return (
     <Box {...props}>
       <Box
@@ -18,10 +12,15 @@ const Header = ({ revenue, ...props }) => {
           mb: "$4",
           textAlign: "center",
           fontFamily: "$heading",
-          fontSize: "12vw",
+          fontSize: "42px",
           fontWeight: 900,
-          lineHeight: "64px",
+          lineHeight: "44px",
+          "@bp1": {
+            fontSize: "56px",
+            lineHeight: "68px",
+          },
           "@bp2": {
+            fontSize: "12vw",
             mt: 0,
             lineHeight: "220px",
             letterSpacing: "-10px",
