@@ -268,7 +268,7 @@ const Project = ({ index, projects, project }) => {
                 },
               }}
             >
-              <ResponsiveContainer height={400} ref={ref}>
+              <ResponsiveContainer key={project.slug} height={400} ref={ref}>
                 <LineAndBarGraph
                   base={project.usage.revenue.oneWeekTotal}
                   baseChange={project.usage.revenue.oneWeekPercentChange}
