@@ -84,26 +84,43 @@ const Table = ({ columns, data, ...props }) => {
           {firstPageRows.map((row, rowIndex) => {
             prepareRow(row);
             return (
-              <Box as="tr" key={rowIndex} {...row.getRowProps()}>
-                {row.cells.map((cell, i) => {
-                  return (
-                    <Box
-                      css={{
-                        px: "$4",
-                        py: 20,
-                        fontSize: "$2",
-                        borderTop: rowIndex ? "1px solid" : 0,
-                        borderColor: "$border",
-                      }}
-                      as="td"
-                      key={i}
-                      {...cell.getCellProps()}
-                    >
-                      {renderSwitch(cell)}
-                    </Box>
-                  );
-                })}
-              </Box>
+              <Link
+                key={rowIndex}
+                href={`/project/${row.values.slug}`}
+                passHref
+              >
+                <Box
+                  as="a"
+                  css={{
+                    display: "table-row",
+                    color: "$hiContrast",
+                    textDecoration: "none",
+                    verticalAlign: "inherit",
+                  }}
+                  key={rowIndex}
+                  {...row.getRowProps()}
+                >
+                  {row.cells.map((cell, i) => {
+                    return (
+                      <Box
+                        css={{
+                          px: "$4",
+                          py: 20,
+                          fontSize: "$2",
+                          borderTop: rowIndex ? "1px solid" : 0,
+                          borderColor: "$border",
+                          display: "table-cell",
+                          verticalAlign: "inherit",
+                        }}
+                        key={i}
+                        {...cell.getCellProps()}
+                      >
+                        {renderSwitch(cell)}
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Link>
             );
           })}
         </tbody>
@@ -142,25 +159,20 @@ function renderSwitch(cell) {
     }
     case "name":
       return (
-        <Link href={`/project/${cell.row.values.slug}`} passHref>
-          <Box
-            as="a"
-            css={{
-              color: "$hiContrast",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <StyledImage
-              width={32}
-              height={32}
-              alt="Livepeer"
-              src={cell.row.values.image}
-            />
-            {cell.render("Cell")}
-          </Box>
-        </Link>
+        <Box
+          css={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <StyledImage
+            width={32}
+            height={32}
+            alt="Livepeer"
+            src={cell.row.values.image}
+          />
+          {cell.render("Cell")}
+        </Box>
       );
     default:
       return cell.render("Cell");
