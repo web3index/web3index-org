@@ -1,11 +1,11 @@
 export default {
   title: "The Web3 Index",
   description:
-    "The analytics & rankings hub for web3. The Web3 Index tracks key metrics across the web3 stack so you can stay up to date on the latest trends.",
+    "The analytics & rankings hub for Web3. The Web3 Index tracks key metrics across the Web3 stack so you can stay up to date on the latest trends.",
   openGraph: {
     title: "The Web3 Index",
     description:
-      "The analytics & rankings hub for web3. The Web3 Index tracks key metrics across the web3 stack so you can stay up to date on the latest trends.",
+      "The analytics & rankings hub for Web3. The Web3 Index tracks key metrics across the Web3 stack so you can stay up to date on the latest trends.",
     type: "website",
     locale: "en_IE",
     url: "https://web3index.org",
