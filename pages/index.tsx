@@ -64,7 +64,7 @@ const Home = ({ faq, revenue, projects }) => {
   );
 
   return (
-    <Layout key={0} data={{ projects }}>
+    <Layout data={{ projects }}>
       <Section>
         <Container size="4">
           <Header css={{ mb: "$4" }} revenue={revenue} />

@@ -101,15 +101,11 @@ const Project = ({ index, projects, project }) => {
   }, [isClient, width]);
 
   if (isFallback) {
-    return (
-      <Layout key={index} data={{ projects }}>
-        Loading
-      </Layout>
-    );
+    return <Layout data={{ projects }}>Loading</Layout>;
   }
 
   return (
-    <Layout key={index} data={{ projects }}>
+    <Layout data={{ projects }}>
       <NextSeo
         {...seo}
         title={`The Web3 Index - ${project.name}`}
