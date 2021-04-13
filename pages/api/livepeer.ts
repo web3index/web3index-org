@@ -13,6 +13,7 @@ export const getProject = async () => {
     image: "https://explorer.livepeer.org/img/logos/logo-circle-green.svg",
     color: "#00eb88",
     symbol: "LPT",
+    description: "A decentralized live video broadcast platform.",
     usage,
   };
   return project;

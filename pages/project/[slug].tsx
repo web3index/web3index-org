@@ -345,7 +345,13 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       index,
-      project: { ...project, description, website, github, twitter },
+      project: {
+        ...project,
+        description: project.description ? project.description : description,
+        website,
+        github,
+        twitter,
+      },
       projects,
     },
     revalidate: 1,
