@@ -84,7 +84,8 @@ const Everest = ({ ...props }) => {
 };
 
 const Project = ({ index, projects, project }) => {
-  const { isFallback } = useRouter();
+  const router = useRouter();
+  const { query, isFallback } = router;
   const ref = useRef(null);
   const isClient = typeof window === "object";
   const [width, setWidth] = useState(ref?.current?.container?.clientWidth);
@@ -93,12 +94,35 @@ const Project = ({ index, projects, project }) => {
     if (!isClient) {
       return;
     }
+
     function handleResize() {
       setWidth(ref?.current?.container?.clientWidth ?? width);
     }
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [isClient, width]);
+
+  // Add event listeners
+  useEffect(() => {
+    function downHandler({ key }) {
+      const index = projects.findIndex((x) => x.slug === query.slug);
+      if (key === "ArrowLeft" && index > 0) {
+        router.push(`/project/${projects[index - 1].slug}`);
+      }
+      if (key === "ArrowRight") {
+        const next = projects[index + 1]?.slug
+          ? `/project/${projects[index + 1]?.slug}`
+          : `/project/${projects[0]?.slug}`;
+        router.push(next);
+      }
+    }
+    window.addEventListener("keydown", downHandler);
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener("keydown", downHandler);
+    };
+  }, [query.slug, projects, router]);
 
   if (isFallback) {
     return <Layout data={{ projects }}>Loading</Layout>;
