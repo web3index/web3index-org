@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import schema from "../../schema.json";
 import registry from "../../registry.json";
-import { getProjects, trophies } from "../../lib/utils";
+import { getProject, getProjects, trophies } from "../../lib/utils";
 import Layout from "../../layouts";
 import ProjectHeader from "../../components/ProjectHeader";
 import Box from "../../components/Box";
@@ -317,15 +317,7 @@ export async function getStaticPaths() {
   const paths = [];
 
   for (const project in registry) {
-    let data;
-    if (registry[project].includes("web3index.org")) {
-      const { getProject } = await import(`../api/${project}`);
-      data = await getProject();
-    } else {
-      const res = await fetch(registry[project]);
-      data = await res.json();
-    }
-
+    const data = await getProject(project);
     const valid = validate(data);
 
     if (valid) {

@@ -6,7 +6,6 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
-import { useEffect, useState } from "react";
 
 export const getBlocksFromTimestamps = async (timestamps) => {
   if (!timestamps?.length) {
@@ -68,25 +67,35 @@ export const filterCssFromProps = (props) => {
   return p;
 };
 
+export const getProject = async (id) => {
+  let usage;
+
+  // If project is providing its own usage fetch it,
+  // otherwise get it from the subgraph
+  if (registry[id].usage) {
+    const res = await fetch(registry[id].usage);
+    usage = await res.json();
+  } else {
+    usage = await getUsageFromSubgraph(id);
+  }
+
+  return {
+    ...registry[id],
+    usage,
+  };
+};
+
 export const getProjects = async () => {
   const ajv = new Ajv();
   const validate = ajv.compile(schema);
-
   const projects = [];
+
   let totalParticipantRevenueNow = 0;
   let totalParticipantRevenueOneWeekAgo = 0;
   let totalParticipantRevenueTwoWeeksAgo = 0;
 
   for (const project in registry) {
-    let data;
-    if (registry[project].includes("web3index.org")) {
-      const { getProject } = await import(`../pages/api/${project}`);
-      data = await getProject();
-    } else {
-      const res = await fetch(registry[project]);
-      data = await res.json();
-    }
-
+    const data = await getProject(project);
     const valid = validate(data);
 
     if (valid) {
@@ -130,18 +139,6 @@ export const getProjects = async () => {
       oneWeekPercentChange,
     },
   };
-};
-
-export const getProjectBySlug = async (slug) => {
-  let data;
-  if (registry[slug].includes("web3index.org")) {
-    const { getProject } = await import(`../pages/api/${slug}`);
-    data = await getProject();
-  } else {
-    const res = await fetch(registry[slug]);
-    data = await res.json();
-  }
-  return data;
 };
 
 export const toK = (num) => {
