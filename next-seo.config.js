@@ -12,7 +12,7 @@ export default {
     site_name: "The Web3 Index",
     images: [
       {
-        url: "https://web3index.org/og-image.jpg",
+        url: "https://web3index.org/og-image.png",
         width: 1200,
         height: 630,
         alt: "The Web3 Index",

@@ -1,4 +1,3 @@
-// .gitnignore
 # next.js build output
 .next
 # dotenv environment variables file 
