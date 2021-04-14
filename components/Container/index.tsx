@@ -10,7 +10,10 @@ const Container = styled("div", {
 
   // Custom
   mx: "auto",
-  px: "$4",
+  px: "$3",
+  "@bp1": {
+    px: "$4",
+  },
 
   variants: {
     size: {

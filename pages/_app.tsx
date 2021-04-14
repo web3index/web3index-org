@@ -1,5 +1,8 @@
 import { darkThemeClass, global } from "../stitches.config";
 import { ThemeProvider } from "next-themes";
+import { DefaultSeo } from "next-seo";
+import SEO from "../next-seo.config";
+import { IdProvider } from "@radix-ui/react-id";
 
 const globalStyles = global({
   body: {
@@ -27,6 +30,7 @@ const globalStyles = global({
         'url("/fonts/whyte/inktrap-bold.woff2") format("woff2"), url("/fonts/whyte/inktrap-bold.woff") format("woff")',
       fontWeight: 700,
       fontStyle: "normal",
+      fontDisplay: "block",
     },
     {
       fontFamily: "Whyte Inktrap",
@@ -34,6 +38,7 @@ const globalStyles = global({
         'url("/fonts/whyte/inktrap-heavy.woff2") format("woff2"), url("/fonts/whyte/inktrap-heavy.woff") format("woff")',
       fontWeight: 900,
       fontStyle: "normal",
+      fontDisplay: "block",
     },
   ],
 });
@@ -42,14 +47,17 @@ const App = ({ Component, pageProps }) => {
   globalStyles();
 
   return (
-    <ThemeProvider
-      disableTransitionOnChange
-      attribute="class"
-      defaultTheme="system"
-      value={{ dark: darkThemeClass.className }}
-    >
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <IdProvider>
+      <ThemeProvider
+        disableTransitionOnChange
+        attribute="class"
+        defaultTheme="system"
+        value={{ dark: darkThemeClass.className }}
+      >
+        <DefaultSeo {...SEO} />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </IdProvider>
   );
 };
 

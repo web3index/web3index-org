@@ -4,7 +4,7 @@ import Section from "../Section";
 import RevenueChange from "../RevenueChange";
 import LineGraph from "../LineGraph";
 import { ChevronDownIcon, ChevronUpIcon } from "@modulz/radix-icons";
-import { styled } from "../../stitches.config";
+import { defaultTheme, styled } from "../../stitches.config";
 import Link from "next/link";
 
 const Table = ({ columns, data, ...props }) => {
@@ -32,22 +32,32 @@ const Table = ({ columns, data, ...props }) => {
   return (
     <Section {...props}>
       <Box
-        as="table"
         css={{
-          border: "1px solid",
-          borderColor: "$border",
-          borderRadius: "$4",
           width: "100%",
           backgroundColor: "$table",
+          display: "table",
+          tableLayout: "fixed",
+          borderSpacing: "0",
+          borderCollapse: "collapse",
+          minWidth: "960px",
         }}
         {...getTableProps()}
       >
-        <thead>
+        <Box css={{ display: "table-header-group" }}>
           {headerGroups.map((headerGroup, i) => (
-            <tr key={i} {...headerGroup.getHeaderGroupProps()}>
+            <Box
+              css={{ display: "table-row" }}
+              key={i}
+              {...headerGroup.getHeaderGroupProps()}
+            >
               {headerGroup.headers.map((column, i) => (
-                <th
+                <Box
                   key={i}
+                  css={{
+                    width: i === 0 ? "100px" : "auto",
+                    display: "table-cell",
+                    verticalAlign: "middle",
+                  }}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
                   <Box
@@ -75,38 +85,56 @@ const Table = ({ columns, data, ...props }) => {
                       )}
                     </Box>
                   </Box>
-                </th>
+                </Box>
               ))}
-            </tr>
+            </Box>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </Box>
+        <Box css={{ display: "table-row-group" }} {...getTableBodyProps()}>
           {firstPageRows.map((row, rowIndex) => {
             prepareRow(row);
             return (
-              <Box as="tr" key={rowIndex} {...row.getRowProps()}>
-                {row.cells.map((cell, i) => {
-                  return (
-                    <Box
-                      css={{
-                        px: "$4",
-                        py: 20,
-                        fontSize: "$2",
-                        borderTop: rowIndex ? "1px solid" : 0,
-                        borderColor: "$border",
-                      }}
-                      as="td"
-                      key={i}
-                      {...cell.getCellProps()}
-                    >
-                      {renderSwitch(cell)}
-                    </Box>
-                  );
-                })}
-              </Box>
+              <Link
+                key={rowIndex}
+                href={`/project/${row.values.slug}`}
+                passHref
+              >
+                <Box
+                  as="a"
+                  css={{
+                    display: "table-row",
+                    color: "$hiContrast",
+                    textDecoration: "none",
+                    verticalAlign: "inherit",
+                  }}
+                  key={rowIndex}
+                  {...row.getRowProps()}
+                >
+                  {row.cells.map((cell, i) => {
+                    return (
+                      <Box
+                        css={{
+                          px: "$4",
+                          py: 20,
+                          fontSize: "$2",
+                          borderTop: rowIndex ? "1px solid" : 0,
+                          borderColor: "$border",
+                          display: "table-cell",
+                          verticalAlign: "middle",
+                          width: "auto",
+                        }}
+                        key={i}
+                        {...cell.getCellProps()}
+                      >
+                        {renderSwitch(cell)}
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Link>
             );
           })}
-        </tbody>
+        </Box>
       </Box>
     </Section>
   );
@@ -124,9 +152,13 @@ function renderSwitch(cell) {
       ).toLocaleString()}`;
     }
     case "percentChange": {
+      const color =
+        cell.row.values.usage.revenue.oneWeekPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
       return (
         <Box css={{ display: "flex" }}>
-          <LineGraph days={cell.row.values.usage.days} />
+          <LineGraph color={color} days={cell.row.values.usage.days} />
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
@@ -138,25 +170,20 @@ function renderSwitch(cell) {
     }
     case "name":
       return (
-        <Link href={`/project/${cell.row.values.slug}`} passHref>
-          <Box
-            as="a"
-            css={{
-              color: "initial",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <StyledImage
-              width={32}
-              height={32}
-              alt="Livepeer"
-              src={cell.row.values.image}
-            />
-            {cell.render("Cell")}
-          </Box>
-        </Link>
+        <Box
+          css={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <StyledImage
+            width={32}
+            height={32}
+            alt="Livepeer"
+            src={cell.row.values.image}
+          />
+          {cell.render("Cell")}
+        </Box>
       );
     default:
       return cell.render("Cell");

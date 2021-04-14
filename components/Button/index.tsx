@@ -1,6 +1,6 @@
 import { styled } from "../../stitches.config";
 
-const StyledButton = styled("button", {
+export const StyledButton = styled("button", {
   // Reset
   boxSizing: "border-box",
   border: 0,
@@ -12,10 +12,11 @@ const StyledButton = styled("button", {
   py: "$3",
   px: "$4",
   cursor: "pointer",
+  outline: "none",
+  // "&:focus": {
+  //   $$shadowColor: "$colors$loContrast",
+  //   boxShadow: "0 0 0 4px $$shadowColor",
+  // },
 });
 
-const Button = ({ children, ...props }) => (
-  <StyledButton {...props}>{children}</StyledButton>
-);
-
-export default Button;
+export default StyledButton;

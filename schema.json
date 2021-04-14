@@ -1,17 +1,28 @@
 {
   "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://example.com/object1617669888.json",
+  "$id": "https://example.com/object1618325620.json",
   "title": "Root",
   "type": "object",
-  "required": ["name", "category", "blockchain", "image", "symbol", "usage"],
+  "required": [
+    "name",
+    "category",
+    "subcategory",
+    "blockchain",
+    "stack",
+    "symbol",
+    "everestID",
+    "image",
+    "color",
+    "usage"
+  ],
   "properties": {
     "name": {
       "$id": "#root/name",
       "title": "Name",
       "type": "string",
       "default": "",
-      "examples": ["Livepeer"],
+      "examples": ["The Graph"],
       "pattern": "^.*$"
     },
     "category": {
@@ -19,25 +30,31 @@
       "title": "Category",
       "type": "string",
       "default": "",
-      "examples": ["Compute"],
+      "examples": ["Service Protocol"],
+      "pattern": "^.*$"
+    },
+    "subcategory": {
+      "$id": "#root/subcategory",
+      "title": "Subcategory",
+      "type": "string",
+      "default": "",
+      "examples": ["Bandwidth, Indexing"],
       "pattern": "^.*$"
     },
     "blockchain": {
       "$id": "#root/blockchain",
-      "title": "blockchain",
+      "title": "Blockchain",
       "type": "string",
       "default": "",
       "examples": ["Ethereum"],
       "pattern": "^.*$"
     },
-    "image": {
-      "$id": "#root/image",
-      "title": "Image",
+    "stack": {
+      "$id": "#root/stack",
+      "title": "Stack",
       "type": "string",
       "default": "",
-      "examples": [
-        "https://explorer.livepeer.org/img/logos/logo-circle-green.svg"
-      ],
+      "examples": ["Middleware"],
       "pattern": "^.*$"
     },
     "symbol": {
@@ -45,7 +62,31 @@
       "title": "Symbol",
       "type": "string",
       "default": "",
-      "examples": ["LPT"],
+      "examples": ["GRT"],
+      "pattern": "^.*$"
+    },
+    "everestID": {
+      "$id": "#root/everestID",
+      "title": "Everestid",
+      "type": "string",
+      "default": "",
+      "examples": ["0xda80bd825c1272de7b99d0b0a5e8a6d3df129165"],
+      "pattern": "^.*$"
+    },
+    "image": {
+      "$id": "#root/image",
+      "title": "Image",
+      "type": "string",
+      "default": "",
+      "examples": ["https://cryptologos.cc/logos/the-graph-grt-logo.svg"],
+      "pattern": "^.*$"
+    },
+    "color": {
+      "$id": "#root/color",
+      "title": "Color",
+      "type": "string",
+      "default": "",
+      "examples": ["#6f4cff"],
       "pattern": "^.*$"
     },
     "usage": {
@@ -70,35 +111,35 @@
               "$id": "#root/usage/revenue/now",
               "title": "Now",
               "type": "number",
-              "examples": [57308.178058455],
+              "examples": [39490.804191725685],
               "default": 0.0
             },
             "oneDayAgo": {
               "$id": "#root/usage/revenue/oneDayAgo",
               "title": "Onedayago",
               "type": "number",
-              "examples": [56833.30284091443],
+              "examples": [39208.67868782513],
               "default": 0.0
             },
             "twoDaysAgo": {
               "$id": "#root/usage/revenue/twoDaysAgo",
               "title": "Twodaysago",
               "type": "number",
-              "examples": [56833.30284091443],
+              "examples": [37703.41392181098],
               "default": 0.0
             },
             "oneWeekAgo": {
               "$id": "#root/usage/revenue/oneWeekAgo",
               "title": "Oneweekago",
               "type": "number",
-              "examples": [53635.261005459484],
+              "examples": [35928.956773186655],
               "default": 0.0
             },
             "twoWeeksAgo": {
               "$id": "#root/usage/revenue/twoWeeksAgo",
               "title": "Twoweeksago",
               "type": "number",
-              "examples": [50443.188826853555],
+              "examples": [32057.24749762984],
               "default": 0.0
             }
           }
@@ -118,14 +159,14 @@
                 "$id": "#root/usage/days/items/date",
                 "title": "Date",
                 "type": "integer",
-                "examples": [1578960000],
+                "examples": [1608768000],
                 "default": 0
               },
               "revenue": {
                 "$id": "#root/usage/days/items/revenue",
                 "title": "Revenue",
                 "type": "number",
-                "examples": [1.2272572650564288],
+                "examples": [34.966681448984744],
                 "default": 0.0
               }
             }

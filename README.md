@@ -1,6 +1,6 @@
 # The Web3 Index
 
-The Web3 Index provides usage data across the web3 stack with an initial focus on middleware network revenue.
+The Web3 Index provides usage data across the Web3 stack with an initial focus on middleware network revenue.
 
 ## Getting Started
 

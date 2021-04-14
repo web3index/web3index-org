@@ -10,10 +10,31 @@ const StyledIcon = styled(PlusCircledIcon, {
 const CallToAction = ({ ...props }) => {
   return (
     <Box {...props}>
-      <Box as="h2" css={{ fontSize: "$9", mb: "$3", fontFamily: "$heading" }}>
+      <Box
+        as="h2"
+        css={{
+          fontSize: "$7",
+          mb: "$3",
+          fontFamily: "$heading",
+          "@bp2": {
+            fontSize: "$9",
+          },
+        }}
+      >
         Help Grow the Index
       </Box>
-      <Button css={{ mx: "auto", display: "flex", alignItems: "center" }}>
+      <Button
+        as="a"
+        href="https://github.com/web3index"
+        target="_blank"
+        rel="noopener noreferrer"
+        css={{
+          textDecoration: "none",
+          mx: "auto",
+          display: "inline-flex",
+          alignItems: "center",
+        }}
+      >
         Submit a Project{" "}
         <StyledIcon css={{ width: 15, height: 15, color: "$lowContrast" }} />
       </Button>
