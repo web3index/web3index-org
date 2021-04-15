@@ -44,4 +44,4 @@ Provide a link to an svg version of the logo.
 
 ## Revenue Data Source
 
-Will the project's revenue data get sourced using The Web3 Index subgraph or a publically accessible endpoint? For more infomarmation on how to provide revenue data for project submission check out the README.
+Will the project's revenue data get sourced using The Web3 Index subgraph or a publically accessible endpoint? For more information on how to provide revenue data for project submission check out the README.
