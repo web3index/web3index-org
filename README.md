@@ -12,7 +12,34 @@ Unlike most indexes in the Web3 space that use market capitalization or ["total 
 4. Fill in the template
 5. Submit
 
-## Running Locally
+## How to Provide Revenue Data For Project Submission
+
+In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it The Web3 Index subgraph. You can find instructions on how to add a project to the subgraph [here](https://github.com/web3index/subgraph).
+
+If a project's blockchain is not supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that adheres to the following schema:
+
+```
+{
+  "revenue": {
+    "now": 61779.07, // total revenue as of now
+    "oneDayAgo": 60579.17, // total revenue as of 1 day ago
+    "twoDaysAgo": 60390.5, // total revenue as of two days ago
+    "oneWeekAgo": 58620.2, // total revenue as of one week ago
+    "twoWeeksAgo": 53635.26 // total revenue as of two weeks ago
+  },
+  "days": [
+    {
+      "date": 1578960000, // timestamp representing start of day at 12:00 am UTC
+      "revenue": 843.22 // total revenue as during this day
+    }
+    //...
+  ]
+}
+```
+
+Once you've successfully provided this information the project can be added to the [registry file](./registry.json).
+
+## Running App Locally
 
 First, run the development server:
 
