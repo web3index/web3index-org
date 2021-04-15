@@ -48,7 +48,7 @@ For providing revenue data, if the project is built on Ethereum or any other blo
 
 If the project's blockchain is not supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that adheres to the following schema:
 
-```json
+```
 {
   "revenue": {
     "now": 61779.07, // total revenue as of now
