@@ -42,27 +42,6 @@ Optional. If you don't provide a description it will pull from Everest
 
 Provide a link to an svg version of the logo.
 
-## Revenue/usage Data Source
+## Revenue Data Source
 
-For providing revenue data, if the project is built on Ethereum or any other blockchain supported by The Graph, we recommend adding the project to the The Web3 Index subgraph, an indexer for aggregating revenue data across web3 protocols. You can find instructions on how to contribute to this subgraph [here](https://github.com/web3index/subgraph).
-
-If the project's blockchain is not supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that adheres to the following schema:
-
-```
-{
-  "revenue": {
-    "now": 61779.07, // total revenue as of now
-    "oneDayAgo": 60579.17, // total revenue as of 1 day ago
-    "twoDaysAgo": 60390.5, // total revenue as of two days ago
-    "oneWeekAgo": 58620.2, // total revenue as of one week ago
-    "twoWeeksAgo": 53635.26 // total revenue as of two weeks ago
-  },
-  "days": [
-    {
-      "date": 1578960000, // timestamp representing start of day at 12:00 am UTC
-      "revenue": 843.22 // total revenue as during this day
-    }
-    //...
-  ]
-}
-```
+Will the project's revenue data get sourced using The Web3 Index subgraph or a publically accessible endpoint? For more infomarmation on how to provide revenue data for project submission check out the README.
