@@ -14,7 +14,7 @@ Unlike most indexes in the Web3 space that use market capitalization or ["total 
 
 ## Providing Revenue Data For Project Submission
 
-In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it The Web3 Index subgraph. You can find instructions on how to add a project to the subgraph [here](https://github.com/web3index/subgraph).
+In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find instructions on how to add a project to the subgraph [here](https://github.com/web3index/subgraph).
 
 If a project's blockchain is not supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that adheres to the following schema:
 
