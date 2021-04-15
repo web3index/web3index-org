@@ -12,7 +12,7 @@ Unlike most indexes in the Web3 space that use market capitalization or ["total 
 4. Fill in the template
 5. Submit
 
-## How to Provide Revenue Data For Project Submission
+## Providing Revenue Data For Project Submission
 
 In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it The Web3 Index subgraph. You can find instructions on how to add a project to the subgraph [here](https://github.com/web3index/subgraph).
 
