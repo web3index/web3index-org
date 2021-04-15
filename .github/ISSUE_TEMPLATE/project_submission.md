@@ -46,7 +46,7 @@ Provide a link to an svg version of the logo.
 
 For providing revenue data, if the project is built on Ethereum or any other blockchain supported by The Graph, we recommend adding the project to the The Web3 Index subgraph, an indexer for aggregating revenue data across web3 protocols. You can find instructions on how to contribute to this subgraph [here](https://github.com/web3index/subgraph).
 
-If the project's blockchain is not supported by The Graph, you will have to provide to provide this data via a publically accessible endpoint with a json response that adheres to the following schema:
+If the project's blockchain is not supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that adheres to the following schema:
 
 ```json
 {
