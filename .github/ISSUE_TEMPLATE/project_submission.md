@@ -6,41 +6,39 @@ labels: ""
 assignees: ""
 ---
 
-## Project Details
-
-### Project Name
+## Project Name
 
 i.e. Livepeer
 
-### Symbol
+## Symbol
 
 i.e. LPT
 
-### Brand Color
+## Brand Color
 
 Enter the project's brand color in hex value format
 
-### Category
+## Category
 
 i.e. "Service Protocol"
 
-### Subcategory
+## Subcategory
 
 i.e. "Storage"
 
-### Blockchain
+## Blockchain
 
 i.e. "Ethereum". If it's a custom chain enter "Custom"
 
-### Everest ID
+## Everest ID
 
 Everest is used to pull information about the project such as the description. It can be found by searching for the project on [everest.link](https://everest.link).
 
-### Description
+## Description
 
 Optional. If you don't provide a description it will pull from Everest
 
-### Image
+## Image
 
 Provide a link to an svg version of the logo.
 
