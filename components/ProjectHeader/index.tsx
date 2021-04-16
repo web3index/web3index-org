@@ -21,7 +21,7 @@ const StyledButton = styled(Button, {
   justifyContent: "center",
 });
 
-const ProjectHeader = ({ next, prev, first, color, ...props }) => {
+const ProjectHeader = ({ next, prev, color, ...props }) => {
   return (
     <Box
       css={{
@@ -48,41 +48,36 @@ const ProjectHeader = ({ next, prev, first, color, ...props }) => {
               </StyledButton>
             </Link>
             <Box css={{ display: "flex", alignItems: "center" }}>
-              {prev && (
-                <Link href={`/project/${prev}`} passHref>
-                  <StyledButton
+              <Link href={`/project/${prev}`} passHref>
+                <StyledButton
+                  css={{
+                    padding: 0,
+                    width: 49,
+                    height: 49,
+                    mr: "$2",
+                    "@bp1": {
+                      py: "$3",
+                      px: "$4",
+                      width: "initial",
+                      height: "initial",
+                    },
+                  }}
+                >
+                  <ArrowLeftIcon />{" "}
+                  <Box
                     css={{
-                      padding: 0,
-                      width: 49,
-                      height: 49,
-                      mr: "$2",
+                      ml: "$2",
+                      display: "none",
                       "@bp1": {
-                        py: "$3",
-                        px: "$4",
-                        width: "initial",
-                        height: "initial",
+                        display: "flex",
                       },
                     }}
                   >
-                    <ArrowLeftIcon />{" "}
-                    <Box
-                      css={{
-                        ml: "$2",
-                        display: "none",
-                        "@bp1": {
-                          display: "flex",
-                        },
-                      }}
-                    >
-                      Previous
-                    </Box>
-                  </StyledButton>
-                </Link>
-              )}
-              <Link
-                href={!next ? `/project/${first}` : `/project/${next}`}
-                passHref
-              >
+                    Previous
+                  </Box>
+                </StyledButton>
+              </Link>
+              <Link href={`/project/${next}`} passHref>
                 <StyledButton
                   css={{
                     padding: 0,

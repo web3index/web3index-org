@@ -107,14 +107,19 @@ const Project = ({ index, projects, project }) => {
   useEffect(() => {
     function downHandler({ key }) {
       const index = projects.findIndex((x) => x.slug === query.slug);
-      if (key === "ArrowLeft" && index > 0) {
-        router.push(`/project/${projects[index - 1].slug}`);
+      if (key === "ArrowLeft") {
+        const prev =
+          index === 0
+            ? projects[projects.length - 1]?.slug
+            : projects[index - 1]?.slug;
+        router.push(`/project/${prev}`);
       }
       if (key === "ArrowRight") {
-        const next = projects[index + 1]?.slug
-          ? `/project/${projects[index + 1]?.slug}`
-          : `/project/${projects[0]?.slug}`;
-        router.push(next);
+        const next =
+          index === projects.length - 1
+            ? projects[0]?.slug
+            : projects[index + 1]?.slug;
+        router.push(`/project/${next}`);
       }
     }
     window.addEventListener("keydown", downHandler);
@@ -138,8 +143,16 @@ const Project = ({ index, projects, project }) => {
       <ProjectHeader
         rank={index}
         first={projects[0].slug}
-        next={projects[index + 1]?.slug}
-        prev={projects[index - 1]?.slug}
+        next={
+          index === projects.length - 1
+            ? projects[0]?.slug
+            : projects[index + 1]?.slug
+        }
+        prev={
+          index === 0
+            ? projects[projects.length - 1]?.slug
+            : projects[index - 1]?.slug
+        }
         color={project.color}
       />
       <Section css={{ mb: "$6" }}>
