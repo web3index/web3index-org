@@ -30,7 +30,7 @@ If a project's blockchain is not supported by The Graph, you'll have to provide 
   "days": [
     {
       "date": 1578960000, // timestamp representing start of day at 12:00 am UTC
-      "revenue": 843.22 // total revenue as during this day
+      "revenue": 843.22 // total revenue accrued during this day
     }
     //...
   ]
