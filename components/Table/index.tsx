@@ -39,7 +39,7 @@ const Table = ({ columns, data, ...props }) => {
           tableLayout: "fixed",
           borderSpacing: "0",
           borderCollapse: "collapse",
-          minWidth: "960px",
+          minWidth: "1260px",
         }}
         {...getTableProps()}
       >
@@ -54,7 +54,7 @@ const Table = ({ columns, data, ...props }) => {
                 <Box
                   key={i}
                   css={{
-                    width: i === 0 ? "100px" : "auto",
+                    width: i === 0 ? "90px" : i === 1 ? "230px" : "auto",
                     display: "table-cell",
                     verticalAlign: "middle",
                   }}
@@ -149,6 +149,11 @@ function renderSwitch(cell) {
     case "revenue": {
       return `$${Math.round(
         cell.row.values.usage.revenue.oneWeekTotal
+      ).toLocaleString()}`;
+    }
+    case "totalRevenue": {
+      return `$${Math.round(
+        cell.row.values.usage.revenue.now
       ).toLocaleString()}`;
     }
     case "percentChange": {

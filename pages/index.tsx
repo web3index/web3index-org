@@ -51,16 +51,21 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "blockchain",
       },
       {
-        Header: "Revenue (7 day)",
+        Header: "7 Day Revenue",
         accessor: "revenue",
       },
       {
-        Header: "Usage",
-        accessor: "usage",
+        Header: "Total Revenue",
+        accessor: "totalRevenue",
       },
       {
-        Header: "7 day change",
+        Header: "7 Day Change",
         accessor: "percentChange",
+      },
+
+      {
+        Header: "Usage",
+        accessor: "usage",
       },
     ],
     []
