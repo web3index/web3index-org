@@ -19,7 +19,7 @@ const Table = ({ columns, data, ...props }) => {
       columns,
       data,
       initialState: {
-        hiddenColumns: ["image", "usage", "slug"],
+        hiddenColumns: ["image", "symbol", "usage", "slug"],
       },
     },
     useSortBy
@@ -183,6 +183,9 @@ function renderSwitch(cell) {
             src={cell.row.values.image}
           />
           {cell.render("Cell")}
+          <Box css={{ ml: "$2", color: "$gray500" }}>
+            ({cell.row.values.symbol})
+          </Box>
         </Box>
       );
     default:

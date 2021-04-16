@@ -31,6 +31,10 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "name",
       },
       {
+        Header: "Symbol",
+        accessor: "symbol",
+      },
+      {
         Header: "Image",
         accessor: "image",
       },
