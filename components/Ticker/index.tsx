@@ -59,6 +59,7 @@ const Ticker = ({ projects }) => {
         alignItems: "center",
         py: 10,
         fontSize: "$1",
+        height: 55,
       }}
     >
       {projects?.length && (
