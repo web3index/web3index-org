@@ -37,7 +37,7 @@ If a project's blockchain is not supported by The Graph, you'll have to provide 
 }
 ```
 
-Once you've successfully provided this information the project can be added to the [registry file](./registry.json).
+Once you've successfully provided this information the project can be added to the [registry file](./registry.json). If your project is *not* using the web3 index subgraph, make sure to add an extra `usage` property to the registry that points to your endpoint.
 
 ## Running App Locally
 
