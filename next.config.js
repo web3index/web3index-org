@@ -1,5 +1,8 @@
 const withMDX = require("@next/mdx")({
   extension: /\.(md|mdx)$/,
+  options: {
+    remarkPlugins: [[require("remark-dropcap")]],
+  },
 });
 
 const nextConfig = {

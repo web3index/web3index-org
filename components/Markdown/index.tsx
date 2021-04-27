@@ -223,7 +223,7 @@ const Markdown = ({ children }) => {
 
         "h1, h2, h3, h4, h5, h6": {
           fontWeight: "bold",
-          fontFamily: "special",
+          fontFamily: "$sans",
           textRendering: "optimizeLegibility",
           marginTop: "24px",
           lineHeight: "1.25",
@@ -324,6 +324,23 @@ const Markdown = ({ children }) => {
           wordWrap: "normal",
           backgroundColor: "initial",
           border: "0",
+        },
+        "p:first-of-type .dropcap": {
+          float: "left",
+          fontSize: "5rem",
+          fontWeight: "bold",
+          lineHeight: "3.5rem",
+          margin: "0",
+          padding: "0.8rem 0.8rem 0.8rem 0",
+        },
+        ".invisible": {
+          clip: "rect(1px, 1px, 1px, 1px)",
+          height: "1px",
+          overflow: "hidden",
+          position: "absolute",
+          top: "auto",
+          whiteSpace: "nowrap",
+          width: "1px",
         },
       }}
     >

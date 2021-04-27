@@ -23,6 +23,7 @@ export const defaultTheme = {
     border: "#E0E0E0",
     table: "#FCFCFC",
     highlighter: "#E6A6BE",
+    blur: "rgba(255, 255, 255, 0.5)",
   },
   fonts: {
     heading: "Whyte Inktrap",
@@ -97,6 +98,7 @@ export const darkTheme = {
   gray200: "#616161",
   gray100: "#424242",
   gray50: "#212121",
+  blur: "rgba(0, 0, 0, 0.5)",
 };
 
 const media = {

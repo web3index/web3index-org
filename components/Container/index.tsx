@@ -21,7 +21,7 @@ const Container = styled("div", {
         maxWidth: "430px",
       },
       "2": {
-        maxWidth: "715px",
+        maxWidth: "960px",
       },
       "3": {
         maxWidth: "1145px",
