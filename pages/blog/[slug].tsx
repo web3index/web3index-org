@@ -186,6 +186,18 @@ export async function getStaticPaths() {
   };
 }
 
+const A = ({ children, href }) => {
+  return (
+    <Link href={href} passHref>
+      <Box as="a">{children}</Box>
+    </Link>
+  );
+};
+
+const components = {
+  a: A,
+};
+
 export async function getStaticProps({ params }) {
   const fullPath = path.join("./posts", `${params.slug}.mdx`);
   const postContent = fs.readFileSync(fullPath, "utf8");
@@ -193,6 +205,7 @@ export async function getStaticProps({ params }) {
   const { projects } = await getProjects();
 
   const { renderedOutput } = await renderToString(content, {
+    components,
     mdxOptions: {
       remarkPlugins: [[require("remark-dropcap")]],
     },
