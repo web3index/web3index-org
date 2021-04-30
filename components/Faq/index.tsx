@@ -3,7 +3,6 @@ import Markdown from "../Markdown";
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
-import { filterCssFromProps } from "../../lib/utils";
 import ReactMarkdown from "react-markdown";
 
 const AccordionChevron = styled(ChevronDownIcon, {
@@ -77,12 +76,9 @@ const Item = ({ emoji, question, answer }) => (
   </Box>
 );
 
-const Faq = ({ items, ...props }) => {
+const Faq = ({ items, css = {}, ...props }) => {
   return (
-    <Box
-      css={{ maxWidth: 600, mx: "auto", ...props?.css }}
-      {...filterCssFromProps(props)}
-    >
+    <Box css={{ maxWidth: 600, mx: "auto", ...css }} {...props}>
       <Accordion.Root type="single" defaultValue="🌐">
         {items.map((item, i) => (
           <Markdown key={i}>

@@ -1,16 +1,12 @@
 import Box from "../Box";
-import { filterCssFromProps } from "../../lib/utils";
 import { defaultTheme } from "../../stitches.config";
 
-const RevenueChange = ({ percentChange, ...props }) => {
+const RevenueChange = ({ percentChange, css = {}, ...props }) => {
   const color =
     percentChange > 0 ? defaultTheme.colors.green : defaultTheme.colors.red;
 
   return (
-    <Box
-      css={{ display: "flex", alignItems: "center", ...props?.css }}
-      {...filterCssFromProps(props)}
-    >
+    <Box css={{ display: "flex", alignItems: "center", ...css }} {...props}>
       <Box
         css={{
           fontSize: "$1",

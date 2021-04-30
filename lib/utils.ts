@@ -60,13 +60,6 @@ export const getTwoPeriodPercentChange = (
   return [currentChange, adjustedPercentChange];
 };
 
-export const filterCssFromProps = (props) => {
-  const p = Object.fromEntries(
-    Object.entries(props).filter(([key]) => key !== "css")
-  );
-  return p;
-};
-
 export const getProject = async (id) => {
   let usage;
 
