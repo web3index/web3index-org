@@ -25,7 +25,7 @@ const CallToAction = ({ ...props }) => {
       </Box>
       <Button
         as="a"
-        href="https://github.com/web3index/web3index-org#submiting-a-project"
+        href="https://github.com/web3index/web3index-org#providing-revenue-data-for-project-submission"
         target="_blank"
         rel="noopener noreferrer"
         css={{
