@@ -34,6 +34,7 @@ const nextSeo = {
     ...seo.openGraph,
     title: `The Web3 Index - Blog`,
     description: "Welcome to The Web3 Index Blog",
+    url: `https://beta.web3index.org/blog/`,
   },
 };
 

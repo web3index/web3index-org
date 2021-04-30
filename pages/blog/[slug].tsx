@@ -29,7 +29,7 @@ const StyledButton = styled(Button, {
   py: "10px",
 });
 
-const Post = ({ source, frontMatter, projects }) => {
+const Post = ({ slug, source, frontMatter, projects }) => {
   const router = useRouter();
   const { isFallback } = router;
 
@@ -45,6 +45,7 @@ const Post = ({ source, frontMatter, projects }) => {
       ...seo.openGraph,
       title: `The Web3 Index - ${frontMatter.seoTitle}`,
       description: frontMatter.abstract,
+      url: `https://beta.web3index.org/blog/${slug}`,
     },
   };
 
@@ -199,6 +200,7 @@ export async function getStaticProps({ params }) {
 
   return {
     props: {
+      slug: params.slug,
       projects,
       source: renderedOutput,
       frontMatter: data,

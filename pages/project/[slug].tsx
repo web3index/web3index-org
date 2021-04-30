@@ -83,7 +83,7 @@ const Everest = ({ ...props }) => {
   );
 };
 
-const Project = ({ index, projects, project }) => {
+const Project = ({ slug, index, projects, project }) => {
   const router = useRouter();
   const { query, isFallback } = router;
   const ref = useRef(null);
@@ -133,10 +133,22 @@ const Project = ({ index, projects, project }) => {
     return <Layout data={{ projects }}>Loading</Layout>;
   }
 
+  const nextSeo = {
+    ...seo,
+    title: `The Web3 Index - ${project.name}`,
+    description: project.description,
+    openGraph: {
+      ...seo.openGraph,
+      title: `The Web3 Index - ${project.name}`,
+      description: project.description,
+      url: `https://beta.web3index.org/project/${slug}`,
+    },
+  };
+
   return (
     <Layout data={{ projects }}>
       <NextSeo
-        {...seo}
+        {...nextSeo}
         title={`The Web3 Index - ${project.name}`}
         description={project.description}
       />
@@ -374,6 +386,7 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       index,
+      slug: params.slug,
       project: {
         ...project,
         description: project.description ? project.description : description,
