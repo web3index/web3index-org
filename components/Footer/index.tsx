@@ -1,6 +1,8 @@
 import Box from "../Box";
 import { TwitterLogoIcon, GitHubLogoIcon } from "@modulz/radix-icons";
 import ThemeToggle from "../ThemeToggle";
+import Link from "next/link";
+import { ReaderIcon } from "@modulz/radix-icons";
 
 const DiscordIcon = ({ ...props }) => {
   return (
@@ -30,6 +32,7 @@ const Footer = ({ ...props }) => {
         gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
         margin: "0 auto",
         fontSize: "$1",
+        px: "$4",
         "@bp2": {
           gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
         },
@@ -51,6 +54,22 @@ const Footer = ({ ...props }) => {
           },
         }}
       >
+        <Link href="/blog" passHref>
+          <Box
+            as="a"
+            css={{
+              textDecoration: "none",
+              color: "$hiContrast",
+              display: "flex",
+              alignItems: "center",
+              pr: "$3",
+              fontWeight: 500,
+            }}
+          >
+            <ReaderIcon />
+            <Box css={{ ml: "$2" }}>Blog</Box>
+          </Box>
+        </Link>
         <Box
           as="a"
           href="https://twitter.com/web3index"
