@@ -3,6 +3,9 @@ import { ThemeProvider } from "next-themes";
 import { DefaultSeo } from "next-seo";
 import SEO from "../next-seo.config";
 import { IdProvider } from "@radix-ui/react-id";
+import { pageview } from "../lib/utils";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const globalStyles = global({
   body: {
@@ -44,6 +47,23 @@ const globalStyles = global({
 });
 
 const App = ({ Component, pageProps }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      pageview(url);
+    };
+    //When the component is mounted, subscribe to router changes
+    //and log those page views
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
+
   globalStyles();
 
   return (
