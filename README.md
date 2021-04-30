@@ -4,14 +4,6 @@ The Web3 Index reports on the fees being paid Web3 networks, which showcases rea
 
 Unlike most indexes in defi (a sector of web3) that use market capitalization or ["total locked value (TLV)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network revenue and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the project. In the spirit of this methodology, you won't see any token prices on The Web3 Index.
 
-## Submiting a Project
-
-1. Go to the "Issues" tab above
-2. Click "New Issue"
-3. Select "Project Submission"
-4. Fill in the template
-5. Submit
-
 ## Providing Revenue Data For Project Submission
 
 In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to contribute a project to it [here](https://thegraph.com/docs/introduction).
@@ -40,6 +32,14 @@ If a project's blockchain is _not_ supported by The Graph, you'll have to provid
 ```
 
 Finally, add a `usage` property to the registry that points to your endpoint.
+
+## Submiting a Project
+
+1. Go to the "Issues" tab above
+2. Click "New Issue"
+3. Select "Project Submission"
+4. Fill in the template
+5. Submit
 
 ## Running App Locally
 
