@@ -8,7 +8,7 @@ Unlike most indexes in defi (a sector of web3) that use market capitalization or
 
 In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to contribute a project to it [here](https://thegraph.com/docs/introduction).
 
-Once you've successfully provided added a project othe subgraph, make sure to add the project to the [registry file](./registry.json) using its subgraph protocol id as the key.
+Once you've successfully added a protocol to the subgraph, make sure to add the project to the [registry file](./registry.json) using its subgraph protocol entity id as the key.
 
 If a project's blockchain is _not_ supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that returns data in the following format, updated at least once a day:
 
