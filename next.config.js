@@ -6,6 +6,9 @@ const withMDX = require("@next/mdx")({
 });
 
 const nextConfig = {
+  future: {
+    webpack5: true,
+  },
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 };
 
