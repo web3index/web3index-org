@@ -106,7 +106,7 @@ const Index = ({ posts, projects }) => {
 
 export async function getStaticProps() {
   const { projects } = await getProjects();
-  const posts = await getPosts();
+  const posts: any = await getPosts();
 
   return {
     props: {
