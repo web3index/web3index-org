@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { getContent, getFile, getFileData, getSlugs } from "../../lib/mdx";
+import { useMDX } from "../../hooks/useMdx";
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -29,6 +30,7 @@ const StyledButton = styled(Button, {
 const Post = ({ slug, content, data, projects }) => {
   const router = useRouter();
   const { isFallback } = router;
+  const mdx = useMDX(content);
 
   if (isFallback) {
     return <Layout data={{ projects }}>Loading</Layout>;
@@ -155,8 +157,9 @@ const Post = ({ slug, content, data, projects }) => {
                   px: 20,
                 },
               }}
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            >
+              {mdx}
+            </Box>
           </Markdown>
         </Container>
       </Section>

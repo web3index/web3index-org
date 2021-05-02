@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import matter from "gray-matter";
 import renderToString from "next-mdx-remote/render-to-string";
-import A from "../components/MDXComponents/A";
+import MDXComponents from "../components/MDXComponents";
 
 export async function getSlugs(directory: string) {
   const files = await fs.readdir(process.cwd() + "/" + directory);
@@ -37,7 +37,7 @@ export const getFileContent = (file: string) => {
 
 export async function getContent(file: string, mdxOptions = {}) {
   const content = await renderToString(getFileContent(file), {
-    components: { a: A },
+    components: MDXComponents,
     mdxOptions,
   });
 
