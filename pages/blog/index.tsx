@@ -3,8 +3,6 @@ import Section from "../../components/Section";
 import Box from "../../components/Box";
 import { getProjects } from "../../lib/utils";
 import matter from "gray-matter";
-import path from "path";
-import fs from "fs";
 import { ListBulletIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
 import Link from "next/link";
@@ -12,6 +10,8 @@ import Button from "../../components/Button";
 import BlogCard from "../../components/BlogCard";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
+import path from "path";
+import fs from "fs";
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -107,22 +107,23 @@ const Index = ({ posts, projects }) => {
 };
 
 export async function getStaticProps() {
-  const { projects } = await getProjects();
-  const posts = [];
   const postsDirectory = path.join(process.cwd(), "posts");
-  const fileNames = fs.readdirSync(postsDirectory);
+  const { projects } = await getProjects();
 
-  for (const fileName of fileNames) {
-    const fullPath = path.join("./posts", `${fileName}`);
-    const postContent = fs.readFileSync(fullPath, "utf8");
-    const { data, content } = matter(postContent);
+  const postFilePaths = fs
+    .readdirSync(postsDirectory)
+    .filter((path) => /\.mdx?$/.test(path));
 
-    posts.push({
+  const posts = postFilePaths.map((filePath) => {
+    const source = fs.readFileSync(path.join(postsDirectory, filePath));
+    const { content, data } = matter(source);
+
+    return {
       data,
-      slug: fileName.replace(".mdx", ""),
+      slug: filePath.replace(".mdx", ""),
       content,
-    });
-  }
+    };
+  });
 
   return {
     props: {

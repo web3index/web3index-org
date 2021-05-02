@@ -105,18 +105,22 @@ const Home = ({ faq, revenue, projects }) => {
 };
 
 export async function getStaticProps() {
-  const faq = [];
-  const { projects, revenue } = await getProjects();
   const faqDirectory = path.join(process.cwd(), "faq");
-  const fileNames = fs.readdirSync(faqDirectory);
+  const { projects, revenue } = await getProjects();
 
-  for (const fileName of fileNames) {
-    const source = fs.readFileSync(
-      path.join(process.cwd(), `./faq/${fileName}`)
-    );
+  const faqFilePaths = fs
+    .readdirSync(faqDirectory)
+    .filter((path) => /\.mdx?$/.test(path));
+
+  const faq = faqFilePaths.map((filePath) => {
+    const source = fs.readFileSync(path.join(faqDirectory, filePath));
     const { content, data } = matter(source);
-    faq.push({ content, data });
-  }
+
+    return {
+      data,
+      content,
+    };
+  });
 
   return {
     props: {

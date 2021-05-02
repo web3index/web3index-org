@@ -168,17 +168,15 @@ const Post = ({ slug, source, frontMatter, projects }) => {
 };
 
 export async function getStaticPaths() {
-  const paths = [];
   const postsDirectory = path.join(process.cwd(), "posts");
-  const fileNames = fs.readdirSync(postsDirectory);
+  const postFilePaths = fs
+    .readdirSync(postsDirectory)
+    .filter((path) => /\.mdx?$/.test(path));
 
-  for (const fileName of fileNames) {
-    paths.push({
-      params: {
-        slug: fileName.replace(".mdx", ""),
-      },
-    });
-  }
+  const paths = postFilePaths
+    .map((path) => path.replace(/\.mdx?$/, ""))
+    // Map the path into the static paths object required by Next.js
+    .map((slug) => ({ params: { slug } }));
 
   return {
     paths,
