@@ -5,12 +5,8 @@ import Table from "../components/Table";
 import Section from "../components/Section";
 import Container from "../components/Container";
 import Header from "../components/Header";
-import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
 import { getProjects, trophies } from "../lib/utils";
-import matter from "gray-matter";
-import path from "path";
-import fs from "fs";
 
 const Rank = ({ row }) => (
   <Box css={{ display: "flex", alignItems: "center" }}>
@@ -18,7 +14,7 @@ const Rank = ({ row }) => (
   </Box>
 );
 
-const Home = ({ faq, revenue, projects }) => {
+const Home = ({ revenue, projects }) => {
   const columns = useMemo(
     () => [
       {
@@ -89,7 +85,6 @@ const Home = ({ faq, revenue, projects }) => {
               WebkitOverflowScrolling: "touch",
             }}
           />
-          <Faq items={faq} css={{ mb: "$6" }} />
           <CallToAction
             css={{
               maxWidth: 800,
@@ -105,26 +100,10 @@ const Home = ({ faq, revenue, projects }) => {
 };
 
 export async function getStaticProps() {
-  const faqDirectory = path.join(process.cwd(), "faq");
   const { projects, revenue } = await getProjects();
-
-  const faqFilePaths = fs
-    .readdirSync(faqDirectory)
-    .filter((path) => /\.mdx?$/.test(path));
-
-  const faq = faqFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(faqDirectory, filePath));
-    const { content, data } = matter(source);
-
-    return {
-      data,
-      content,
-    };
-  });
 
   return {
     props: {
-      faq,
       revenue,
       projects: projects.sort((a, b) => {
         return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;
