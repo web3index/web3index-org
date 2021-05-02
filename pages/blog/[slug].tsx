@@ -4,9 +4,6 @@ import Section from "../../components/Section";
 import Container from "../../components/Container";
 import Markdown from "../../components/Markdown";
 import { getProjects } from "../../lib/utils";
-import matter from "gray-matter";
-import path from "path";
-import fs from "fs";
 import { ListBulletIcon, ReaderIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
 import Link from "next/link";
@@ -14,7 +11,7 @@ import Button from "../../components/Button";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
-import renderToString from "next-mdx-remote/render-to-string";
+import { getContent, getFile, getFileData, getSlugs } from "../../lib/mdx";
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -29,7 +26,7 @@ const StyledButton = styled(Button, {
   py: "10px",
 });
 
-const Post = ({ slug, source, frontMatter, projects }) => {
+const Post = ({ slug, content, data, projects }) => {
   const router = useRouter();
   const { isFallback } = router;
 
@@ -39,12 +36,12 @@ const Post = ({ slug, source, frontMatter, projects }) => {
 
   const nextSeo = {
     ...seo,
-    title: `The Web3 Index - ${frontMatter.seoTitle}`,
-    description: frontMatter.abstract,
+    title: `The Web3 Index - ${data.seoTitle}`,
+    description: data.abstract,
     openGraph: {
       ...seo.openGraph,
-      title: `The Web3 Index - ${frontMatter.seoTitle}`,
-      description: frontMatter.abstract,
+      title: `The Web3 Index - ${data.seoTitle}`,
+      description: data.abstract,
       url: `https://beta.web3index.org/blog/${slug}`,
     },
   };
@@ -105,10 +102,10 @@ const Post = ({ slug, source, frontMatter, projects }) => {
                 },
               }}
             >
-              {frontMatter.title}
+              {data.title}
             </Box>
             <Box css={{ fontSize: "$2", opacity: 0.7, mb: 40 }}>
-              {new Date(frontMatter.publishedOn).toLocaleDateString("en-US", {
+              {new Date(data.publishedOn).toLocaleDateString("en-US", {
                 weekday: "long",
                 year: "numeric",
                 month: "long",
@@ -131,18 +128,18 @@ const Post = ({ slug, source, frontMatter, projects }) => {
                   objectFit: "contain",
                   mr: "$3",
                 }}
-                src={frontMatter.avatar}
+                src={data.avatar}
               />
               <Box css={{ fontSize: "$1" }}>
-                <Box css={{ mb: "$1" }}>{frontMatter.author}</Box>
+                <Box css={{ mb: "$1" }}>{data.author}</Box>
                 <Box
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://twitter.com/${frontMatter.twitter}`}
+                  href={`https://twitter.com/${data.twitter}`}
                   css={{ color: "$blue", textDecoration: "none" }}
                 >
-                  @{frontMatter.twitter}
+                  @{data.twitter}
                 </Box>
               </Box>
             </Box>
@@ -158,7 +155,7 @@ const Post = ({ slug, source, frontMatter, projects }) => {
                   px: 20,
                 },
               }}
-              dangerouslySetInnerHTML={{ __html: source }}
+              dangerouslySetInnerHTML={{ __html: content }}
             />
           </Markdown>
         </Container>
@@ -168,53 +165,35 @@ const Post = ({ slug, source, frontMatter, projects }) => {
 };
 
 export async function getStaticPaths() {
-  const postsDirectory = path.join(process.cwd(), "posts");
-  const postFilePaths = fs
-    .readdirSync(postsDirectory)
-    .filter((path) => /\.mdx?$/.test(path));
-
-  const paths = postFilePaths
-    .map((path) => path.replace(/\.mdx?$/, ""))
-    // Map the path into the static paths object required by Next.js
-    .map((slug) => ({ params: { slug } }));
+  const slugs = await getSlugs("content/posts");
 
   return {
-    paths,
+    paths: slugs.map((slug) => {
+      return {
+        params: {
+          slug,
+        },
+      };
+    }),
     fallback: true,
   };
 }
 
-const A = ({ children, href }) => {
-  return (
-    <Link href={href} passHref>
-      <Box as="a">{children}</Box>
-    </Link>
-  );
-};
-
-const components = {
-  a: A,
-};
-
 export async function getStaticProps({ params }) {
-  const fullPath = path.join("./posts", `${params.slug}.mdx`);
-  const postContent = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(postContent);
   const { projects } = await getProjects();
-
-  const { renderedOutput } = await renderToString(content, {
-    components,
-    mdxOptions: {
-      remarkPlugins: [[require("remark-dropcap")]],
-    },
+  const slug = params?.slug ? params?.slug.toString() : "";
+  const file = await getFile("content/posts", slug);
+  const content = await getContent(file, {
+    remarkPlugins: [[require("remark-dropcap")]],
   });
+  const data = getFileData(file);
 
   return {
     props: {
-      slug: params.slug,
+      data,
+      content,
+      slug,
       projects,
-      source: renderedOutput,
-      frontMatter: data,
     },
   };
 }

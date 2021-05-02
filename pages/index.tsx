@@ -8,9 +8,7 @@ import Header from "../components/Header";
 import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
 import { getProjects, trophies } from "../lib/utils";
-import matter from "gray-matter";
-import path from "path";
-import fs from "fs";
+import { getFaq } from "../lib/mdx";
 
 const Rank = ({ row }) => (
   <Box css={{ display: "flex", alignItems: "center" }}>
@@ -105,22 +103,8 @@ const Home = ({ faq, revenue, projects }) => {
 };
 
 export async function getStaticProps() {
-  const faqDirectory = path.join(process.cwd(), "faq");
   const { projects, revenue } = await getProjects();
-
-  const faqFilePaths = fs
-    .readdirSync(faqDirectory)
-    .filter((path) => /\.mdx?$/.test(path));
-
-  const faq = faqFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(faqDirectory, filePath));
-    const { content, data } = matter(source);
-
-    return {
-      data,
-      content,
-    };
-  });
+  const faq = await getFaq();
 
   return {
     props: {

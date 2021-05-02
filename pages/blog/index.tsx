@@ -2,7 +2,6 @@ import Layout from "../../layouts";
 import Section from "../../components/Section";
 import Box from "../../components/Box";
 import { getProjects } from "../../lib/utils";
-import matter from "gray-matter";
 import { ListBulletIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
 import Link from "next/link";
@@ -10,8 +9,7 @@ import Button from "../../components/Button";
 import BlogCard from "../../components/BlogCard";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
-import path from "path";
-import fs from "fs";
+import { getPosts } from "../../lib/mdx";
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -107,23 +105,8 @@ const Index = ({ posts, projects }) => {
 };
 
 export async function getStaticProps() {
-  const postsDirectory = path.join(process.cwd(), "posts");
   const { projects } = await getProjects();
-
-  const postFilePaths = fs
-    .readdirSync(postsDirectory)
-    .filter((path) => /\.mdx?$/.test(path));
-
-  const posts = postFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(postsDirectory, filePath));
-    const { content, data } = matter(source);
-
-    return {
-      data,
-      slug: filePath.replace(".mdx", ""),
-      content,
-    };
-  });
+  const posts = await getPosts();
 
   return {
     props: {

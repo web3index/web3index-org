@@ -314,13 +314,6 @@ export const getUsageFromSubgraph = async (id) => {
   };
 };
 
-export const convertToSlug = (text) => {
-  return text
-    .toLowerCase()
-    .replace(/[^\w ]+/g, "")
-    .replace(/ +/g, "-");
-};
-
 declare global {
   interface Window {
     gtag: any;
