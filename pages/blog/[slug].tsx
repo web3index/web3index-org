@@ -12,7 +12,8 @@ import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { getContent, getFile, getFileData, getSlugs } from "../../lib/mdx";
-import { useMDX } from "../../hooks/useMdx";
+import hydrate from "next-mdx-remote/hydrate";
+import MDXComponents from "../../components/MDXComponents";
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -30,11 +31,14 @@ const StyledButton = styled(Button, {
 const Post = ({ slug, content, data, projects }) => {
   const router = useRouter();
   const { isFallback } = router;
-  const mdx = useMDX(content);
 
   if (isFallback) {
     return <Layout data={{ projects }}>Loading</Layout>;
   }
+
+  const mdx = hydrate(content, {
+    components: MDXComponents,
+  });
 
   const nextSeo = {
     ...seo,
