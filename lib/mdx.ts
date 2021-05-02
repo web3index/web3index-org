@@ -1,17 +1,18 @@
-import { promises as fs } from "fs";
 import matter from "gray-matter";
 import renderToString from "next-mdx-remote/render-to-string";
 import MDXComponents from "../components/MDXComponents";
 
+const { readFileSync, readdirSync } = require("fs");
+
 export async function getSlugs(directory: string) {
-  const files = await fs.readdir(process.cwd() + "/" + directory);
+  const files = await readdirSync(process.cwd() + "/" + directory);
   const slugs = files.map((file) => file.replace(/\.mdx/, ""));
 
   return slugs;
 }
 
 export async function getFile(directory: string, slug: string) {
-  const file = await fs.readFile(
+  const file = await readFileSync(
     process.cwd() + `/${directory}/${slug}.mdx`,
     "utf8"
   );
