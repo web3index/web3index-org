@@ -161,9 +161,13 @@ function renderSwitch(cell) {
         cell.row.values.usage.revenue.oneWeekPercentChange > 0
           ? defaultTheme.colors.green
           : defaultTheme.colors.red;
+
+      // Get last two weeks excluding current day
+      const lastTwoWeeks = cell.row.values.usage.days.slice(-15).slice(0, 14);
+
       return (
         <Box css={{ display: "flex" }}>
-          <LineGraph color={color} days={cell.row.values.usage.days} />
+          <LineGraph color={color} days={lastTwoWeeks} />
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,

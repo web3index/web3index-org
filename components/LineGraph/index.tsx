@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { defaultTheme } from "../../stitches.config";
 import Box from "../Box";
 
 const LineGraph = ({ color, days }) => {
