@@ -62,7 +62,7 @@ const LineGraph = ({ color, days }) => {
       // parse the data and format for tradingview consumption
       const formattedData = days.map((day) => {
         return {
-          time: day.date * 1000,
+          time: new Date(day.date * 1000).toLocaleDateString("fr-CA"),
           value: day.revenue,
         };
       });
