@@ -48,7 +48,7 @@ export const getTwoPeriodPercentChange = (
   valueAsOfPeriodOne: number,
   valueAsOfPeriodTwo: number
 ) => {
-  // get volume info for both 24 hour periods
+  // get volume info for both periods
   const currentChange = valueNow - valueAsOfPeriodOne;
   const previousChange = valueAsOfPeriodOne - valueAsOfPeriodTwo;
 
