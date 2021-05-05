@@ -14,6 +14,7 @@ If a project's blockchain is _not_ supported by The Graph, you'll have to provid
 
 ```
 {
+  // Revenue should be denominated in USD at time of payout
   "revenue": {
     "now": 61779.07, // total revenue as of now
     "oneDayAgo": 60579.17, // total revenue as of 1 day ago
