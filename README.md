@@ -26,7 +26,7 @@ If a project's blockchain is _not_ supported by The Graph, you'll have to provid
       "date": 1578960000, // timestamp representing start of day at 12:00 am UTC
       "revenue": 843.22 // total revenue accrued during this day
     }
-    //...
+    // provide as many days available, up to 1,000 until pagination is supported.
   ]
 }
 ```
