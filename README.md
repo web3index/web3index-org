@@ -10,7 +10,7 @@ In order for a project to be considered for the index, its revenue data must be 
 
 Once you've successfully added a protocol to the subgraph, make sure to add the project to the [registry file](./registry.json) using its subgraph protocol entity id as the key.
 
-If a project's blockchain is _not_ supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that returns data in the following format, updated at least once a day:
+If a project's blockchain is _not_ supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that returns data in the following format, updated at least twice a day:
 
 ```
 {
