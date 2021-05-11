@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { request, gql } from "graphql-request";
 import registry from "../../../registry.json";
 import dayjs from "dayjs";
-import { getBlocksFromTimestamps, getRevenueByBlock } from "../../../lib/utils";
+import { getBlocksFromTimestamps } from "../../../lib/utils";
 
-export const getUsageFromDB = async (name) => {
+const getUsageFromDB = async (name) => {
   // TODO: query prisma DB for project by project name and return usage using Prisma's aggregation feature
   // https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing
 
@@ -27,7 +27,24 @@ export const getUsageFromDB = async (name) => {
   };
 };
 
-export const getUsageFromSubgraph = async (id) => {
+const getRevenueByBlock = async (id, blockNumber) => {
+  return await request(
+    "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
+    gql`
+      query($id: String!, $block: Block_height) {
+        protocol(id: $id, block: $block) {
+          revenueUSD
+        }
+      }
+    `,
+    {
+      id,
+      block: { number: blockNumber },
+    }
+  );
+};
+
+const getUsageFromSubgraph = async (id) => {
   const data = await request(
     "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
     gql`
