@@ -7,8 +7,9 @@ import Container from "../components/Container";
 import Header from "../components/Header";
 import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
-import { getProjects, trophies } from "../lib/utils";
+import { trophies } from "../lib/utils";
 import { getFaq } from "../lib/mdx";
+import { getProjects } from "./api/projects";
 
 const Rank = ({ row }) => (
   <Box css={{ display: "flex", alignItems: "center" }}>

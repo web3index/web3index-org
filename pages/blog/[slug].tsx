@@ -3,7 +3,6 @@ import Box from "../../components/Box";
 import Section from "../../components/Section";
 import Container from "../../components/Container";
 import Markdown from "../../components/Markdown";
-import { getProjects } from "../../lib/utils";
 import { ListBulletIcon, ReaderIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
 import Link from "next/link";
@@ -14,6 +13,7 @@ import seo from "../../next-seo.config";
 import { getContent, getFile, getFileData, getSlugs } from "../../lib/mdx";
 import hydrate from "next-mdx-remote/hydrate";
 import MDXComponents from "../../components/MDXComponents";
+import { getProjects } from "../api/projects";
 
 const StyledButton = styled(Button, {
   border: "1px solid",

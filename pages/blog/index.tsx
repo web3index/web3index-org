@@ -1,7 +1,6 @@
 import Layout from "../../layouts";
 import Section from "../../components/Section";
 import Box from "../../components/Box";
-import { getProjects } from "../../lib/utils";
 import { ListBulletIcon } from "@modulz/radix-icons";
 import { styled } from "../../stitches.config";
 import Link from "next/link";
@@ -10,6 +9,7 @@ import BlogCard from "../../components/BlogCard";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { getPosts } from "../../lib/mdx";
+import { getProjects } from "../api/projects";
 
 const StyledButton = styled(Button, {
   border: "1px solid",

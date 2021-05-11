@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import schema from "../../schema.json";
 import registry from "../../registry.json";
-import { getProject, getProjects, trophies } from "../../lib/utils";
+import { trophies } from "../../lib/utils";
 import Layout from "../../layouts";
 import ProjectHeader from "../../components/ProjectHeader";
 import Box from "../../components/Box";
@@ -22,6 +22,8 @@ import {
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { useRouter } from "next/router";
+import { getProject } from "../api/projects/[id]";
+import { getProjects } from "../api/projects";
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
