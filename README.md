@@ -6,7 +6,7 @@ Unlike most indexes in defi (a sector of web3) that use market capitalization or
 
 ## Project Integration Instructions
 
-In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. This data can be provided using several different methods.
+In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. This data can be provided using one of several different methods.
 
 ### Method #1: The Graph (recommended)
 
