@@ -12,7 +12,7 @@ In order for a project to be considered for the index, its revenue data must be 
 
 If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a project's revenue data to it [here](https://thegraph.com/docs/introduction).
 
-Once you've successfully added your project to the subgraph, make sure to add the project to the [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
+Once you've successfully added your project to the subgraph, make sure to add the project to the Web3 Index [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
 
 ### Method #2: The Web3 Index Database
 
@@ -20,7 +20,7 @@ If a project's blockchain is not supported by The Graph, you can index its reven
 
 Step 1: Create an API endpoint inside `api/cron/[your_project_name]/index.ts`. This endpoint will get called every 30 minutes by a cron job. When called, it should store the project's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
-Step 2: Add your project to the [registry](./registry.json) using the project and directory name you created. Make sure to set the set its `subgraph` field to `false`.
+Step 2: Add your project to the Web3 Index [registry](./registry.json) using the project and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
 ### Method #3: A Publically Accessible API Endpoint
 
@@ -46,7 +46,7 @@ If a project's blockchain is not supported by The Graph _and_ you can't use the 
 }
 ```
 
-Once this endpoint is available add your project to the [registry](./registry.json), and include a `usage` field that points to your endpoint.
+Once this endpoint is available add your project to the Web3 Index [registry](./registry.json), and include a `usage` field that points to your endpoint.
 
 Note: your API codebase must be open sourced in order to be considered for the index.
 
