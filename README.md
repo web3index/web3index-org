@@ -52,7 +52,21 @@ Note: your API codebase must be open sourced in order to be considered for the i
 
 ## Running App Locally
 
-First, run the development server:
+First, install the project dependencies:
+
+```bash
+yarn
+```
+
+Next, rename `.env.example` to `.env` and replace `DATABASE_URL` with your own Postgres database url.
+
+After that, run the Prisma ORM database schema migration tool:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Finally, run the development server:
 
 ```bash
 npm run dev
