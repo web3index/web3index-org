@@ -16,15 +16,15 @@ Once you've successfully added your project to the subgraph, make sure to add th
 
 ### Method #2: The Web3 Index Database
 
-If a project's blockchain is not supported by The Graph, you can index your project's revenue data using the Web Index's own database.
+If a project's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
 
-Step 1: Create an API endpoint inside `api/cron/[your_project_name]/index.ts`. This endpoint will get called every 30 minutes by a cron job. When called, this endpoint should store data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the following database [schema](./prisma/schema.prisma).
+Step 1: Create an API endpoint inside `api/cron/[your_project_name]/index.ts`. This endpoint will get called every 30 minutes by a cron job. When called, it should store the project's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
-Step 2: Add your project to the registry [registry file](./registry.json) using its the same project model and directory name and make sure to set the set its `subgraph` field to `false`.
+Step 2: Add your project to the registry [registry file](./registry.json) using the project and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
 ### Method #3: The Web3 Index Database
 
-If a project's blockchain is not supported by The Graph and for some reason you can't use the Web3 Index's own database, you can provide revenue data via your own publically accessible endpoint. Its json response should return data in the following format, updated at least twice a day:
+If a project's blockchain is not supported by The Graph and you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible endpoint. Its json response should return data in the following format, updated at least twice a day:
 
 ```
 {
@@ -48,13 +48,7 @@ If a project's blockchain is not supported by The Graph and for some reason you 
 
 Once this endpoint is available add your project to the registry [registry file](./registry.json), and include a `usage` field that points to your endpoint.
 
-## Submiting a Project
-
-1. Go to the "Issues" tab above
-2. Click "New Issue"
-3. Select "Project Submission"
-4. Fill in the template
-5. Submit
+Note: your API codebase must be open sourced in order to be considered for the index.
 
 ## Running App Locally
 
