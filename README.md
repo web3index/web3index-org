@@ -22,9 +22,9 @@ Step 1: Create an API endpoint inside `api/cron/[your_project_name]/index.ts`. T
 
 Step 2: Add your project to the registry [registry file](./registry.json) using the project and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
-### Method #3: The Web3 Index Database
+### Method #3: A Publically Accessible API Endpoint
 
-If a project's blockchain is not supported by The Graph and you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible endpoint. Its json response should return data in the following format, updated at least twice a day:
+If a project's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
 
 ```
 {
