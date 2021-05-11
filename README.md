@@ -69,8 +69,6 @@ npx prisma migrate dev --name init
 Finally, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
