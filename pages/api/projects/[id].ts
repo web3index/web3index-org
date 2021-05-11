@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { getBlocksFromTimestamps } from "../../../lib/utils";
 
 const getUsageFromDB = async (name) => {
-  // TODO: query prisma DB for project by project name and return usage using Prisma's aggregation feature
+  // TODO: query project by name and return usage using Prisma's aggregation feature
   // https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing
 
   // replace the following dummy object with data returned from DB
