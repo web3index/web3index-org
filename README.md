@@ -10,7 +10,7 @@ In order for a project to be considered for the index, its revenue data must be 
 
 ### Method #1: The Graph (recommended)
 
-If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol to the subgraph [here](https://thegraph.com/docs/introduction).
+If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a project's revenue data to it [here](https://thegraph.com/docs/introduction).
 
 Once you've successfully added a protocol to the subgraph, make sure to add the project to the [registry file](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
 
