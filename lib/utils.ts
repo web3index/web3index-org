@@ -1,7 +1,4 @@
 import { request, gql } from "graphql-request";
-import Ajv from "ajv";
-import schema from "../schema.json";
-import registry from "../registry.json";
 import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
@@ -58,80 +55,6 @@ export const getTwoPeriodPercentChange = (
     return [currentChange, 0];
   }
   return [currentChange, adjustedPercentChange];
-};
-
-export const getProject = async (id) => {
-  let usage;
-
-  // If project is providing its own usage fetch it,
-  // otherwise get it from the subgraph
-  if (registry[id].usage) {
-    const res = await fetch(registry[id].usage);
-    usage = await res.json();
-  } else {
-    usage = await getUsageFromSubgraph(id);
-  }
-
-  return {
-    ...registry[id],
-    usage,
-  };
-};
-
-export const getProjects = async () => {
-  const ajv = new Ajv();
-  const validate = ajv.compile(schema);
-  const projects = [];
-
-  let totalParticipantRevenueNow = 0;
-  let totalParticipantRevenueOneWeekAgo = 0;
-  let totalParticipantRevenueTwoWeeksAgo = 0;
-
-  for (const project in registry) {
-    const data = await getProject(project);
-    const valid = validate(data);
-
-    if (valid) {
-      const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
-        data.usage.revenue.now,
-        data.usage.revenue.oneWeekAgo,
-        data.usage.revenue.twoWeeksAgo
-      );
-
-      projects.push({
-        ...data,
-        slug: project,
-        usage: {
-          ...data.usage,
-          revenue: {
-            ...data.usage.revenue,
-            oneWeekTotal,
-            oneWeekPercentChange,
-          },
-        },
-      });
-      totalParticipantRevenueNow += data.usage.revenue.now;
-      totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;
-      totalParticipantRevenueTwoWeeksAgo += data.usage.revenue.twoWeeksAgo;
-    }
-  }
-
-  const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
-    totalParticipantRevenueNow,
-    totalParticipantRevenueOneWeekAgo,
-    totalParticipantRevenueTwoWeeksAgo
-  );
-
-  return {
-    projects,
-    revenue: {
-      totalParticipantRevenueNow,
-      totalParticipantRevenueOneWeekAgo,
-      totalParticipantRevenueTwoWeeksAgo,
-      oneWeekTotal,
-      oneWeekPercentChange,
-    },
-  };
 };
 
 export const toK = (num) => {
@@ -216,7 +139,7 @@ export const formatDataForWeekly = (days) => {
 
 export const trophies = ["🏆", "🥈", "🥉"];
 
-const getRevenueByBlock = async (id, blockNumber) => {
+export const getRevenueByBlock = async (id, blockNumber) => {
   return await request(
     "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
     gql`
@@ -231,6 +154,10 @@ const getRevenueByBlock = async (id, blockNumber) => {
       block: { number: blockNumber },
     }
   );
+};
+
+export const getUsageFromDB = async (id) => {
+  // TODO: query prisma DB for project by ID and return usage
 };
 
 export const getUsageFromSubgraph = async (id) => {

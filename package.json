@@ -9,12 +9,16 @@
     "type-check": "tsc",
     "lint-fix": "yarn prettier-fix && yarn eslint-fix",
     "eslint-fix": "eslint . --ext js,jsx,ts,tsx --fix --max-warnings=0",
-    "prettier-fix": "prettier --write '**/*.{ts,js,css,html,md,tsx,mdx,graphql,gql}'"
+    "prettier-fix": "prettier --write '**/*.{ts,js,css,html,md,tsx,mdx,graphql,gql}'",
+    "vercel-build": "prisma migrate deploy && next build",
+    "prisma:generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@mdx-js/loader": "^1.6.22",
     "@modulz/radix-icons": "^4.0.0",
     "@next/mdx": "^10.2.0",
+    "@prisma/client": "^2.22.1",
     "@radix-ui/react-accordion": "^0.0.13",
     "@stitches/core": "latest",
     "@stitches/react": "latest",
@@ -53,6 +57,7 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
+    "prisma": "^2.22.1",
     "typescript": "^4.2.3"
   },
   "husky": {

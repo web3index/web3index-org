@@ -1,0 +1,24 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Project {
+    id   Int    @id @default(autoincrement())
+    name String @unique
+    days Day[]
+}
+
+model Day {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    date      Int // timestamp representing start of day at 12:00 am UTC (i.e. 1578960000)
+    revenue   Int // total revenue accrued during this day denominated in USD at time of receipt
+    project   Project  @relation(fields: [projectId], references: [id])
+    projectId Int
+}

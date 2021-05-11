@@ -9,7 +9,8 @@
     "name": "Livepeer",
     "stack": "Middleware",
     "subcategory": "Compute, Video",
-    "symbol": "LPT"
+    "symbol": "LPT",
+    "subgraph": true
   },
   "thegraph": {
     "blockchain": "Ethereum",
@@ -20,6 +21,7 @@
     "name": "The Graph",
     "stack": "Middleware",
     "subcategory": "Bandwidth, Indexing",
-    "symbol": "GRT"
+    "symbol": "GRT",
+    "subgraph": true
   }
 }

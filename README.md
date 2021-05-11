@@ -4,13 +4,27 @@ The Web3 Index reports on the fees being paid Web3 networks in an effort to show
 
 Unlike most indexes in defi (a sector of web3) that use market capitalization or ["total locked value (TLV)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network revenue and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the project. In the spirit of this methodology, you won't see any token prices on The Web3 Index.
 
-## Providing Revenue Data For Project Submission
+## Project Integration Instructions
 
-In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol to the subgraph [here](https://thegraph.com/docs/introduction).
+In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. This data can be provided using several different methods.
 
-Once you've successfully added a protocol to the subgraph, make sure to add the project to the [registry file](./registry.json) using its subgraph protocol entity id as the key.
+### Method #1: The Graph (recommended)
 
-If a project's blockchain is _not_ supported by The Graph, you'll have to provide this data via a publically accessible endpoint with a json response that returns data in the following format, updated at least twice a day:
+If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol to the subgraph [here](https://thegraph.com/docs/introduction).
+
+Once you've successfully added a protocol to the subgraph, make sure to add the project to the [registry file](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
+
+### Method #2: The Web3 Index Database
+
+If a project's blockchain is not supported by The Graph, you can index your project's revenue data using the Web Index's own database.
+
+Step 1: Create an API endpoint inside `api/cron/[your_project_name]/index.ts`. This endpoint will get called every 30 minutes by a cron job. When called, this endpoint should store data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the following database [schema](./prisma/schema.prisma).
+
+Step 2: Add your project to the registry [registry file](./registry.json) using its the same project model and directory name and make sure to set the set its `subgraph` field to `false`.
+
+### Method #3: The Web3 Index Database
+
+If a project's blockchain is not supported by The Graph and for some reason you can't use the Web3 Index's own database, you can provide revenue data via your own publically accessible endpoint. Its json response should return data in the following format, updated at least twice a day:
 
 ```
 {
@@ -32,7 +46,7 @@ If a project's blockchain is _not_ supported by The Graph, you'll have to provid
 }
 ```
 
-Finally, add a `usage` property to the registry that points to your endpoint.
+Once this endpoint is available add your project to the registry [registry file](./registry.json), and include a `usage` field that points to your endpoint.
 
 ## Submiting a Project
 

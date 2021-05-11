@@ -77,7 +77,7 @@ const Header = ({ revenue, ...props }) => {
           as="a"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://github.com/web3index/web3index-org#providing-revenue-data-for-project-submission"
+          href="https://github.com/web3index/web3index-org#project-integration-instructions"
         />
       </Box>
     </Box>
