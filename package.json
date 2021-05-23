@@ -29,6 +29,7 @@
     "gray-matter": "^4.0.2",
     "lightweight-charts": "^3.3.0",
     "limestone": "^0.2.0",
+    "limestone-api": "^3.0.7",
     "next": "^10.2.0",
     "next-mdx-remote": "^2.1.4",
     "next-seo": "^4.23.0",
