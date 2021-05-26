@@ -3,7 +3,9 @@ import { defaultTheme } from "../../stitches.config";
 
 const RevenueChange = ({ percentChange, css = {}, ...props }) => {
   const color =
-    percentChange > 0 ? defaultTheme.colors.green : defaultTheme.colors.red;
+    parseFloat(percentChange) > 0
+      ? defaultTheme.colors.green
+      : defaultTheme.colors.red;
 
   return (
     <Box css={{ display: "flex", alignItems: "center", ...css }} {...props}>
@@ -16,7 +18,8 @@ const RevenueChange = ({ percentChange, css = {}, ...props }) => {
           borderWidth: "0 4px 6px 4px",
           borderColor: `transparent transparent ${color} transparent`,
           mr: "$1",
-          transform: percentChange > 0 ? "rotate(0)" : "rotate(180deg)",
+          transform:
+            parseFloat(percentChange) > 0 ? "rotate(0)" : "rotate(180deg)",
         }}
       />
       <Box css={{ color }}>{percentChange}%</Box>
