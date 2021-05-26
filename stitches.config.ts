@@ -3,27 +3,27 @@ export * from "@stitches/react";
 
 export const defaultTheme = {
   colors: {
-    hiContrast: "#000000",
-    loContrast: "#ffffff",
+    blur: "rgba(0, 0, 0, 0.5)",
+    border: "#424242",
+    gray100: "#424242",
+    gray200: "#616161",
+    gray300: "#757575",
+    gray400: "#9E9E9E",
+    gray50: "#212121",
+    gray500: "#BDBDBD",
+    gray600: "#E0E0E0",
+    gray700: "#EEEEEE",
+    gray800: "#F5F5F5",
+    gray900: "#FAFAFA",
+    hiContrast: "#ffffff",
+    loContrast: "#000000",
+    table: "transparent",
     black: "#000000",
     white: "#ffffff",
-    gray50: "#FAFAFA",
-    gray100: "#F5F5F5",
-    gray200: "#EEEEEE",
-    gray300: "#E0E0E0",
-    gray400: "#BDBDBD",
-    gray500: "#9E9E9E",
-    gray600: "#757575",
-    gray700: "#616161",
-    gray800: "#424242",
-    gray900: "#212121",
-    green: "#26B38D",
-    red: "#FF4343",
     blue: "#52a9ff",
-    border: "#E0E0E0",
-    table: "#FCFCFC",
+    green: "#26B38D",
     highlighter: "#E6A6BE",
-    blur: "rgba(255, 255, 255, 0.5)",
+    red: "#FF4343",
   },
   fonts: {
     heading: "Whyte Inktrap",
@@ -83,22 +83,22 @@ export const defaultTheme = {
   },
 };
 
-export const darkTheme = {
-  hiContrast: "#ffffff",
-  loContrast: "#000000",
-  border: "#424242",
-  table: "transparent",
-  gray900: "#FAFAFA",
-  gray800: "#F5F5F5",
-  gray700: "#EEEEEE",
-  gray600: "#E0E0E0",
-  gray500: "#BDBDBD",
-  gray400: "#9E9E9E",
-  gray300: "#757575",
-  gray200: "#616161",
-  gray100: "#424242",
-  gray50: "#212121",
-  blur: "rgba(0, 0, 0, 0.5)",
+export const lightTheme = {
+  blur: "rgba(255, 255, 255, 0.5)",
+  border: "#E0E0E0",
+  gray100: "#F5F5F5",
+  gray200: "#EEEEEE",
+  gray300: "#E0E0E0",
+  gray400: "#BDBDBD",
+  gray50: "#FAFAFA",
+  gray500: "#9E9E9E",
+  gray600: "#757575",
+  gray700: "#616161",
+  gray800: "#424242",
+  gray900: "#212121",
+  hiContrast: "#000000",
+  loContrast: "#ffffff",
+  table: "#FCFCFC",
 };
 
 const media = {
@@ -197,4 +197,4 @@ export const {
   media,
 });
 
-export const darkThemeClass = theme({ colors: darkTheme });
+export const lightThemeClass = theme({ colors: lightTheme });
