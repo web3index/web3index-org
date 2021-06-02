@@ -16,4 +16,4 @@ jobs:
       - name: curl
         uses: wei/curl@master
         with:
-          args: ${{ secrets.ARWEAVE_ENDPOINT }}
+          args: https://web3index-org-og7jyfbi9-livepeerorg.vercel.app/api/cron/arweave
