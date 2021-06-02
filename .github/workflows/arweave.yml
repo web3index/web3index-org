@@ -16,4 +16,4 @@ jobs:
       - name: curl
         uses: wei/curl@master
         with:
-          args: https://web3index-org-og7jyfbi9-livepeerorg.vercel.app/api/cron/arweave
+          args: -m 86400 https://web3index-org-og7jyfbi9-livepeerorg.vercel.app/api/cron/arweave
