@@ -10,11 +10,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deployment:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Deploy Stage
-      uses: fjogeleit/http-request-action@master
-      with:
-        url: ${{ secrets.ARWEAVE_ENDPOINT }}
-        method: 'GET'
+  curl:
+      runs-on: ubuntu-latest
+      steps:
+      - name: curl
+        uses: wei/curl@master
+        with:
+          args: ${{ secrets.ARWEAVE_ENDPOINT }}
