@@ -5,14 +5,14 @@ import { PrismaClient } from "@prisma/client";
 import limestone from "limestone-api";
 
 const endpoint = "https://arweave.net/graphql";
-const gqlclient = new GraphQLClient(endpoint);
+const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
 
 const queryGetTranasctions = gql`
-  query GetTransactions($minblock: Int!, $cursor: String) {
+  query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
     transactions(
       first: 100
       sort: HEIGHT_ASC
-      block: { min: $minblock }
+      block: { min: $minblock, max: $maxblock }
       after: $cursor
     ) {
       pageInfo {
@@ -37,8 +37,16 @@ const queryGetTranasctions = gql`
   }
 `;
 
+const queryGetLastBlock = gql`
+  query queryGetLastBlock {
+    block {
+      height
+    }
+  }
+`;
+
 const queryGetBlock = gql`
-  query GetBlocl($blockid: Int!) {
+  query GetBlock($blockid: Int!) {
     blocks(height: { min: $blockid, max: $blockid }) {
       edges {
         node {
@@ -80,6 +88,19 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  // Get last block id
+  let lastBlockId;
+  try {
+    lastBlockId = await getLastBlockId();
+  } catch (e) {
+    res.status(500).json({
+      error: "unable to get last block id from blockchain.",
+      value: e,
+    });
+    return;
+  }
+  console.log("last block id: " + lastBlockId);
+
   // Get block height for last imported id
   let previousBlockHeight;
   try {
@@ -91,10 +112,11 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     });
     return;
   }
-  console.log(previousBlockHeight);
+  console.log("Last imported block: " + previousBlockHeight);
 
   let variables = {
     minblock: parsedId,
+    maxblock: lastBlockId,
     cursor: "",
   };
   let cursor;
@@ -109,6 +131,8 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
   // This is the main loop where the import takes place
   while (!exit) {
     let data;
+    console.log(queryGetTranasctions);
+    console.log(JSON.stringify(variables));
     try {
       data = await gqlclient.request(queryGetTranasctions, variables);
     } catch (e) {
@@ -188,6 +212,7 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
     if (data.transactions.pageInfo.hasNextPage && !exit) {
       variables = {
         minblock: parsedId,
+        maxblock: lastBlockId,
         cursor: cursor,
       };
     } else {
@@ -228,7 +253,7 @@ const getProject = async (name: string) => {
     await prisma.project.create({
       data: {
         name: name,
-        lastImportedId: "590000",
+        lastImportedId: "422250",
       },
     });
 
@@ -254,6 +279,21 @@ const getBlockHeight = async (blockId: number) => {
   }
 
   return data.blocks.edges[0].node.height;
+};
+
+const getLastBlockId = async () => {
+  let data;
+  try {
+    data = await gqlclient.request(queryGetLastBlock);
+  } catch (e) {
+    throw new Error(
+      "Error getting last block id from blockchain: " +
+        JSON.stringify(e) +
+        JSON.stringify(data)
+    );
+  }
+
+  return data.block.height;
 };
 
 const storeDBData = async (
