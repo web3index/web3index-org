@@ -9,7 +9,7 @@ on:
   workflow_dispatch: 
 
 jobs:
-  run arweave import:
+  run-arweave-import:
     name: tsc
     runs-on: ubuntu-latest
     steps:
