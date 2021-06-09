@@ -9,7 +9,7 @@ on:
   workflow_dispatch: 
 
 jobs:
-  tsc:
+  run arweave import:
     name: tsc
     runs-on: ubuntu-latest
     steps:
@@ -26,5 +26,7 @@ jobs:
       run: cd ./cmd
     - name: set env
       run: export DATABASE_URL=${{ secrets.ARWEAVE_ENDPOINT }}
+    - name: list files
+      run: ls
     - name: compile and run
-      run: tsc .\arweave.ts --esModuleInterop | node .\arweave.js
+      run: tsc ./arweave.ts --esModuleInterop | node .\arweave.js
