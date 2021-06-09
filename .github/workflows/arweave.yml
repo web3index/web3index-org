@@ -29,4 +29,4 @@ jobs:
     - name: list files
       run: ls
     - name: compile and run
-      run: tsc ./arweave.ts --esModuleInterop | node .\arweave.js
+      run: tsc ./cmd/arweave.ts --esModuleInterop | node ./cmd/arweave.js
