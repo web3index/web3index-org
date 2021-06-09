@@ -28,13 +28,7 @@ jobs:
       run: tsc ./cmd/arweave.ts --esModuleInterop
     - name: list files
       run: ls ./cmd
-    - name: set secrets
-      run: |
-        echo $DATABASE_URL >> .env
-        cat .env
-      env:
-        DATABASE_URL: ${{ secrets.ARWEAVE_ENDPOINT }}
     - name: run
       run: node ./cmd/arweave.js
       env:
-        DATABASE_URL: ${{ secrets.ARWEAVE_ENDPOINT }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
