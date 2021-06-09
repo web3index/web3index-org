@@ -8,12 +8,21 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch: 
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  curl:
-      runs-on: ubuntu-latest
-      steps:
-      - name: curl
-        uses: wei/curl@master
-        with:
-          args: -m 86400 https://web3index-org-og7jyfbi9-livepeerorg.vercel.app/api/cron/arweave
+  tsc:
+    name: tsc
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: yarn install
+      run: yarn install
+    - name: install typescript
+      run: npm install -g typescript
+    - name: change directory
+      run: cd ./cmd
+    - name: compile and run
+      run: tsc .\arweave.ts --esModuleInterop | node .\arweave.js
