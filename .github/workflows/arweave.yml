@@ -24,11 +24,11 @@ jobs:
       run: npm install -g typescript
     - name: change directory
       run: cd ./cmd
-    - name: set env
-      run: export DATABASE_URL=${{ secrets.ARWEAVE_ENDPOINT }}
     - name: compile
       run: tsc ./cmd/arweave.ts --esModuleInterop
     - name: list files
       run: ls ./cmd
     - name: run
       run: node ./cmd/arweave.js
+      env:
+          DATABASE_URL: ${{ secrets.ARWEAVE_ENDPOINT }}
