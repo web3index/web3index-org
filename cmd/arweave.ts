@@ -2,6 +2,7 @@ import { GraphQLClient } from "graphql-request";
 import { gql } from "graphql-request";
 import { PrismaClient } from "@prisma/client";
 import limestone from "limestone-api";
+import { exit } from "node:process";
 
 const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
@@ -142,7 +143,6 @@ const arweaveImport = async () => {
         const parsedUnixTimestamp = parseInt(element.node.block.timestamp, 10);
         if (isNaN(parsedUnixTimestamp)) {
           throw new Error("unable to parse int.");
-          return;
         }
         dayData.date = getMidnightUnixTimestamp(parsedUnixTimestamp);
         console.log("Date was empty. Start parsing from date: " + dayData.date);
@@ -151,7 +151,6 @@ const arweaveImport = async () => {
       const blockUnixTimestamp = parseInt(element.node.block.timestamp, 10);
       if (isNaN(blockUnixTimestamp)) {
         throw new Error("unable to parse int.");
-        return;
       }
 
       // if new block update AR/USDT price
@@ -178,7 +177,6 @@ const arweaveImport = async () => {
       const transactionFee = parseFloat(element.node.fee.ar);
       if (isNaN(transactionFee)) {
         throw new Error("unable to parse int.");
-        return;
       }
       dayData.fees += transactionFee * ARinUSDT;
       cursor = data.transactions.edges[index].cursor;
@@ -200,6 +198,8 @@ const arweaveImport = async () => {
       continue;
     }
   }
+
+  console.log("exit scrape function.");
 
   return;
 };
@@ -323,4 +323,6 @@ function isSameDate(firstDate: number, secondDate: number) {
   );
 }
 
-arweaveImport();
+arweaveImport().then(() => {
+  process.exit(0);
+});
