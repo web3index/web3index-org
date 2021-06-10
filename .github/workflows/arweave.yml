@@ -9,7 +9,7 @@ on:
   workflow_dispatch: 
 
 concurrency: 
-  group: ${{ github.head_ref }}
+  group: run-arweave-import
   cancel-in-progress: false
 
 jobs:
