@@ -1,38 +1,38 @@
 {
-    "livepeer": {
-        "blockchain": "Ethereum",
-        "category": "Service Protocol",
-        "color": "#00eb88",
-        "description": "A decentralized live video broadcast platform.",
-        "everestID": "0x49f6e21a4e3f20580624669acd83dac39a339042",
-        "image": "https://explorer.livepeer.org/img/logos/logo-circle-green.svg",
-        "name": "Livepeer",
-        "stack": "Middleware",
-        "subcategory": "Compute, Video",
-        "symbol": "LPT",
-        "subgraph": true
-    },
-    "thegraph": {
-        "blockchain": "Ethereum",
-        "category": "Service Protocol",
-        "color": "#6f4cff",
-        "everestID": "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",
-        "image": "https://cryptologos.cc/logos/the-graph-grt-logo.svg",
-        "name": "The Graph",
-        "stack": "Middleware",
-        "subcategory": "Bandwidth, Indexing",
-        "symbol": "GRT",
-        "subgraph": true
-    },
-    "arweave": {
-        "blockchain": "Arweave",
-        "category": "Service Protocol",
-        "color": "#6f42ff",
-        "everestID": "0x37453b7b89521570abee5d696eae5449f4e549ff",
-        "image": "https://cryptologos.cc/logos/arweave-ar-logo.svg",
-        "name": "Arweave",
-        "stack": "Middleware",
-        "subcategory": "Blockchain, Storage",
-        "symbol": "AR"
-    }
+  "livepeer": {
+    "blockchain": "Ethereum",
+    "category": "Service Protocol",
+    "color": "#00eb88",
+    "description": "A decentralized live video broadcast platform.",
+    "everestID": "0x49f6e21a4e3f20580624669acd83dac39a339042",
+    "image": "https://explorer.livepeer.org/img/logos/logo-circle-green.svg",
+    "name": "Livepeer",
+    "stack": "Middleware",
+    "subcategory": "Compute, Video",
+    "symbol": "LPT",
+    "subgraph": true
+  },
+  "thegraph": {
+    "blockchain": "Ethereum",
+    "category": "Service Protocol",
+    "color": "#6f4cff",
+    "everestID": "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",
+    "image": "https://cryptologos.cc/logos/the-graph-grt-logo.svg",
+    "name": "The Graph",
+    "stack": "Middleware",
+    "subcategory": "Bandwidth, Indexing",
+    "symbol": "GRT",
+    "subgraph": true
+  },
+  "arweave": {
+    "blockchain": "Arweave",
+    "category": "Service Protocol",
+    "color": "#3b3c40",
+    "everestID": "0x37453b7b89521570abee5d696eae5449f4e549ff",
+    "image": "https://cryptologos.cc/logos/arweave-ar-logo.svg",
+    "name": "Arweave",
+    "stack": "Middleware",
+    "subcategory": "Blockchain, Storage",
+    "symbol": "AR"
+  }
 }

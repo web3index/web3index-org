@@ -197,10 +197,16 @@ const Project = ({ slug, index, projects, project }) => {
                 }}
               >
                 <Box
+                  css={{
+                    background: "white",
+                    borderRadius: "10000px",
+                    mr: "$3",
+                    width: 44,
+                    height: 44,
+                  }}
                   as="img"
                   alt={project.name}
                   src={project.image}
-                  css={{ mr: "$3", width: 44, height: 44 }}
                 />
                 <Box
                   as="h1"
