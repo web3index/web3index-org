@@ -18,7 +18,7 @@ Once you've successfully added your project to the subgraph, make sure to add th
 
 If a project's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
 
-Step 1: Create an API endpoint inside `api/cron/[your_project_name]/index.ts`. This endpoint will get called every 30 minutes by a cron job. When called, it should store the project's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
+Step 1: Create a command line script inside `cmd/[your_project_name].ts`. This enpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_project_name].yml`). When executed, it should store the project's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
 Step 2: Add your project to the Web3 Index [registry](./registry.json) using the project and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 

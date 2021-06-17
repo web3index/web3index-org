@@ -65,7 +65,7 @@ const getRevenueFromDB = async (projectId, date, prisma) => {
     where: {
       projectId: projectId,
       date: {
-        gte: date,
+        lte: date,
       },
     },
     sum: {
