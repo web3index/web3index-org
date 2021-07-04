@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { gql } from "graphql-request";
 import { PrismaClient } from "@prisma/client";
-import limestone from "limestone-api";
+import redstone from "redstone-api";
 import { exit } from "node:process";
 
 const endpoint = "https://arweave.net/graphql";
@@ -10,7 +10,7 @@ const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
 const queryGetTranasctions = gql`
   query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
     transactions(
-      first: 100
+      first: 1000
       sort: HEIGHT_ASC
       block: { min: $minblock, max: $maxblock }
       after: $cursor
@@ -92,6 +92,7 @@ const arweaveImport = async () => {
   } catch (e) {
     throw new Error("unable to get last block id from blockchain.");
   }
+  lastBlockId = parsedId + 10000;
   console.log("last block id: " + lastBlockId);
 
   // Get block height for last imported id
@@ -121,7 +122,6 @@ const arweaveImport = async () => {
   // This is the main loop where the import takes place
   while (!exit) {
     let data;
-    console.log(queryGetTranasctions);
     console.log(JSON.stringify(variables));
     try {
       data = await gqlclient.request(queryGetTranasctions, variables);
@@ -206,7 +206,7 @@ const arweaveImport = async () => {
 
 const getHistoricalData = async (symbol: string, date: number) => {
   const dt = new Date(date * 1000);
-  const price = await limestone.getHistoricalPrice(symbol, {
+  const price = await redstone.getHistoricalPrice(symbol, {
     date: dt.toISOString(),
   });
 

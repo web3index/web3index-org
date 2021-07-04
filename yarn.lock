@@ -4789,6 +4789,18 @@ recharts@^2.0.9:
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
+redstone-api@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.3.tgz#f5c587e3a4c4bc6fd915c513878e6d1f2e57ffce"
+  integrity sha512-0Bm08V/+z9sF/Ky60kHnmTpeq6k+1EX5rw5girIye6qbCOyMoHOGWjij29XTtJv3P6RjR5PIhndEPeVX5cTlTQ==
+  dependencies:
+    ar-gql "^0.0.6"
+    arweave "^1.10.14"
+    axios "^0.21.1"
+    deep-sort-object "^1.0.2"
+    lodash "^4.17.21"
+    pako "^2.0.3"
+
 reduce-css-calc@^2.1.8:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/reduce-css-calc/-/reduce-css-calc-2.1.8.tgz#7ef8761a28d614980dc0c982f772c93f7a99de03"
