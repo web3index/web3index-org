@@ -170,15 +170,15 @@ const storeDBData = async (
   return;
 };
 
-function padNumber(n: number, width: number) {
+const padNumber = (n: number, width: number) => {
   const pad = "0";
   const retString = n + "";
   return retString.length >= width
     ? retString
     : new Array(width - retString.length + 1).join(pad) + retString;
-}
+};
 
-function parseISODate(date: Date) {
+const parseISODate = (date: Date) => {
   return (
     padNumber(date.getUTCFullYear(), 4) +
     "-" +
@@ -193,16 +193,16 @@ function parseISODate(date: Date) {
     padNumber(date.getUTCSeconds(), 2) +
     "Z"
   );
-}
+};
 
-heliumImport().then(() => {
-  process.exit(0);
-});
-
-function dateDiffInDays(a: Date, b: Date) {
+const dateDiffInDays = (a: Date, b: Date) => {
   const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   const utc1 = Date.UTC(a.getUTCFullYear(), a.getUTCMonth(), a.getUTCDate());
   const utc2 = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-}
+};
+
+heliumImport().then(() => {
+  process.exit(0);
+});

@@ -311,18 +311,18 @@ const storeDBData = async (
   return;
 };
 
-function getMidnightUnixTimestamp(unixTimestamp: number) {
+const getMidnightUnixTimestamp = (unixTimestamp: number) => {
   const date = new Date(unixTimestamp * 1000);
   date.setUTCHours(0, 0, 0, 0);
 
   return date.getTime() / 1000;
-}
+};
 
-function isSameDate(firstDate: number, secondDate: number) {
+const isSameDate = (firstDate: number, secondDate: number) => {
   return (
     getMidnightUnixTimestamp(firstDate) == getMidnightUnixTimestamp(secondDate)
   );
-}
+};
 
 arweaveImport().then(() => {
   process.exit(0);
