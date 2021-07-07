@@ -275,6 +275,7 @@ const storeDBData = async (
   const day = await prisma.day.findFirst({
     where: {
       date: dayData.date,
+      projectId: projectId,
     },
   });
 
