@@ -1,4 +1,4 @@
-import { darkThemeClass, global } from "../stitches.config";
+import { lightThemeClass, global } from "../stitches.config";
 import { ThemeProvider } from "next-themes";
 import { DefaultSeo } from "next-seo";
 import SEO from "../next-seo.config";
@@ -71,8 +71,8 @@ const App = ({ Component, pageProps }) => {
       <ThemeProvider
         disableTransitionOnChange
         attribute="class"
-        defaultTheme="system"
-        value={{ dark: darkThemeClass.className }}
+        defaultTheme="dark"
+        value={{ light: lightThemeClass.className }}
       >
         <DefaultSeo {...SEO} />
         <Component {...pageProps} />
