@@ -9,7 +9,9 @@ jobs:
     name: Backup DB
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: create backups directory
+      run: mkdir backups  
+    
     - name: Postgres Dump Backup
       uses: tj-actions/pg-dump@v1
       with:
