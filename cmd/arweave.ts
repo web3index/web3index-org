@@ -92,7 +92,7 @@ const arweaveImport = async () => {
   } catch (e) {
     throw new Error("unable to get last block id from blockchain.");
   }
-  lastBlockId = parsedId + 10000;
+  //lastBlockId = parsedId + 30000;
   console.log("last block id: " + lastBlockId);
 
   // Get block height for last imported id
