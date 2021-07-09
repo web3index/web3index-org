@@ -59,6 +59,17 @@ const heliumImport = async () => {
         toDate
     );
 
+    console.log(
+      "HTTP request: " +
+        endpoint +
+        "?min_time=" +
+        parseISODate(fromDate) +
+        "&max_time=" +
+        parseISODate(toDate) +
+        "&bucket=" +
+        bucket
+    );
+
     const response = await axios
       .get(endpoint, {
         params: {
@@ -74,17 +85,23 @@ const heliumImport = async () => {
     const date = fromDate;
     for (let index = response.data.data.length - 1; index >= 0; index--) {
       const element = response.data.data[index];
+      let feeVal = 0;
+      if (!isNaN(element.state_channel)) {
+        feeVal = element.state_channel * conversionFactor;
+      }
+
       console.log(
         "Store day " +
           date +
           " - " +
           date.getTime() / 1000 +
           " to DB - value: " +
-          element.fee * conversionFactor
+          feeVal
       );
+
       const fee = {
         date: date.getTime() / 1000,
-        fees: element.fee * conversionFactor,
+        fees: feeVal,
         blockHeight: (date.getTime() / 1000).toString(),
       };
       await storeDBData(fee, project.id);
