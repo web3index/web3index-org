@@ -38,12 +38,12 @@
     "helium": {
         "blockchain": "Helium",
         "category": "Service Protocol",
-        "color": "#8626D1",
+        "color": "#474dff",
         "everestID": "0x9741865c596110bed4794704de7096873a4adc7f",
         "image": "https://cryptologos.cc/logos/helium-hnt-logo.svg",
         "name": "Helium",
         "stack": "Middleware",
-        "subcategory": "Blockchain, Bandwidth, Networking",
+        "subcategory": "Bandwidth",
         "symbol": "HNT"
     }
 }
