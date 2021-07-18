@@ -55,7 +55,6 @@ const getUsageFromDB = async (name) => {
     days: days,
   };
 
-  console.log(tmp);
   return tmp;
 };
 
