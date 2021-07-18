@@ -1,0 +1,38 @@
+name: arweave update
+
+# Controls when the action will run. 
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: 
+
+concurrency: 
+  group: run-arweave-import
+  cancel-in-progress: false
+
+jobs:
+  run-arweave-import:
+    name: run-arweave-import
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: yarn install
+      run: yarn install
+    - name: install typescript
+      run: npm install -g typescript
+    - name: change directory
+      run: cd ./cmd
+    - name: compile
+      run: tsc ./cmd/arweave.ts --esModuleInterop
+    - name: list files
+      run: ls ./cmd
+    - name: run
+      run: node ./cmd/arweave.js
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}

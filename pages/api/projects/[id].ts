@@ -3,28 +3,81 @@ import { request, gql } from "graphql-request";
 import registry from "../../../registry.json";
 import dayjs from "dayjs";
 import { getBlocksFromTimestamps } from "../../../lib/utils";
+import { PrismaClient } from "@prisma/client";
 
 const getUsageFromDB = async (name) => {
   // TODO: query project by name and return usage using Prisma's aggregation feature
   // https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing
 
   // replace the following dummy object with data returned from DB
-  return {
-    revenue: {
-      now: 61779.07, // total revenue as of now
-      oneDayAgo: 60579.17, // total revenue as of 1 day ago
-      twoDaysAgo: 60390.5, // total revenue as of two days ago
-      oneWeekAgo: 58620.2, // total revenue as of one week ago
-      twoWeeksAgo: 53635.26, // total revenue as of two weeks ago
+
+  const prisma = new PrismaClient();
+
+  const project = await prisma.project.findFirst({
+    where: {
+      name: name,
     },
-    days: [
-      {
-        date: 1578960000, // timestamp representing start of day at 12:00 am UTC
-        revenue: 843.22, // total revenue accrued during this day
-      },
-      // provide as many days available, up to 1,000 until pagination is supported.
-    ],
+  });
+
+  const utcCurrentTime = dayjs();
+  const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
+  const utcTwoDaysBack = utcCurrentTime.subtract(2, "day").unix();
+  const utcOneWeekBack = utcCurrentTime.subtract(1, "week").unix();
+  const utcTwoWeeksBack = utcCurrentTime.subtract(2, "week").unix();
+
+  const now = await prisma.day.aggregate({
+    where: {
+      projectId: project.id,
+    },
+    sum: {
+      revenue: true,
+    },
+  });
+
+  const days = await prisma.day.findMany({
+    select: {
+      date: true,
+      revenue: true,
+    },
+    where: {
+      projectId: project.id,
+    },
+    take: 1000,
+  });
+
+  const tmp = {
+    revenue: {
+      now: now.sum.revenue, // total revenue as of now
+      oneDayAgo: await getRevenueFromDB(project.id, utcOneDayBack, prisma), // total revenue as of 1 day ago
+      twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
+      oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
+      twoWeeksAgo: await getRevenueFromDB(project.id, utcTwoWeeksBack, prisma), // total revenue as of two weeks ago
+    },
+    days: days,
   };
+
+  console.log(tmp);
+  return tmp;
+};
+
+const getRevenueFromDB = async (projectId, date, prisma) => {
+  const rev = await prisma.day.aggregate({
+    where: {
+      projectId: projectId,
+      date: {
+        lte: date,
+      },
+    },
+    sum: {
+      revenue: true,
+    },
+  });
+
+  if (rev.sum.revenue == null) {
+    return 0;
+  }
+
+  return rev.sum.revenue;
 };
 
 const getRevenueByBlock = async (id, blockNumber) => {

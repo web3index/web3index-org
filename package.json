@@ -23,11 +23,14 @@
     "@stitches/core": "latest",
     "@stitches/react": "latest",
     "ajv": "^7.2.1",
+    "axios": "^0.21.1",
     "dayjs": "^1.10.4",
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
     "gray-matter": "^4.0.2",
     "lightweight-charts": "^3.3.0",
+    "limestone": "^0.2.0",
+    "limestone-api": "^3.0.7",
     "next": "^10.2.0",
     "next-mdx-remote": "^2.1.4",
     "next-seo": "^4.23.0",
@@ -41,6 +44,7 @@
     "react-markdown": "^5.0.3",
     "react-table": "^7.6.3",
     "recharts": "^2.0.9",
+    "redstone-api": "^0.4.3",
     "remark-dropcap": "^0.1.7"
   },
   "devDependencies": {

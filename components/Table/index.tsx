@@ -186,9 +186,12 @@ function renderSwitch(cell) {
           }}
         >
           <StyledImage
+            css={{
+              background: "white",
+              borderRadius: "10000px",
+            }}
             width={32}
             height={32}
-            alt="Livepeer"
             src={cell.row.values.image}
           />
           {cell.render("Cell")}
