@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../lib/prisma";
 
 const endpoint = "https://api.helium.io/v1/dc_burns/sum";
 const conversionFactor = 0.00001;
@@ -10,8 +10,6 @@ const coin = {
   name: "helium",
   symbol: "HNT",
 };
-
-const prisma = new PrismaClient();
 
 const today = new Date();
 today.setUTCHours(0, 0, 0, 0);

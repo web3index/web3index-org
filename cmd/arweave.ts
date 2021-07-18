@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { gql } from "graphql-request";
-import { PrismaClient } from "@prisma/client";
 import redstone from "redstone-api";
+import prisma from "../lib/prisma";
 
 const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
@@ -62,8 +62,6 @@ const coin = {
   name: "arweave",
   symbol: "AR",
 };
-
-const prisma = new PrismaClient();
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);

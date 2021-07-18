@@ -3,15 +3,14 @@ import { request, gql } from "graphql-request";
 import registry from "../../../registry.json";
 import dayjs from "dayjs";
 import { getBlocksFromTimestamps } from "../../../lib/utils";
-import { PrismaClient } from "@prisma/client";
+
+import prisma from "../../../lib/prisma";
 
 const getUsageFromDB = async (name) => {
   // TODO: query project by name and return usage using Prisma's aggregation feature
   // https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing
 
   // replace the following dummy object with data returned from DB
-
-  const prisma = new PrismaClient();
 
   const project = await prisma.project.findFirst({
     where: {
