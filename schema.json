@@ -30,7 +30,7 @@
       "title": "Category",
       "type": "string",
       "default": "",
-      "examples": ["Service Protocol"],
+      "examples": ["Work Protocol"],
       "pattern": "^.*$"
     },
     "subcategory": {

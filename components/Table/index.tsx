@@ -185,15 +185,7 @@ function renderSwitch(cell) {
             alignItems: "center",
           }}
         >
-          <StyledImage
-            css={{
-              background: "white",
-              borderRadius: "10000px",
-            }}
-            width={32}
-            height={32}
-            src={cell.row.values.image}
-          />
+          <StyledImage width={32} height={32} src={cell.row.values.image} />
           {cell.render("Cell")}
           <Box css={{ ml: "$2", color: "$gray500" }}>
             ({cell.row.values.symbol})

@@ -20,7 +20,7 @@ Enter the project's brand color in hex value format
 
 ## Category
 
-i.e. "Service Protocol"
+i.e. "Work Protocol"
 
 ## Subcategory
 
