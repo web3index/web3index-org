@@ -2,7 +2,6 @@ import { GraphQLClient } from "graphql-request";
 import { gql } from "graphql-request";
 import { PrismaClient } from "@prisma/client";
 import redstone from "redstone-api";
-import { exit } from "node:process";
 
 const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });

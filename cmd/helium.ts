@@ -1,8 +1,4 @@
-import { GraphQLClient } from "graphql-request";
-import { gql } from "graphql-request";
 import { PrismaClient } from "@prisma/client";
-import redstone from "redstone-api";
-import { exit } from "node:process";
 
 const endpoint = "https://api.helium.io/v1/dc_burns/sum";
 const conversionFactor = 0.00001;

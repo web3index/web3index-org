@@ -2,7 +2,6 @@ import { GraphQLClient } from "graphql-request";
 import { gql } from "graphql-request";
 import { PrismaClient } from "@prisma/client";
 import limestone from "limestone-api";
-import { exit } from "node:process";
 
 const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
@@ -92,7 +91,7 @@ const arweaveImport = async () => {
   } catch (e) {
     throw new Error("unable to get last block id from blockchain.");
   }
-  lastBlockId = lastId + 1000
+  lastBlockId = lastId + 1000;
   console.log("last block id: " + lastBlockId);
 
   // Get block height for last imported id
