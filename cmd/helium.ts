@@ -138,7 +138,7 @@ const storeDBData = async (
         id: day.id,
       },
       data: {
-        revenue: dayData.fees + day.revenue,
+        revenue: dayData.fees,
       },
     });
   } else {
