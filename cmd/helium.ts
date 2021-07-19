@@ -78,7 +78,7 @@ const heliumImport = async () => {
       );
       const fee = {
         date: date.getTime() / 1000,
-        fees: element.add_gateway * conversionFactor,
+        fees: element.state_channel * conversionFactor,
         blockHeight: (date.getTime() / 1000).toString(),
       };
       await storeDBData(fee, project.id);
