@@ -34,5 +34,17 @@
     "stack": "Middleware",
     "subcategory": "Storage",
     "symbol": "AR"
+  },
+  "filecoin": {
+    "blockchain": "Filecoin",
+    "category": "Work Protocol",
+    "color": "#1993fc",
+    "everestID": "0x4bf59fdad495836908cf02857d08ca053229c561",
+    "image": "https://cryptologos.cc/logos/filecoin-fil-logo.svg",
+    "name": "Filecoin",
+    "stack": "Middleware",
+    "subcategory": "Storage",
+    "symbol": "FIL",
+    "usage": "/api/projects/filecoin"
   }
 }
