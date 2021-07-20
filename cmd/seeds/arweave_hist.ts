@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import { gql } from "graphql-request";
 import limestone from "limestone-api";
-import prisma from "../lib/prisma";
+import prisma from "../../lib/prisma";
 
 const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
