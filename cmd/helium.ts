@@ -74,7 +74,7 @@ const heliumImport = async () => {
           " - " +
           date.getTime() / 1000 +
           " to DB - value: " +
-          element.fee * conversionFactor
+          element.state_channel * conversionFactor
       );
       const fee = {
         date: date.getTime() / 1000,
