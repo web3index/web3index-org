@@ -72,21 +72,21 @@ const Ticker = ({ projects }) => {
           <Project key={0} project={projects[0]} />
           <Project key={1} project={projects[1]} />
           <Project key={2} project={projects[2]} />
-          <Project key={3} project={projects[0]} />
-          <Project key={4} project={projects[1]} />
-          <Project key={5} project={projects[2]} />
-          <Project key={6} project={projects[0]} />
-          <Project key={7} project={projects[1]} />
-          <Project key={8} project={projects[2]} />
-          <Project key={9} project={projects[0]} />
-          <Project key={10} project={projects[1]} />
-          <Project key={11} project={projects[2]} />
+          <Project key={3} project={projects[3]} />
+          <Project key={4} project={projects[0]} />
+          <Project key={5} project={projects[1]} />
+          <Project key={6} project={projects[2]} />
+          <Project key={7} project={projects[3]} />
+          <Project key={8} project={projects[0]} />
+          <Project key={9} project={projects[1]} />
+          <Project key={10} project={projects[2]} />
+          <Project key={11} project={projects[3]} />
           <Project key={12} project={projects[0]} />
           <Project key={13} project={projects[1]} />
           <Project key={14} project={projects[2]} />
-          <Project key={15} project={projects[0]} />
-          <Project key={16} project={projects[1]} />
-          <Project key={17} project={projects[2]} />
+          <Project key={15} project={projects[3]} />
+          <Project key={16} project={projects[0]} />
+          <Project key={17} project={projects[1]} />
           {/* {projects.map((project, i) => (
           <Project key={i} project={projects} />
         ))} */}

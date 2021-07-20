@@ -34,5 +34,16 @@
     "stack": "Middleware",
     "subcategory": "Storage",
     "symbol": "AR"
+  },
+  "helium": {
+    "blockchain": "Helium",
+    "category": "Work Protocol",
+    "color": "#474DFF",
+    "everestID": "0x9741865c596110bed4794704de7096873a4adc7f",
+    "image": "https://cryptologos.cc/logos/helium-hnt-logo.svg",
+    "name": "Helium",
+    "stack": "Middleware",
+    "subcategory": "Bandwidth, Networking",
+    "symbol": "HNT"
   }
 }
