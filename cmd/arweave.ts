@@ -77,9 +77,9 @@ const arweaveImport = async () => {
   const project = await getProject(coin.name);
   const lastId = project.lastImportedId;
   const parsedId = parseInt(lastId, 10);
+  let retry = 0;
   if (isNaN(parsedId)) {
     throw new Error("unable to parse int.");
-    return;
   }
 
   // Get last block id
@@ -98,7 +98,6 @@ const arweaveImport = async () => {
     previousBlockHeight = await getBlockHeight(parsedId);
   } catch (e) {
     throw new Error("unable to get block height from blockchain.");
-    return;
   }
   console.log("Last imported block: " + previousBlockHeight);
 
@@ -120,10 +119,19 @@ const arweaveImport = async () => {
   while (!exit) {
     let data;
     console.log(JSON.stringify(variables));
-    try {
-      data = await gqlclient.request(queryGetTranasctions, variables);
-    } catch (e) {
-      throw new Error("Error executing gql query GetTransactions.");
+    
+    retry = 0;
+    while (retry < 10){
+      try {
+        data = await gqlclient.request(queryGetTranasctions, variables);
+        retry = 10;
+      } catch (e) {
+        retry++;
+        console.log("Error executing gql query GetTransactions. Retry - " + retry);
+        if (retry == 10){
+          throw new Error("Error executing gql query GetTransactions.");
+        }
+      }
     }
 
     for (let index = 0; index < data.transactions.edges.length; index++) {
@@ -323,4 +331,9 @@ const isSameDate = (firstDate: number, secondDate: number) => {
 
 arweaveImport().then(() => {
   process.exit(0);
+})
+.catch((err) => {
+  console.log(err);
+  process.exit(1)
 });
+
