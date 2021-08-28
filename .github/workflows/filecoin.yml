@@ -36,3 +36,4 @@ jobs:
       run: node ./cmd/filecoin.js
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        TOKENTERMINAL_API_KEY: ${{ secrets.TOKENTERMINAL_API_KEY }}
