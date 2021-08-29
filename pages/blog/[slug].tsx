@@ -202,6 +202,7 @@ export async function getStaticProps({ params }) {
       slug,
       projects,
     },
+    revalidate: 1,
   };
 }
 
