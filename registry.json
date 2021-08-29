@@ -45,5 +45,16 @@
     "stack": "Middleware",
     "subcategory": "Bandwidth, Networking",
     "symbol": "HNT"
+  },
+  "filecoin": {
+    "blockchain": "Filecoin",
+    "category": "Work Protocol",
+    "color": "#398BEF",
+    "everestID": "0x4bf59fdad495836908cf02857d08ca053229c561",
+    "image": "https://cryptologos.cc/logos/filecoin-fil-logo.svg",
+    "name": "Filecoin",
+    "stack": "Middleware",
+    "subcategory": "Storage",
+    "symbol": "FIL"
   }
 }
