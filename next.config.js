@@ -7,6 +7,15 @@ const withMDX = require("@next/mdx")({
 
 const nextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  async redirects() {
+    return [
+      {
+        source: "/project/:slug",
+        destination: "/:slug",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = withMDX(nextConfig);

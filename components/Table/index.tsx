@@ -94,11 +94,7 @@ const Table = ({ columns, data, ...props }) => {
           {firstPageRows.map((row, rowIndex) => {
             prepareRow(row);
             return (
-              <Link
-                key={rowIndex}
-                href={`/project/${row.values.slug}`}
-                passHref
-              >
+              <Link key={rowIndex} href={`/${row.values.slug}`} passHref>
                 <Box
                   as="a"
                   css={{

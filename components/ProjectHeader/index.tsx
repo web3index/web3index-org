@@ -48,7 +48,7 @@ const ProjectHeader = ({ next, prev, color, ...props }) => {
               </StyledButton>
             </Link>
             <Box css={{ display: "flex", alignItems: "center" }}>
-              <Link href={`/project/${prev}`} passHref>
+              <Link href={`/${prev}`} passHref>
                 <StyledButton
                   css={{
                     padding: 0,
@@ -77,7 +77,7 @@ const ProjectHeader = ({ next, prev, color, ...props }) => {
                   </Box>
                 </StyledButton>
               </Link>
-              <Link href={`/project/${next}`} passHref>
+              <Link href={`/${next}`} passHref>
                 <StyledButton
                   css={{
                     padding: 0,

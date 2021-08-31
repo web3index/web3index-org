@@ -1,18 +1,18 @@
 import Ajv from "ajv";
-import schema from "../../schema.json";
-import registry from "../../registry.json";
-import { trophies } from "../../lib/utils";
-import Layout from "../../layouts";
-import ProjectHeader from "../../components/ProjectHeader";
-import Box from "../../components/Box";
-import Section from "../../components/Section";
-import Container from "../../components/Container";
-import LineAndBarGraph from "../../components/LineAndBarGraph";
+import schema from "../schema.json";
+import registry from "../registry.json";
+import { trophies } from "../lib/utils";
+import Layout from "../layouts";
+import ProjectHeader from "../components/ProjectHeader";
+import Box from "../components/Box";
+import Section from "../components/Section";
+import Container from "../components/Container";
+import LineAndBarGraph from "../components/LineAndBarGraph";
 import { ResponsiveContainer } from "recharts";
 import { useEffect, useRef, useState } from "react";
 import { request, gql } from "graphql-request";
-import { styled } from "../../stitches.config";
-import Button from "../../components/Button";
+import { styled } from "../stitches.config";
+import Button from "../components/Button";
 import {
   TwitterLogoIcon,
   GitHubLogoIcon,
@@ -20,10 +20,10 @@ import {
   ExternalLinkIcon,
 } from "@modulz/radix-icons";
 import { NextSeo } from "next-seo";
-import seo from "../../next-seo.config";
+import seo from "../next-seo.config";
 import { useRouter } from "next/router";
-import { getProject } from "../api/projects/[id]";
-import { getProjects } from "../api/projects";
+import { getProject } from "./api/projects/[id]";
+import { getProjects } from "./api/projects";
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
@@ -114,14 +114,14 @@ const Project = ({ slug, index, projects, project }) => {
           index === 0
             ? projects[projects.length - 1]?.slug
             : projects[index - 1]?.slug;
-        router.push(`/project/${prev}`);
+        router.push(`/${prev}`);
       }
       if (key === "ArrowRight") {
         const next =
           index === projects.length - 1
             ? projects[0]?.slug
             : projects[index + 1]?.slug;
-        router.push(`/project/${next}`);
+        router.push(`/${next}`);
       }
     }
     window.addEventListener("keydown", downHandler);
