@@ -287,7 +287,11 @@ const Project = ({ slug, index, projects, project }) => {
                   Github
                 </SocialButton>
                 <SocialButton
-                  href={project.website}
+                  href={
+                    project.website.includes("https")
+                      ? project.website
+                      : `https://${project.website}`
+                  }
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
