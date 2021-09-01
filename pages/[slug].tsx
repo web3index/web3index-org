@@ -278,7 +278,7 @@ const Project = ({ slug, index, projects, project }) => {
                   Twitter
                 </SocialButton>
                 <SocialButton
-                  href={`https://github.com/${project.twitter}`}
+                  href={`https://github.com/${project.github}`}
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
