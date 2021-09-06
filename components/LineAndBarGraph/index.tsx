@@ -15,7 +15,7 @@ const LineAndBarGraph = ({
   width,
   height,
   color: brandColor,
-  title = "Total Participant Revenue",
+  title = "Total Generated Revenue",
   days,
   useWeekly = false,
 }) => {
@@ -223,7 +223,7 @@ const LineAndBarGraph = ({
           fontWeight: 500,
         }}
       >
-        {title} {!useWeekly ? "(24hr)" : "(7d)"}
+        {title} (30d)
       </Box>
       <Box
         css={{

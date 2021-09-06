@@ -19,7 +19,13 @@ const Table = ({ columns, data, ...props }) => {
       columns,
       data,
       initialState: {
-        hiddenColumns: ["image", "symbol", "usage", "slug"],
+        sortBy: [
+          {
+            id: "usage.revenue.thirtyDayTotal",
+            desc: true,
+          },
+        ],
+        hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
       },
     },
     useSortBy
@@ -142,9 +148,19 @@ const StyledImage = styled("img", {
 
 function renderSwitch(cell) {
   switch (cell.column.id) {
-    case "revenue": {
+    case "usage.revenue.oneWeekTotal": {
       return `$${Math.round(
         cell.row.values.usage.revenue.oneWeekTotal
+      ).toLocaleString()}`;
+    }
+    case "usage.revenue.thirtyDayTotal": {
+      return `$${Math.round(
+        cell.row.values.usage.revenue.thirtyDayTotal
+      ).toLocaleString()}`;
+    }
+    case "usage.revenue.ninetyDayTotal": {
+      return `$${Math.round(
+        cell.row.values.usage.revenue.ninetyDayTotal
       ).toLocaleString()}`;
     }
     case "totalRevenue": {
@@ -152,7 +168,7 @@ function renderSwitch(cell) {
         cell.row.values.usage.revenue.now
       ).toLocaleString()}`;
     }
-    case "percentChange": {
+    case "usage.revenue.oneWeekPercentChange": {
       const color =
         cell.row.values.usage.revenue.oneWeekPercentChange > 0
           ? defaultTheme.colors.green
@@ -168,6 +184,27 @@ function renderSwitch(cell) {
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
             }).format(cell.row.values.usage.revenue.oneWeekPercentChange)}
+            css={{ ml: "$2" }}
+          />
+        </Box>
+      );
+    }
+    case "usage.revenue.thirtyDayPercentChange": {
+      const color =
+        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
+
+      // Get last 60 days excluding current day
+      const lastSixtyDays = cell.row.values.usage.days.slice(-61).slice(0, 30);
+
+      return (
+        <Box css={{ display: "flex" }}>
+          <LineGraph color={color} days={lastSixtyDays} />
+          <RevenueChange
+            percentChange={Intl.NumberFormat("en-US", {
+              maximumFractionDigits: 2,
+            }).format(cell.row.values.usage.revenue.thirtyDayPercentChange)}
             css={{ ml: "$2" }}
           />
         </Box>

@@ -45,8 +45,8 @@ const Header = ({ revenue, ...props }) => {
         }}
       >
         <Revenue
-          percentChange={revenue.oneWeekPercentChange}
-          revenue={revenue.oneWeekTotal}
+          percentChange={revenue.thirtyDayPercentChange}
+          revenue={revenue.thirtyDayTotal}
         />
         <Box
           css={{
