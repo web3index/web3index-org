@@ -7,12 +7,12 @@ import { defaultTheme } from "../../stitches.config";
 
 const Project = ({ project }) => {
   const color =
-    project.usage.revenue.oneWeekPercentChange > 0
+    project.usage.revenue.thirtyDayPercentChange > 0
       ? defaultTheme.colors.green
       : defaultTheme.colors.red;
 
   // Get last two weeks excluding current day
-  const lastTwoWeeks = project.usage.days.slice(-15).slice(0, 14);
+  const lastThirtyDays = project.usage.days.slice(-31).slice(0, 30);
 
   return (
     <Box
@@ -38,11 +38,11 @@ const Project = ({ project }) => {
         <Box css={{ color: "$gray400" }}>{project.name}</Box>
       </Box>
       <Box css={{ display: "flex", alignItems: "center" }}>
-        <LineGraph color={color} days={lastTwoWeeks} />
+        <LineGraph color={color} days={lastThirtyDays} />
         <RevenueChange
           percentChange={Intl.NumberFormat("en-US", {
             maximumFractionDigits: 2,
-          }).format(project.usage.revenue.oneWeekPercentChange)}
+          }).format(project.usage.revenue.thirtyDayPercentChange)}
           css={{ ml: "$2" }}
         />
       </Box>

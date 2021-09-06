@@ -169,17 +169,9 @@ function renderSwitch(cell) {
       ).toLocaleString()}`;
     }
     case "usage.revenue.oneWeekPercentChange": {
-      const color =
-        cell.row.values.usage.revenue.oneWeekPercentChange > 0
-          ? defaultTheme.colors.green
-          : defaultTheme.colors.red;
-
-      // Get last two weeks excluding current day
-      const lastTwoWeeks = cell.row.values.usage.days.slice(-15).slice(0, 14);
-
       return (
         <Box css={{ display: "flex" }}>
-          <LineGraph color={color} days={lastTwoWeeks} />
+          {/* <LineGraph color={color} days={lastTwoWeeks} /> */}
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
@@ -190,23 +182,30 @@ function renderSwitch(cell) {
       );
     }
     case "usage.revenue.thirtyDayPercentChange": {
-      const color =
-        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
-          ? defaultTheme.colors.green
-          : defaultTheme.colors.red;
-
-      // Get last 60 days excluding current day
-      const lastSixtyDays = cell.row.values.usage.days.slice(-61).slice(0, 30);
-
       return (
         <Box css={{ display: "flex" }}>
-          <LineGraph color={color} days={lastSixtyDays} />
+          {/* <LineGraph color={color} days={lastSixtyDays} /> */}
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
             }).format(cell.row.values.usage.revenue.thirtyDayPercentChange)}
             css={{ ml: "$2" }}
           />
+        </Box>
+      );
+    }
+    case "lastThirtyDays": {
+      const color =
+        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
+
+      // Get last 60 days excluding current day
+      const lastSixtyDays = cell.row.values.usage.days.slice(-61).slice(0, 60);
+
+      return (
+        <Box css={{ display: "flex" }}>
+          <LineGraph color={color} days={lastSixtyDays} />
         </Box>
       );
     }

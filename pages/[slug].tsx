@@ -329,8 +329,8 @@ const Project = ({ slug, index, projects, project }) => {
             >
               <ResponsiveContainer key={project.slug} height={400} ref={ref}>
                 <LineAndBarGraph
-                  base={project.usage.revenue.thirtyDayTotal}
-                  baseChange={project.usage.revenue.thirtyDayPercentChange}
+                  base={project.usage.revenue.oneWeekTotal}
+                  baseChange={project.usage.revenue.oneWeekPercentChange}
                   color={project.color}
                   days={project.usage.days}
                   height={420}

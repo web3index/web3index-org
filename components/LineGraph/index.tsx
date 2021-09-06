@@ -1,7 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import Box from "../Box";
 
-const LineGraph = ({ color, days }) => {
+type Dimensions = {
+  width: number;
+  height: number;
+};
+
+type Day = {
+  date: number;
+  revenue: number;
+};
+
+type props = {
+  color: string;
+  days: Day[];
+  dimensions?: Dimensions;
+};
+
+const LineGraph = ({ color, days, dimensions }: props) => {
   const chartRef = useRef(null);
   const [chartCreated, setChartCreated] = useState(null);
 
@@ -9,7 +25,10 @@ const LineGraph = ({ color, days }) => {
     if (!chartCreated) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { createChart } = require("lightweight-charts");
-      const chart = createChart(chartRef.current, { width: 56, height: 24 });
+      const chart = createChart(chartRef.current, {
+        width: dimensions ? dimensions.width : 70,
+        height: dimensions ? dimensions.height : 30,
+      });
       chart.applyOptions({
         scales: {
           xAxis: {
@@ -70,7 +89,7 @@ const LineGraph = ({ color, days }) => {
       lineSeries.setData(formattedData);
       setChartCreated(chart);
     }
-  }, [chartCreated, days, color]);
+  }, [chartCreated, days, color, dimensions]);
 
   return <Box ref={chartRef} />;
 };
