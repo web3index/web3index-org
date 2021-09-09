@@ -61,8 +61,11 @@ const Table = ({ columns, data, ...props }) => {
                   key={i}
                   css={{
                     width: i === 0 ? "90px" : i === 1 ? "230px" : "auto",
-                    display: "table-cell",
                     verticalAlign: "middle",
+                    display: column.hideOnMobile ? "none" : "table-cell",
+                    "@bp2": {
+                      display: "table-cell",
+                    },
                   }}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
@@ -121,9 +124,14 @@ const Table = ({ columns, data, ...props }) => {
                           fontSize: "$2",
                           borderTop: rowIndex ? "1px solid" : 0,
                           borderColor: "$border",
-                          display: "table-cell",
                           verticalAlign: "middle",
                           width: "auto",
+                          display: cell.column.hideOnMobile
+                            ? "none"
+                            : "table-cell",
+                          "@bp2": {
+                            display: "table-cell",
+                          },
                         }}
                         key={i}
                         {...cell.getCellProps()}
