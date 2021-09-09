@@ -50,6 +50,7 @@ const LineGraph = ({ color, days }) => {
         },
       });
 
+      chart.timeScale().fitContent();
       const lineSeries = chart.addLineSeries({
         priceLineVisible: false,
         lastValueVisible: false,

@@ -50,7 +50,7 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "blockchain",
       },
       {
-        Header: "7 Day Revenue",
+        Header: "7d Revenue",
         accessor: "revenue",
       },
       {
@@ -58,7 +58,7 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "totalRevenue",
       },
       {
-        Header: "7 Day Change",
+        Header: "7d Trend",
         accessor: "percentChange",
       },
 
