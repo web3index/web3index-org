@@ -12,7 +12,7 @@ const Project = ({ project }) => {
       : defaultTheme.colors.red;
 
   // Get last two weeks excluding current day
-  const lastThirtyDays = project.usage.days.slice(-31).slice(0, 30);
+  const lastTwoPeriods = project.usage.days.slice(-61).slice(0, 60);
 
   return (
     <Box
@@ -38,7 +38,7 @@ const Project = ({ project }) => {
         <Box css={{ color: "$gray400" }}>{project.name}</Box>
       </Box>
       <Box css={{ display: "flex", alignItems: "center" }}>
-        <LineGraph color={color} days={lastThirtyDays} />
+        <LineGraph color={color} days={lastTwoPeriods} />
         <RevenueChange
           percentChange={Intl.NumberFormat("en-US", {
             maximumFractionDigits: 2,

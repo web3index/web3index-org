@@ -182,9 +182,17 @@ function renderSwitch(cell) {
       );
     }
     case "usage.revenue.thirtyDayPercentChange": {
+      const color =
+        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
+
+      // Get last two periods excluding current day
+      const lastTwoPeriods = cell.row.values.usage.days.slice(-61).slice(0, 60);
+
       return (
         <Box css={{ display: "flex" }}>
-          {/* <LineGraph color={color} days={lastSixtyDays} /> */}
+          <LineGraph color={color} days={lastTwoPeriods} />
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,

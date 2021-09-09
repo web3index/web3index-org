@@ -27,6 +27,7 @@ import { getProjects } from "./api/projects";
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
+    borderRadius: 10,
     border: "1px solid",
     borderColor: "$border",
     backgroundColor: "$loContrast",
@@ -39,6 +40,7 @@ const SocialButton = ({ icon, children, ...props }) => {
     mb: "$3",
     py: 18,
     fontSize: "$2",
+    boxShadow: "rgb(0 0 0 / 5%) 0px 10px 20px",
   });
   return (
     <SocialButton {...props}>
@@ -373,7 +375,7 @@ export async function getStaticProps({ params }) {
   const { projects } = await getProjects();
   const project = projects.filter((project) => project.slug === params.slug)[0];
   projects.sort((a, b) => {
-    return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;
+    return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
   });
 
   const index = projects.findIndex((p) => p.slug === params.slug);
