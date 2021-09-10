@@ -55,6 +55,10 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "usage.revenue.ninetyDayTotal",
       },
       {
+        Header: "P/R Ratio",
+        accessor: "market",
+      },
+      {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
       },

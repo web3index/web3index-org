@@ -176,6 +176,13 @@ function renderSwitch(cell) {
         cell.row.values.usage.revenue.now
       ).toLocaleString()}`;
     }
+    case "market": {
+      return `${Math.round(
+        cell.row.values.market.price /
+          (cell.row.values.usage.revenue.ninetyDayTotal /
+            cell.row.values.market.circulatingSupply)
+      ).toLocaleString()}`;
+    }
     case "usage.revenue.oneWeekPercentChange": {
       return (
         <Box css={{ display: "flex" }}>

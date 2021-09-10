@@ -194,6 +194,16 @@ const getUsageFromSubgraph = async (id) => {
   };
 };
 
+const getMarketDataFromCoingecko = async (id) => {
+  const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+  const data = await res.json();
+  return {
+    price: data.market_data.current_price.usd,
+    marketCap: data.market_data.market_cap.usd,
+    circulatingSupply: data.market_data.circulating_supply,
+  };
+};
+
 export const getProject = async (id) => {
   let usage;
 
@@ -211,9 +221,12 @@ export const getProject = async (id) => {
     usage = await getUsageFromDB(id);
   }
 
+  const market = await getMarketDataFromCoingecko(registry[id].coingeckoID);
+
   return {
     ...registry[id],
     usage,
+    market,
   };
 };
 
