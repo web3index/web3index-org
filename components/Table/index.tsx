@@ -19,7 +19,13 @@ const Table = ({ columns, data, ...props }) => {
       columns,
       data,
       initialState: {
-        hiddenColumns: ["image", "symbol", "usage", "slug"],
+        sortBy: [
+          {
+            id: "usage.revenue.thirtyDayTotal",
+            desc: true,
+          },
+        ],
+        hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
       },
     },
     useSortBy
@@ -55,8 +61,11 @@ const Table = ({ columns, data, ...props }) => {
                   key={i}
                   css={{
                     width: i === 0 ? "90px" : i === 1 ? "230px" : "auto",
-                    display: "table-cell",
                     verticalAlign: "middle",
+                    display: column.hideOnMobile ? "none" : "table-cell",
+                    "@bp2": {
+                      display: "table-cell",
+                    },
                   }}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
@@ -115,9 +124,14 @@ const Table = ({ columns, data, ...props }) => {
                           fontSize: "$2",
                           borderTop: rowIndex ? "1px solid" : 0,
                           borderColor: "$border",
-                          display: "table-cell",
                           verticalAlign: "middle",
                           width: "auto",
+                          display: cell.column.hideOnMobile
+                            ? "none"
+                            : "table-cell",
+                          "@bp2": {
+                            display: "table-cell",
+                          },
                         }}
                         key={i}
                         {...cell.getCellProps()}
@@ -142,9 +156,19 @@ const StyledImage = styled("img", {
 
 function renderSwitch(cell) {
   switch (cell.column.id) {
-    case "revenue": {
+    case "usage.revenue.oneWeekTotal": {
       return `$${Math.round(
         cell.row.values.usage.revenue.oneWeekTotal
+      ).toLocaleString()}`;
+    }
+    case "usage.revenue.thirtyDayTotal": {
+      return `$${Math.round(
+        cell.row.values.usage.revenue.thirtyDayTotal
+      ).toLocaleString()}`;
+    }
+    case "usage.revenue.ninetyDayTotal": {
+      return `$${Math.round(
+        cell.row.values.usage.revenue.ninetyDayTotal
       ).toLocaleString()}`;
     }
     case "totalRevenue": {
@@ -152,24 +176,52 @@ function renderSwitch(cell) {
         cell.row.values.usage.revenue.now
       ).toLocaleString()}`;
     }
-    case "percentChange": {
-      const color =
-        cell.row.values.usage.revenue.oneWeekPercentChange > 0
-          ? defaultTheme.colors.green
-          : defaultTheme.colors.red;
-
-      // Get last two weeks excluding current day
-      const lastTwoWeeks = cell.row.values.usage.days.slice(-15).slice(0, 14);
-
+    case "usage.revenue.oneWeekPercentChange": {
       return (
         <Box css={{ display: "flex" }}>
-          <LineGraph color={color} days={lastTwoWeeks} />
+          {/* <LineGraph color={color} days={lastTwoWeeks} /> */}
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
             }).format(cell.row.values.usage.revenue.oneWeekPercentChange)}
             css={{ ml: "$2" }}
           />
+        </Box>
+      );
+    }
+    case "usage.revenue.thirtyDayPercentChange": {
+      const color =
+        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
+
+      // Get last two periods excluding current day
+      const lastTwoPeriods = cell.row.values.usage.days.slice(-61).slice(0, 60);
+
+      return (
+        <Box css={{ display: "flex" }}>
+          <LineGraph color={color} days={lastTwoPeriods} />
+          <RevenueChange
+            percentChange={Intl.NumberFormat("en-US", {
+              maximumFractionDigits: 2,
+            }).format(cell.row.values.usage.revenue.thirtyDayPercentChange)}
+            css={{ ml: "$2" }}
+          />
+        </Box>
+      );
+    }
+    case "lastThirtyDays": {
+      const color =
+        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+          ? defaultTheme.colors.green
+          : defaultTheme.colors.red;
+
+      // Get last 60 days excluding current day
+      const lastSixtyDays = cell.row.values.usage.days.slice(-61).slice(0, 60);
+
+      return (
+        <Box css={{ display: "flex" }}>
+          <LineGraph color={color} days={lastSixtyDays} />
         </Box>
       );
     }

@@ -3,26 +3,23 @@ import { request, gql } from "graphql-request";
 import registry from "../../../registry.json";
 import dayjs from "dayjs";
 import { getBlocksFromTimestamps } from "../../../lib/utils";
-
 import prisma from "../../../lib/prisma";
 
+const utcCurrentTime = dayjs();
+const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
+const utcTwoDaysBack = utcCurrentTime.subtract(2, "day").unix();
+const utcOneWeekBack = utcCurrentTime.subtract(1, "week").unix();
+const utcTwoWeeksBack = utcCurrentTime.subtract(2, "week").unix();
+const utcThirtyDaysBack = utcCurrentTime.subtract(30, "day").unix();
+const utcSixtyDaysBack = utcCurrentTime.subtract(60, "day").unix();
+const utcNinetyDaysBack = utcCurrentTime.subtract(90, "day").unix();
+
 const getUsageFromDB = async (name) => {
-  // TODO: query project by name and return usage using Prisma's aggregation feature
-  // https://www.prisma.io/docs/concepts/components/prisma-client/aggregation-grouping-summarizing
-
-  // replace the following dummy object with data returned from DB
-
   const project = await prisma.project.findFirst({
     where: {
       name: name,
     },
   });
-
-  const utcCurrentTime = dayjs();
-  const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
-  const utcTwoDaysBack = utcCurrentTime.subtract(2, "day").unix();
-  const utcOneWeekBack = utcCurrentTime.subtract(1, "week").unix();
-  const utcTwoWeeksBack = utcCurrentTime.subtract(2, "week").unix();
 
   const now = await prisma.day.aggregate({
     where: {
@@ -51,6 +48,21 @@ const getUsageFromDB = async (name) => {
       twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
       oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
       twoWeeksAgo: await getRevenueFromDB(project.id, utcTwoWeeksBack, prisma), // total revenue as of two weeks ago
+      thirtyDaysAgo: await getRevenueFromDB(
+        project.id,
+        utcThirtyDaysBack,
+        prisma
+      ), // total revenue as of thirty days ago
+      sixtyDaysAgo: await getRevenueFromDB(
+        project.id,
+        utcSixtyDaysBack,
+        prisma
+      ), // total revenue as of sixty days ago
+      ninetyDaysAgo: await getRevenueFromDB(
+        project.id,
+        utcNinetyDaysBack,
+        prisma
+      ), // total revenue as of ninety days ago
     },
     days: days,
   };
@@ -112,28 +124,31 @@ const getUsageFromSubgraph = async (id) => {
     { id }
   );
 
-  const utcCurrentTime = dayjs();
-  const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
-  const utcTwoDaysBack = utcCurrentTime.subtract(2, "day").unix();
-  const utcOneWeekBack = utcCurrentTime.subtract(1, "week").unix();
-  const utcTwoWeeksBack = utcCurrentTime.subtract(2, "week").unix();
-
   const [
     oneDayBlock,
     twoDayBlock,
     oneWeekBlock,
     twoWeekBlock,
+    thirtyDayBlock,
+    sixtyDayBlock,
+    ninetyDayBlock,
   ] = await getBlocksFromTimestamps([
     utcOneDayBack,
     utcTwoDaysBack,
     utcOneWeekBack,
     utcTwoWeeksBack,
+    utcThirtyDaysBack,
+    utcSixtyDaysBack,
+    utcNinetyDaysBack,
   ]);
 
   const oneDayResult = await getRevenueByBlock(id, oneDayBlock);
   const twoDayResult = await getRevenueByBlock(id, twoDayBlock);
   const oneWeekResult = await getRevenueByBlock(id, oneWeekBlock);
   const twoWeekResult = await getRevenueByBlock(id, twoWeekBlock);
+  const thirtyDayResult = await getRevenueByBlock(id, thirtyDayBlock);
+  const sixtyDayResult = await getRevenueByBlock(id, sixtyDayBlock);
+  const ninetyDayResult = await getRevenueByBlock(id, ninetyDayBlock);
 
   const dayIndexSet = new Set();
   const oneDay = 24 * 60 * 60;
@@ -171,6 +186,9 @@ const getUsageFromSubgraph = async (id) => {
       twoDaysAgo: +twoDayResult.protocol.revenueUSD,
       oneWeekAgo: +oneWeekResult.protocol.revenueUSD,
       twoWeeksAgo: +twoWeekResult.protocol.revenueUSD,
+      thirtyDaysAgo: +thirtyDayResult.protocol.revenueUSD,
+      sixtyDaysAgo: +sixtyDayResult.protocol.revenueUSD,
+      ninetyDaysAgo: +ninetyDayResult.protocol.revenueUSD,
     },
     days,
   };

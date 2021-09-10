@@ -13,6 +13,9 @@ export const getProjects = async () => {
   let totalParticipantRevenueNow = 0;
   let totalParticipantRevenueOneWeekAgo = 0;
   let totalParticipantRevenueTwoWeeksAgo = 0;
+  let totalParticipantRevenueThirtyDaysAgo = 0;
+  let totalParticipantRevenueSixtyDaysAgo = 0;
+  let totalParticipantRevenueNinetyDaysAgo = 0;
 
   for (const project in registry) {
     const data = await getProject(project);
@@ -25,6 +28,15 @@ export const getProjects = async () => {
         data.usage.revenue.twoWeeksAgo
       );
 
+      const [
+        thirtyDayTotal,
+        thirtyDayPercentChange,
+      ] = getTwoPeriodPercentChange(
+        data.usage.revenue.now,
+        data.usage.revenue.thirtyDaysAgo,
+        data.usage.revenue.sixtyDaysAgo
+      );
+
       projects.push({
         ...data,
         slug: project,
@@ -34,12 +46,20 @@ export const getProjects = async () => {
             ...data.usage.revenue,
             oneWeekTotal,
             oneWeekPercentChange,
+            thirtyDayTotal,
+            thirtyDayPercentChange,
+            ninetyDayTotal:
+              data.usage.revenue.now - data.usage.revenue.ninetyDaysAgo,
           },
         },
       });
+
       totalParticipantRevenueNow += data.usage.revenue.now;
       totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;
       totalParticipantRevenueTwoWeeksAgo += data.usage.revenue.twoWeeksAgo;
+      totalParticipantRevenueThirtyDaysAgo += data.usage.revenue.thirtyDaysAgo;
+      totalParticipantRevenueSixtyDaysAgo += data.usage.revenue.sixtyDaysAgo;
+      totalParticipantRevenueNinetyDaysAgo += data.usage.revenue.ninetyDaysAgo;
     }
   }
 
@@ -49,14 +69,23 @@ export const getProjects = async () => {
     totalParticipantRevenueTwoWeeksAgo
   );
 
+  const [thirtyDayTotal, thirtyDayPercentChange] = getTwoPeriodPercentChange(
+    totalParticipantRevenueNow,
+    totalParticipantRevenueThirtyDaysAgo,
+    totalParticipantRevenueSixtyDaysAgo
+  );
+
   return {
     projects,
     revenue: {
       totalParticipantRevenueNow,
       totalParticipantRevenueOneWeekAgo,
       totalParticipantRevenueTwoWeeksAgo,
+      totalParticipantRevenueNinetyDaysAgo,
       oneWeekTotal,
       oneWeekPercentChange,
+      thirtyDayTotal,
+      thirtyDayPercentChange,
     },
   };
 };

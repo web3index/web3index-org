@@ -38,30 +38,26 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "image",
       },
       {
+        Header: "Blockchain",
+        accessor: "blockchain",
+        hideOnMobile: true,
+      },
+      {
         Header: "Slug",
         accessor: "slug",
       },
       {
-        Header: "Category",
-        accessor: "subcategory",
+        Header: "30d Revenue",
+        accessor: "usage.revenue.thirtyDayTotal",
       },
       {
-        Header: "Blockchain",
-        accessor: "blockchain",
+        Header: "90d Revenue",
+        accessor: "usage.revenue.ninetyDayTotal",
       },
       {
-        Header: "7d Revenue",
-        accessor: "revenue",
+        Header: "30d Trend",
+        accessor: "usage.revenue.thirtyDayPercentChange",
       },
-      {
-        Header: "Total Revenue",
-        accessor: "totalRevenue",
-      },
-      {
-        Header: "7d Trend",
-        accessor: "percentChange",
-      },
-
       {
         Header: "Usage",
         accessor: "usage",
@@ -106,13 +102,12 @@ const Home = ({ faq, revenue, projects }) => {
 export async function getStaticProps() {
   const { projects, revenue } = await getProjects();
   const faq = await getFaq();
-
   return {
     props: {
       faq,
       revenue,
       projects: projects.sort((a, b) => {
-        return b.usage.revenue.oneWeekTotal - a.usage.revenue.oneWeekTotal;
+        return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
       }),
     },
     revalidate: 1,

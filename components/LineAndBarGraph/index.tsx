@@ -15,7 +15,7 @@ const LineAndBarGraph = ({
   width,
   height,
   color: brandColor,
-  title = "Total Participant Revenue",
+  title = "Total Generated Revenue",
   days,
   useWeekly = false,
 }) => {
@@ -103,7 +103,6 @@ const LineAndBarGraph = ({
         },
       });
 
-      //lineSeries.setData(formattedData);
       volumeSeries.setData(formattedData);
 
       const toolTip = document.createElement("div");
@@ -223,7 +222,7 @@ const LineAndBarGraph = ({
           fontWeight: 500,
         }}
       >
-        {title} {!useWeekly ? "(24hr)" : "(7d)"}
+        {title} (7d)
       </Box>
       <Box
         css={{
@@ -233,22 +232,7 @@ const LineAndBarGraph = ({
           mb: "$4",
         }}
         ref={headerRef}
-      >
-        {/* <Box
-          css={{
-            border: "1px solid",
-            borderColor: "$border",
-            py: "$3",
-            px: "$3",
-            borderRadius: "$round",
-            fontSize: "$1",
-            display: "block",
-            minWidth: 240,
-          }}
-        >
-          ETH (Medium of Exchange)
-        </Box> */}
-      </Box>
+      />
       <Box ref={chartRef} />
       <Box
         css={{

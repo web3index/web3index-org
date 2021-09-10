@@ -23,7 +23,7 @@ const Revenue = ({ revenue = 0, percentChange = 0 }) => {
         },
       }}
     >
-      <Box css={{ color: "$gray600", mr: "$2" }}>Revenue (7d)</Box>
+      <Box css={{ color: "$gray600", mr: "$2" }}>Revenue (30d)</Box>
       <Box css={{ fontWeight: 600, mr: "$4" }}>
         $
         {Intl.NumberFormat("en-US", {
