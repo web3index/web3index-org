@@ -46,6 +46,12 @@ const Table = ({ columns, data, ...props }) => {
           borderSpacing: "0",
           borderCollapse: "collapse",
           minWidth: "1260px",
+          ".sticky": {
+            position: "sticky !important",
+            left: "0",
+            top: "0",
+            zIndex: 10000,
+          },
         }}
         {...getTableProps()}
       >
@@ -59,7 +65,9 @@ const Table = ({ columns, data, ...props }) => {
               {headerGroup.headers.map((column, i) => (
                 <Box
                   key={i}
+                  className={column?.className}
                   css={{
+                    backgroundColor: "$loContrast",
                     width: i === 0 ? "90px" : i === 1 ? "230px" : "auto",
                     verticalAlign: "middle",
                     display: column.hideOnMobile ? "none" : "table-cell",
@@ -118,7 +126,9 @@ const Table = ({ columns, data, ...props }) => {
                   {row.cells.map((cell, i) => {
                     return (
                       <Box
+                        className={cell.column?.className}
                         css={{
+                          backgroundColor: "$loContrast",
                           px: "$4",
                           py: 20,
                           fontSize: "$2",
@@ -174,6 +184,13 @@ function renderSwitch(cell) {
     case "totalRevenue": {
       return `$${Math.round(
         cell.row.values.usage.revenue.now
+      ).toLocaleString()}`;
+    }
+    case "market": {
+      return `${Math.round(
+        cell.row.values.market.price /
+          (cell.row.values.usage.revenue.ninetyDayTotal /
+            cell.row.values.market.circulatingSupply)
       ).toLocaleString()}`;
     }
     case "usage.revenue.oneWeekPercentChange": {

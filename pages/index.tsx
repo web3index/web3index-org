@@ -24,10 +24,13 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "#",
         accessor: "rank",
         Cell: Rank,
+        className: "sticky",
+        hideOnMobile: true,
       },
       {
         Header: "Name",
         accessor: "name",
+        className: "sticky",
       },
       {
         Header: "Symbol",
@@ -37,11 +40,11 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "Image",
         accessor: "image",
       },
-      {
-        Header: "Blockchain",
-        accessor: "blockchain",
-        hideOnMobile: true,
-      },
+      // {
+      //   Header: "Blockchain",
+      //   accessor: "blockchain",
+      //   hideOnMobile: true,
+      // },
       {
         Header: "Slug",
         accessor: "slug",
@@ -53,6 +56,10 @@ const Home = ({ faq, revenue, projects }) => {
       {
         Header: "90d Revenue",
         accessor: "usage.revenue.ninetyDayTotal",
+      },
+      {
+        Header: "P/S Ratio",
+        accessor: "market",
       },
       {
         Header: "30d Trend",
