@@ -13,7 +13,8 @@ import { getProjects } from "./api/projects";
 
 const Rank = ({ row }) => (
   <Box css={{ display: "flex", alignItems: "center" }}>
-    <Box css={{ mr: "$2" }}>{trophies[+row.id]}</Box> {+row.id + 1}
+    {/* <Box css={{ mr: "$2" }}>{trophies[+row.id]}</Box> */}
+    {+row.id + 1}
   </Box>
 );
 
@@ -40,11 +41,6 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "Image",
         accessor: "image",
       },
-      // {
-      //   Header: "Blockchain",
-      //   accessor: "blockchain",
-      //   hideOnMobile: true,
-      // },
       {
         Header: "Slug",
         accessor: "slug",
@@ -60,10 +56,14 @@ const Home = ({ faq, revenue, projects }) => {
       {
         Header: "P/S Ratio",
         accessor: "market",
+        tooltip:
+          "Market capitalization divided by the protocol's revenue for the previous 90 days.",
       },
       {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
+        tooltip:
+          "Trend is the increase, or decrease, in the protocol's revenue between two periods.",
       },
       {
         Header: "Usage",

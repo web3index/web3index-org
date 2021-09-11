@@ -4,6 +4,7 @@ import schema from "../../../schema.json";
 import registry from "../../../registry.json";
 import { getProject } from "./[id]";
 import { getTwoPeriodPercentChange } from "../../../lib/utils";
+import { Project } from "../../../types";
 
 export const getProjects = async () => {
   const ajv = new Ajv();
@@ -18,7 +19,7 @@ export const getProjects = async () => {
   let totalParticipantRevenueNinetyDaysAgo = 0;
 
   for (const project in registry) {
-    const data = await getProject(project);
+    const data: Project = await getProject(project);
     const valid = validate(data);
 
     if (valid) {
@@ -28,14 +29,12 @@ export const getProjects = async () => {
         data.usage.revenue.twoWeeksAgo
       );
 
-      const [
-        thirtyDayTotal,
-        thirtyDayPercentChange,
-      ] = getTwoPeriodPercentChange(
-        data.usage.revenue.now,
-        data.usage.revenue.thirtyDaysAgo,
-        data.usage.revenue.sixtyDaysAgo
-      );
+      const [thirtyDayTotal, thirtyDayPercentChange] =
+        getTwoPeriodPercentChange(
+          data.usage.revenue.now,
+          data.usage.revenue.thirtyDaysAgo,
+          data.usage.revenue.sixtyDaysAgo
+        );
 
       projects.push({
         ...data,

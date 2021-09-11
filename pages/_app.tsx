@@ -1,4 +1,4 @@
-import { lightThemeClass, global } from "../stitches.config";
+import { lightThemeClass, globalCss } from "../stitches.config";
 import { ThemeProvider } from "next-themes";
 import { DefaultSeo } from "next-seo";
 import SEO from "../next-seo.config";
@@ -7,7 +7,7 @@ import { pageview } from "../lib/utils";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-const globalStyles = global({
+const globalStyles = globalCss({
   body: {
     margin: 0,
     backgroundColor: "$loContrast",
@@ -29,16 +29,14 @@ const globalStyles = global({
   "@font-face": [
     {
       fontFamily: "Whyte Inktrap",
-      src:
-        'url("/fonts/whyte/inktrap-bold.woff2") format("woff2"), url("/fonts/whyte/inktrap-bold.woff") format("woff")',
+      src: 'url("/fonts/whyte/inktrap-bold.woff2") format("woff2"), url("/fonts/whyte/inktrap-bold.woff") format("woff")',
       fontWeight: 700,
       fontStyle: "normal",
       fontDisplay: "block",
     },
     {
       fontFamily: "Whyte Inktrap",
-      src:
-        'url("/fonts/whyte/inktrap-heavy.woff2") format("woff2"), url("/fonts/whyte/inktrap-heavy.woff") format("woff")',
+      src: 'url("/fonts/whyte/inktrap-heavy.woff2") format("woff2"), url("/fonts/whyte/inktrap-heavy.woff") format("woff")',
       fontWeight: 900,
       fontStyle: "normal",
       fontDisplay: "block",

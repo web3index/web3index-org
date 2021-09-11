@@ -3,33 +3,35 @@ import Box from "../Box";
 import Section from "../Section";
 import RevenueChange from "../RevenueChange";
 import LineGraph from "../LineGraph";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipArrow,
+  TooltipContent,
+} from "../Tooltip";
 import { ChevronDownIcon, ChevronUpIcon } from "@modulz/radix-icons";
 import { defaultTheme, styled } from "../../stitches.config";
 import Link from "next/link";
+import { InfoCircledIcon } from "@modulz/radix-icons";
 
 const Table = ({ columns, data, ...props }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        sortBy: [
-          {
-            id: "usage.revenue.thirtyDayTotal",
-            desc: true,
-          },
-        ],
-        hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data,
+        initialState: {
+          sortBy: [
+            {
+              id: "usage.revenue.thirtyDayTotal",
+              desc: true,
+            },
+          ],
+          hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
+        },
       },
-    },
-    useSortBy
-  );
+      useSortBy
+    );
 
   // We don't want to render all 2000 rows for this example, so cap
   // it at 20 for this use case
@@ -75,7 +77,9 @@ const Table = ({ columns, data, ...props }) => {
                       display: "table-cell",
                     },
                   }}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  {...column.getHeaderProps(
+                    column.getSortByToggleProps({ title: undefined })
+                  )}
                 >
                   <Box
                     css={{
@@ -101,6 +105,17 @@ const Table = ({ columns, data, ...props }) => {
                         ""
                       )}
                     </Box>
+                    {column.tooltip && (
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <InfoCircledIcon />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <TooltipArrow />
+                          {column.tooltip}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
                   </Box>
                 </Box>
               ))}
@@ -187,11 +202,29 @@ function renderSwitch(cell) {
       ).toLocaleString()}`;
     }
     case "market": {
-      return `${Math.round(
-        cell.row.values.market.price /
-          (cell.row.values.usage.revenue.ninetyDayTotal /
-            cell.row.values.market.circulatingSupply)
-      ).toLocaleString()}`;
+      return (
+        <Box>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger>
+              {Math.round(
+                cell.row.values.market.marketCap /
+                  cell.row.values.usage.revenue.ninetyDayTotal
+              ).toLocaleString()}
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow />
+
+              <Box css={{ display: "flex", ai: "center", fontWeight: 500 }}>
+                = ${cell.row.values.market.marketCap.toLocaleString()}{" "}
+                <Box css={{ mx: "$2" }}>/</Box> $
+                {Math.round(
+                  cell.row.values.usage.revenue.ninetyDayTotal
+                ).toLocaleString()}
+              </Box>
+            </TooltipContent>
+          </Tooltip>
+        </Box>
+      );
     }
     case "usage.revenue.oneWeekPercentChange": {
       return (

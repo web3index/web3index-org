@@ -59,7 +59,7 @@
     },
     "symbol": {
       "$id": "#root/symbol",
-      "title": "Symbol",
+      "title": "Sym",
       "type": "string",
       "default": "",
       "examples": ["GRT"],
