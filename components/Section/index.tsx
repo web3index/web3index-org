@@ -1,7 +1,4 @@
-import { styled, StitchesCss, StitchesVariants } from "../../stitches.config";
-
-export type SectionProps = StitchesCss<typeof Section>;
-export type SectionVariants = StitchesVariants<typeof Section>;
+import { styled } from "../../stitches.config";
 
 const Section = styled("section", {
   // Reset
