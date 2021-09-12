@@ -110,8 +110,8 @@ const Metric = ({ label, value }) => {
         },
       }}
     >
-      <Box css={{ fontWeight: 600, mr: "$3" }}>{label}:</Box>
-      {value}
+      <Box css={{ mr: "$3" }}>{label}</Box>
+      <Box>{value}</Box>
     </Box>
   );
 };
@@ -256,9 +256,10 @@ const Project = ({ slug, index, projects, project }) => {
                 css={{
                   mb: "$4",
                   display: "grid",
-                  gap: 20,
+                  gap: 30,
                   gridTemplateColumns: "repeat(1, 1fr)",
                   "@bp2": {
+                    gap: 30,
                     gridTemplateColumns: "repeat(2, 1fr)",
                   },
                 }}
@@ -372,7 +373,7 @@ const Project = ({ slug, index, projects, project }) => {
                   />
                 </Box>
               </Box>
-              <Box css={{ width: 300 }}>
+              <Box>
                 <SocialButton
                   href={`https://twitter.com/${project.twitter}`}
                   as="a"
