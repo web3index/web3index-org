@@ -13,7 +13,8 @@ import { getProjects } from "./api/projects";
 
 const Rank = ({ row }) => (
   <Box css={{ display: "flex", alignItems: "center" }}>
-    <Box css={{ mr: "$2" }}>{trophies[+row.id]}</Box> {+row.id + 1}
+    {/* <Box css={{ mr: "$2" }}>{trophies[+row.id]}</Box> */}
+    {+row.id + 1}
   </Box>
 );
 
@@ -24,10 +25,13 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "#",
         accessor: "rank",
         Cell: Rank,
+        className: "sticky",
+        hideOnMobile: true,
       },
       {
         Header: "Name",
         accessor: "name",
+        className: "sticky",
       },
       {
         Header: "Symbol",
@@ -36,11 +40,6 @@ const Home = ({ faq, revenue, projects }) => {
       {
         Header: "Image",
         accessor: "image",
-      },
-      {
-        Header: "Blockchain",
-        accessor: "blockchain",
-        hideOnMobile: true,
       },
       {
         Header: "Slug",
@@ -55,8 +54,16 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "usage.revenue.ninetyDayTotal",
       },
       {
+        Header: "P/S Ratio",
+        accessor: "market",
+        tooltip:
+          "Market capitalization divided by the protocol's revenue for the previous 90 days.",
+      },
+      {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
+        tooltip:
+          "Trend is the increase, or decrease, in the protocol's revenue between two periods. It's calculated by subtracting the previous 30d revenue from the current 30d revenue, and then dividing that number by the previous 30d revenue.",
       },
       {
         Header: "Usage",

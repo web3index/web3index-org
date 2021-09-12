@@ -1,7 +1,4 @@
-import { styled, StitchesCss, StitchesVariants } from "../../stitches.config";
-
-export type ContainerProps = StitchesCss<typeof Container>;
-export type ContainerVariants = StitchesVariants<typeof Container>;
+import { styled } from "../../stitches.config";
 
 const Container = styled("div", {
   // Reset

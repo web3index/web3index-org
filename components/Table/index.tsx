@@ -3,33 +3,38 @@ import Box from "../Box";
 import Section from "../Section";
 import RevenueChange from "../RevenueChange";
 import LineGraph from "../LineGraph";
-import { ChevronDownIcon, ChevronUpIcon } from "@modulz/radix-icons";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipArrow,
+  TooltipContent,
+} from "../Tooltip";
 import { defaultTheme, styled } from "../../stitches.config";
 import Link from "next/link";
+import {
+  InfoCircledIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "@radix-ui/react-icons";
 
 const Table = ({ columns, data, ...props }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        sortBy: [
-          {
-            id: "usage.revenue.thirtyDayTotal",
-            desc: true,
-          },
-        ],
-        hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data,
+        initialState: {
+          sortBy: [
+            {
+              id: "usage.revenue.thirtyDayTotal",
+              desc: true,
+            },
+          ],
+          hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
+        },
       },
-    },
-    useSortBy
-  );
+      useSortBy
+    );
 
   // We don't want to render all 2000 rows for this example, so cap
   // it at 20 for this use case
@@ -45,7 +50,16 @@ const Table = ({ columns, data, ...props }) => {
           tableLayout: "fixed",
           borderSpacing: "0",
           borderCollapse: "collapse",
-          minWidth: "1260px",
+          minWidth: "920px",
+          "@bp1": {
+            minWidth: "1260px",
+          },
+          ".sticky": {
+            position: "sticky",
+            left: "0",
+            top: "0",
+            zIndex: 10000,
+          },
         }}
         {...getTableProps()}
       >
@@ -59,23 +73,32 @@ const Table = ({ columns, data, ...props }) => {
               {headerGroup.headers.map((column, i) => (
                 <Box
                   key={i}
+                  className={column?.className}
                   css={{
-                    width: i === 0 ? "90px" : i === 1 ? "230px" : "auto",
+                    backgroundColor: "$loContrast",
+                    width: i === 0 ? "90px" : i === 1 ? "150px" : "auto",
                     verticalAlign: "middle",
                     display: column.hideOnMobile ? "none" : "table-cell",
-                    "@bp2": {
+                    "@bp1": {
                       display: "table-cell",
+                      width: i === 0 ? "90px" : i === 1 ? "230px" : "auto",
+                      position: "relative !important",
                     },
                   }}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  {...column.getHeaderProps(
+                    column.getSortByToggleProps({ title: undefined })
+                  )}
                 >
                   <Box
                     css={{
                       display: "flex",
                       alignItems: "center",
-                      px: "$4",
                       pt: "24px",
                       pb: "$3",
+                      px: i === 1 ? "$3" : "$4",
+                      "@bp1": {
+                        px: "$4",
+                      },
                     }}
                   >
                     <Box css={{ fontSize: 12, fontWeight: 600 }}>
@@ -93,6 +116,17 @@ const Table = ({ columns, data, ...props }) => {
                         ""
                       )}
                     </Box>
+                    {column.tooltip && (
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <InfoCircledIcon />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <TooltipArrow />
+                          {column.tooltip}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
                   </Box>
                 </Box>
               ))}
@@ -118,8 +152,10 @@ const Table = ({ columns, data, ...props }) => {
                   {row.cells.map((cell, i) => {
                     return (
                       <Box
+                        className={cell.column?.className}
                         css={{
-                          px: "$4",
+                          backgroundColor: "$loContrast",
+                          px: i === 1 ? "$3" : "$4",
                           py: 20,
                           fontSize: "$2",
                           borderTop: rowIndex ? "1px solid" : 0,
@@ -129,8 +165,10 @@ const Table = ({ columns, data, ...props }) => {
                           display: cell.column.hideOnMobile
                             ? "none"
                             : "table-cell",
-                          "@bp2": {
+                          "@bp1": {
+                            px: "$4",
                             display: "table-cell",
+                            position: "relative !important",
                           },
                         }}
                         key={i}
@@ -175,6 +213,33 @@ function renderSwitch(cell) {
       return `$${Math.round(
         cell.row.values.usage.revenue.now
       ).toLocaleString()}`;
+    }
+    case "market": {
+      return (
+        <Box>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger>
+              {Math.round(
+                cell.row.values.market.marketCap /
+                  cell.row.values.usage.revenue.ninetyDayTotal
+              ).toLocaleString()}
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow />
+
+              <Box
+                css={{ display: "flex", alignItems: "center", fontWeight: 500 }}
+              >
+                = ${cell.row.values.market.marketCap.toLocaleString()}{" "}
+                <Box css={{ mx: "$2" }}>/</Box> $
+                {Math.round(
+                  cell.row.values.usage.revenue.ninetyDayTotal
+                ).toLocaleString()}
+              </Box>
+            </TooltipContent>
+          </Tooltip>
+        </Box>
+      );
     }
     case "usage.revenue.oneWeekPercentChange": {
       return (
@@ -235,7 +300,16 @@ function renderSwitch(cell) {
         >
           <StyledImage width={32} height={32} src={cell.row.values.image} />
           {cell.render("Cell")}
-          <Box css={{ ml: "$2", color: "$gray500" }}>
+          <Box
+            css={{
+              ml: "$2",
+              color: "$gray500",
+              display: "none",
+              "@bp1": {
+                display: "block",
+              },
+            }}
+          >
             ({cell.row.values.symbol})
           </Box>
         </Box>

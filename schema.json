@@ -59,7 +59,7 @@
     },
     "symbol": {
       "$id": "#root/symbol",
-      "title": "Symbol",
+      "title": "Sym",
       "type": "string",
       "default": "",
       "examples": ["GRT"],
@@ -87,6 +87,14 @@
       "type": "string",
       "default": "",
       "examples": ["#6f4cff"],
+      "pattern": "^.*$"
+    },
+    "coingeckoID": {
+      "$id": "#root/coingeckoID",
+      "title": "Coingeckoid",
+      "type": "string",
+      "default": "",
+      "examples": ["livepeer"],
       "pattern": "^.*$"
     },
     "usage": {
@@ -138,6 +146,20 @@
             "twoWeeksAgo": {
               "$id": "#root/usage/revenue/twoWeeksAgo",
               "title": "Twoweeksago",
+              "type": "number",
+              "examples": [32057.24749762984],
+              "default": 0.0
+            },
+            "thirtyDaysAgo": {
+              "$id": "#root/usage/revenue/thirtyDaysAgo",
+              "title": "Thirtydaysago",
+              "type": "number",
+              "examples": [32057.24749762984],
+              "default": 0.0
+            },
+            "ninetyDaysAgo": {
+              "$id": "#root/usage/revenue/ninetyDaysAgo",
+              "title": "Ninetydaysago",
               "type": "number",
               "examples": [32057.24749762984],
               "default": 0.0

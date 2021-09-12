@@ -1,4 +1,4 @@
-import { createCss } from "@stitches/react";
+import { createStitches } from "@stitches/react";
 export * from "@stitches/react";
 
 export const defaultTheme = {
@@ -114,87 +114,82 @@ const media = {
 
 const utils = {
   // Abbreviated margin properties
-  m: () => (value) => ({
+  m: (value) => ({
     marginTop: value,
     marginBottom: value,
     marginLeft: value,
     marginRight: value,
   }),
-  mt: () => (value) => ({
+
+  mt: (value) => ({
     marginTop: value,
   }),
-  mr: () => (value) => ({
+  mr: (value) => ({
     marginRight: value,
   }),
-  mb: () => (value) => ({
+  mb: (value) => ({
     marginBottom: value,
   }),
-  ml: () => (value) => ({
+  ml: (value) => ({
     marginLeft: value,
   }),
-  mx: () => (value) => ({
+  mx: (value) => ({
     marginLeft: value,
     marginRight: value,
   }),
-  my: () => (value) => ({
+  my: (value) => ({
     marginTop: value,
     marginBottom: value,
   }),
-  p: () => (value) => ({
+  p: (value) => ({
     paddingTop: value,
     paddingBottom: value,
     paddingLeft: value,
     paddingRight: value,
   }),
-  pt: () => (value) => ({
+  pt: (value) => ({
     paddingTop: value,
   }),
-  pr: () => (value) => ({
+  pr: (value) => ({
     paddingRight: value,
   }),
-  pb: () => (value) => ({
+  pb: (value) => ({
     paddingBottom: value,
   }),
-  pl: () => (value) => ({
+  pl: (value) => ({
     paddingLeft: value,
   }),
-  px: () => (value) => ({
+  px: (value) => ({
     paddingLeft: value,
     paddingRight: value,
   }),
-  py: () => (value) => ({
+  py: (value) => ({
     paddingTop: value,
     paddingBottom: value,
   }),
 
   // A property for applying width/height together
-  size: () => (value) => ({
+  size: (value) => ({
     width: value,
     height: value,
   }),
 
   // A property to apply linear gradient
-  linearGradient: () => (value) => ({
+  linearGradient: (value) => ({
     backgroundImage: `linear-gradient(${value})`,
   }),
 
   // An abbreviated property for border-radius
-  br: () => (value) => ({
+  br: (value) => ({
     borderRadius: value,
   }),
 };
 
-export const {
-  styled,
-  theme,
-  css,
-  global,
-  keyframes,
-  getCssString,
-} = createCss({
-  theme: defaultTheme,
-  utils,
-  media,
-});
+export const { styled, createTheme, css, keyframes, getCssText, globalCss } =
+  createStitches({
+    theme: defaultTheme,
+    utils,
+    media,
+  });
 
-export const lightThemeClass = theme({ colors: lightTheme });
+export const lightThemeClass = createTheme({ colors: lightTheme });
