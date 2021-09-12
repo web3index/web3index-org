@@ -63,7 +63,7 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
         tooltip:
-          "Trend is the increase, or decrease, in the protocol's revenue between two periods.",
+          "Trend is the increase, or decrease, in the protocol's revenue between two periods. It's calculated by subtracting the previous 30d revenue from the current 30d revenue, and then dividing that number by the previous 30d revenue.",
       },
       {
         Header: "Usage",

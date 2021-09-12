@@ -13,12 +13,20 @@ import { useEffect, useRef, useState } from "react";
 import { request, gql } from "graphql-request";
 import { styled } from "../stitches.config";
 import Button from "../components/Button";
+import RevenueChange from "../components/RevenueChange";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipArrow,
+  TooltipContent,
+} from "../components/Tooltip";
 import {
   TwitterLogoIcon,
   GitHubLogoIcon,
   Link1Icon,
   ExternalLinkIcon,
-} from "@modulz/radix-icons";
+  InfoCircledIcon,
+} from "@radix-ui/react-icons";
 import { NextSeo } from "next-seo";
 import seo from "../next-seo.config";
 import { useRouter } from "next/router";
@@ -83,6 +91,27 @@ const Everest = ({ ...props }) => {
         d="M0.0372314 12.0343L6.56058 5.51074L13 11.9999L0.0372314 12.0343Z"
         fill="currentColor"
       />
+    </Box>
+  );
+};
+
+const Metric = ({ label, value }) => {
+  return (
+    <Box
+      css={{
+        fontSize: "$1",
+        display: "flex",
+        alignItems: "center",
+        borderBottom: "1px solid $colors$border",
+        py: "$3",
+        justifyContent: "space-between",
+        "&:last-child": {
+          borderBottom: 0,
+        },
+      }}
+    >
+      <Box css={{ fontWeight: 600, mr: "$3" }}>{label}:</Box>
+      {value}
     </Box>
   );
 };
@@ -223,50 +252,124 @@ const Project = ({ slug, index, projects, project }) => {
               <Box as="p" css={{ mt: 0, lineHeight: "24px", mb: "$4" }}>
                 {project.description}
               </Box>
-              <Box css={{ mb: "$4" }}>
-                <Box
-                  css={{
-                    fontSize: "$2",
-                    mb: "$3",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box css={{ fontWeight: 600, mr: "$3" }}>Category:</Box>
-                  {project.category}
+              <Box
+                css={{
+                  mb: "$4",
+                  display: "grid",
+                  gap: 20,
+                  gridTemplateColumns: "repeat(1, 1fr)",
+                  "@bp2": {
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                  },
+                }}
+              >
+                <Box>
+                  <Metric label="Category" value={project.category} />
+                  <Metric label="Subcategory" value={project.subcategory} />
+                  <Metric label="Blockchain" value={project.blockchain} />
+                  <Metric
+                    label="P/S Ratio"
+                    value={
+                      <Box>
+                        <Tooltip delayDuration={0}>
+                          <Box css={{ display: "flex", alignItems: "center" }}>
+                            <Box css={{ mr: "$1" }}>
+                              {Math.round(
+                                project.market.marketCap /
+                                  project.usage.revenue.ninetyDayTotal
+                              ).toLocaleString()}
+                            </Box>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                          </Box>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            Market capitalization divided by the protocol&apos;s
+                            revenue for the previous 90 days.
+                            <Box
+                              css={{
+                                my: "10px",
+                                width: "10px",
+                                height: "1px",
+                                backgroundColor: "black",
+                              }}
+                            />
+                            <Box
+                              css={{
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              ${project.market.marketCap.toLocaleString()}{" "}
+                              <Box css={{ mx: "$1" }}>/</Box> $
+                              {Math.round(
+                                project.usage.revenue.ninetyDayTotal
+                              ).toLocaleString()}
+                              <Box css={{ mx: "$1" }}>=</Box>
+                              <Box css={{ fontWeight: 600 }}>
+                                {Math.round(
+                                  project.market.marketCap /
+                                    project.usage.revenue.ninetyDayTotal
+                                ).toLocaleString()}
+                              </Box>
+                            </Box>
+                          </TooltipContent>
+                        </Tooltip>
+                      </Box>
+                    }
+                  />
                 </Box>
-                <Box
-                  css={{
-                    fontSize: "$2",
-                    mb: "$3",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box css={{ fontWeight: 600, mr: "$3" }}>Subcategory:</Box>
-                  {project.subcategory}
-                </Box>
-                <Box
-                  css={{
-                    fontSize: "$2",
-                    mb: "$3",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box css={{ fontWeight: 600, mr: "$3" }}>Stack:</Box>
-                  {project.stack}
-                </Box>
-                <Box
-                  css={{
-                    fontSize: "$2",
-                    mb: "$3",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box css={{ fontWeight: 700, mr: "$3" }}>Blockchain:</Box>
-                  {project.blockchain}
+                <Box>
+                  <Metric
+                    label="30d Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.thirtyDayTotal
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="90d Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.ninetyDayTotal
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="Total Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.now
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="30d Trend"
+                    value={
+                      <Box>
+                        <Tooltip delayDuration={0}>
+                          <Box css={{ display: "flex", alignItems: "center" }}>
+                            <Box css={{ mr: "$1" }}>
+                              <RevenueChange
+                                percentChange={Intl.NumberFormat("en-US", {
+                                  maximumFractionDigits: 2,
+                                }).format(
+                                  project.usage.revenue.oneWeekPercentChange
+                                )}
+                              />
+                            </Box>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                          </Box>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            Trend is the increase, or decrease, in the
+                            protocol&apos;s revenue between two periods.
+                            It&apos;s calculated by subtracting the previous 30d
+                            revenue from the current 30d revenue, and then
+                            dividing that number by the previous 30d revenue.
+                          </TooltipContent>
+                        </Tooltip>
+                      </Box>
+                    }
+                  />
                 </Box>
               </Box>
               <Box css={{ width: 300 }}>
