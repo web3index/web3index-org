@@ -269,16 +269,19 @@ const Project = ({ slug, index, projects, project }) => {
                   <Metric label="Subcategory" value={project.subcategory} />
                   <Metric label="Blockchain" value={project.blockchain} />
                   <Metric
-                    label="P/S Ratio"
+                    label="30d Trend"
                     value={
                       <Box>
                         <Tooltip delayDuration={0}>
                           <Box css={{ display: "flex", alignItems: "center" }}>
                             <Box css={{ mr: "$1" }}>
-                              {Math.round(
-                                project.market.marketCap /
-                                  project.usage.revenue.ninetyDayTotal
-                              ).toLocaleString()}
+                              <RevenueChange
+                                percentChange={Intl.NumberFormat("en-US", {
+                                  maximumFractionDigits: 2,
+                                }).format(
+                                  project.usage.revenue.oneWeekPercentChange
+                                )}
+                              />
                             </Box>
                             <TooltipTrigger>
                               <InfoCircledIcon />
@@ -286,35 +289,11 @@ const Project = ({ slug, index, projects, project }) => {
                           </Box>
                           <TooltipContent>
                             <TooltipArrow />
-                            Market capitalization divided by the protocol&apos;s
-                            revenue for the previous 90 days.
-                            <Box
-                              css={{
-                                my: "10px",
-                                width: "10px",
-                                height: "1px",
-                                backgroundColor: "black",
-                              }}
-                            />
-                            <Box
-                              css={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              ${project.market.marketCap.toLocaleString()}{" "}
-                              <Box css={{ mx: "$1" }}>/</Box> $
-                              {Math.round(
-                                project.usage.revenue.ninetyDayTotal
-                              ).toLocaleString()}
-                              <Box css={{ mx: "$1" }}>=</Box>
-                              <Box css={{ fontWeight: 600 }}>
-                                {Math.round(
-                                  project.market.marketCap /
-                                    project.usage.revenue.ninetyDayTotal
-                                ).toLocaleString()}
-                              </Box>
-                            </Box>
+                            Trend is the increase, or decrease, in the
+                            protocol&apos;s revenue between two periods.
+                            It&apos;s calculated by subtracting the previous 30d
+                            revenue from the current 30d revenue, and then
+                            dividing that number by the previous 30d revenue.
                           </TooltipContent>
                         </Tooltip>
                       </Box>
@@ -339,37 +318,6 @@ const Project = ({ slug, index, projects, project }) => {
                     value={`$${Math.round(
                       project.usage.revenue.now
                     ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="30d Trend"
-                    value={
-                      <Box>
-                        <Tooltip delayDuration={0}>
-                          <Box css={{ display: "flex", alignItems: "center" }}>
-                            <Box css={{ mr: "$1" }}>
-                              <RevenueChange
-                                percentChange={Intl.NumberFormat("en-US", {
-                                  maximumFractionDigits: 2,
-                                }).format(
-                                  project.usage.revenue.thirtyDayPercentChange
-                                )}
-                              />
-                            </Box>
-                            <TooltipTrigger>
-                              <InfoCircledIcon />
-                            </TooltipTrigger>
-                          </Box>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            Trend is the increase, or decrease, in the
-                            protocol&apos;s revenue between two periods.
-                            It&apos;s calculated by subtracting the previous 30d
-                            revenue from the current 30d revenue, and then
-                            dividing that number by the previous 30d revenue.
-                          </TooltipContent>
-                        </Tooltip>
-                      </Box>
-                    }
                   />
                 </Box>
               </Box>
