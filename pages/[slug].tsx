@@ -279,7 +279,7 @@ const Project = ({ slug, index, projects, project }) => {
                                 percentChange={Intl.NumberFormat("en-US", {
                                   maximumFractionDigits: 2,
                                 }).format(
-                                  project.usage.revenue.oneWeekPercentChange
+                                  project.usage.revenue.thirtyDayPercentChange
                                 )}
                               />
                             </Box>
