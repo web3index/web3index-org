@@ -268,58 +268,6 @@ const Project = ({ slug, index, projects, project }) => {
                   <Metric label="Category" value={project.category} />
                   <Metric label="Subcategory" value={project.subcategory} />
                   <Metric label="Blockchain" value={project.blockchain} />
-                  <Metric
-                    label="P/S Ratio"
-                    value={
-                      <Box>
-                        <Tooltip delayDuration={0}>
-                          <Box css={{ display: "flex", alignItems: "center" }}>
-                            <Box css={{ mr: "$1" }}>
-                              {Math.round(
-                                project.market.marketCap /
-                                  project.usage.revenue.ninetyDayTotal
-                              ).toLocaleString()}
-                            </Box>
-                            <TooltipTrigger>
-                              <InfoCircledIcon />
-                            </TooltipTrigger>
-                          </Box>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            Market capitalization divided by the protocol&apos;s
-                            revenue for the previous 90 days.
-                            <Box
-                              css={{
-                                my: "10px",
-                                width: "10px",
-                                height: "1px",
-                                backgroundColor: "black",
-                              }}
-                            />
-                            <Box
-                              css={{
-                                display: "flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              ${project.market.marketCap.toLocaleString()}{" "}
-                              <Box css={{ mx: "$1" }}>/</Box> $
-                              {Math.round(
-                                project.usage.revenue.ninetyDayTotal
-                              ).toLocaleString()}
-                              <Box css={{ mx: "$1" }}>=</Box>
-                              <Box css={{ fontWeight: 600 }}>
-                                {Math.round(
-                                  project.market.marketCap /
-                                    project.usage.revenue.ninetyDayTotal
-                                ).toLocaleString()}
-                              </Box>
-                            </Box>
-                          </TooltipContent>
-                        </Tooltip>
-                      </Box>
-                    }
-                  />
                 </Box>
                 <Box>
                   <Metric

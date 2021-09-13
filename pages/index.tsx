@@ -46,6 +46,11 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "slug",
       },
       {
+        Header: "Blockchain",
+        accessor: "blockchain",
+        hideOnMobile: true,
+      },
+      {
         Header: "30d Revenue",
         accessor: "usage.revenue.thirtyDayTotal",
       },
@@ -53,12 +58,12 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "90d Revenue",
         accessor: "usage.revenue.ninetyDayTotal",
       },
-      {
-        Header: "P/S Ratio",
-        accessor: "market",
-        tooltip:
-          "Market capitalization divided by the protocol's revenue for the previous 90 days.",
-      },
+      // {
+      //   Header: "P/S Ratio",
+      //   accessor: "market",
+      //   tooltip:
+      //     "Market capitalization divided by the protocol's revenue for the previous 90 days.",
+      // },
       {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
