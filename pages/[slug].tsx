@@ -268,26 +268,6 @@ const Project = ({ slug, index, projects, project }) => {
                   <Metric label="Category" value={project.category} />
                   <Metric label="Subcategory" value={project.subcategory} />
                   <Metric label="Blockchain" value={project.blockchain} />
-                </Box>
-                <Box>
-                  <Metric
-                    label="30d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.thirtyDayTotal
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="90d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.ninetyDayTotal
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="Total Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.now
-                    ).toLocaleString()}`}
-                  />
                   <Metric
                     label="30d Trend"
                     value={
@@ -318,6 +298,26 @@ const Project = ({ slug, index, projects, project }) => {
                         </Tooltip>
                       </Box>
                     }
+                  />
+                </Box>
+                <Box>
+                  <Metric
+                    label="30d Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.thirtyDayTotal
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="90d Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.ninetyDayTotal
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="Total Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.now
+                    ).toLocaleString()}`}
                   />
                 </Box>
               </Box>
