@@ -10,6 +10,7 @@ import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { getPosts } from "../../lib/mdx";
 import { getProjects } from "../api/projects";
+import Container from "../../components/Container";
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -85,20 +86,25 @@ const Index = ({ posts, projects }) => {
         </Box>
       </Box>
       <Section css={{ pb: "$6" }}>
-        {posts.map((post, i) => (
-          <BlogCard
-            key={i}
-            title={post.data.title}
-            date={new Date(post.data.publishedOn).toLocaleDateString("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-            abstract={post.data.abstract}
-            slug={post.slug}
-          />
-        ))}
+        <Container size="3">
+          {posts.map((post, i) => (
+            <BlogCard
+              key={i}
+              title={post.data.title}
+              date={new Date(post.data.publishedOn).toLocaleDateString(
+                "en-US",
+                {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
+              abstract={post.data.abstract}
+              slug={post.slug}
+            />
+          ))}
+        </Container>
       </Section>
     </Layout>
   );

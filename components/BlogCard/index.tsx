@@ -11,12 +11,14 @@ const BlogCard = ({ title, date, abstract, slug }) => {
         px: "$4",
         borderBottom: "1px solid",
         borderColor: "$border",
+        width: "100%",
         "&:last-child": {
           border: 0,
           mb: 0,
         },
         "@bp2": {
-          px: 380,
+          maxWidth: 800,
+          mx: "auto",
           pb: "$5",
           mb: "$5",
         },
@@ -26,6 +28,7 @@ const BlogCard = ({ title, date, abstract, slug }) => {
         <Box
           as="a"
           css={{
+            display: "block",
             textDecoration: "none",
             color: "$hiContrast",
             "&:hover": {
