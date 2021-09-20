@@ -94,7 +94,7 @@ const getRevenueByBlock = async (id, blockNumber) => {
   return await request(
     "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
     gql`
-      query($id: String!, $block: Block_height) {
+      query ($id: String!, $block: Block_height) {
         protocol(id: $id, block: $block) {
           revenueUSD
         }
@@ -111,7 +111,7 @@ const getUsageFromSubgraph = async (id) => {
   const data = await request(
     "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
     gql`
-      query($id: String!) {
+      query ($id: String!) {
         protocol(id: $id) {
           revenueUSD
           days(first: 1000) {
@@ -194,7 +194,7 @@ const getUsageFromSubgraph = async (id) => {
   };
 };
 
-const getMarketDataFromCoingecko = async (id) => {
+export const getMarketDataFromCoingecko = async (id) => {
   const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
   const data = await res.json();
   return {
@@ -221,12 +221,9 @@ export const getProject = async (id) => {
     usage = await getUsageFromDB(id);
   }
 
-  const market = await getMarketDataFromCoingecko(registry[id].coingeckoID);
-
   return {
     ...registry[id],
     usage,
-    market,
   };
 };
 

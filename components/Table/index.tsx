@@ -214,33 +214,6 @@ function renderSwitch(cell) {
         cell.row.values.usage.revenue.now
       ).toLocaleString()}`;
     }
-    case "market": {
-      return (
-        <Box>
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger>
-              {Math.round(
-                cell.row.values.market.marketCap /
-                  cell.row.values.usage.revenue.ninetyDayTotal
-              ).toLocaleString()}
-            </TooltipTrigger>
-            <TooltipContent>
-              <TooltipArrow />
-
-              <Box
-                css={{ display: "flex", alignItems: "center", fontWeight: 500 }}
-              >
-                = ${cell.row.values.market.marketCap.toLocaleString()}{" "}
-                <Box css={{ mx: "$2" }}>/</Box> $
-                {Math.round(
-                  cell.row.values.usage.revenue.ninetyDayTotal
-                ).toLocaleString()}
-              </Box>
-            </TooltipContent>
-          </Tooltip>
-        </Box>
-      );
-    }
     case "usage.revenue.oneWeekPercentChange": {
       return (
         <Box css={{ display: "flex" }}>
