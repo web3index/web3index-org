@@ -273,15 +273,53 @@ const Project = ({ slug, index, projects, project }) => {
                 <Box>
                   <Metric
                     label="30d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.thirtyDayTotal
-                    ).toLocaleString()}`}
+                    value={
+                      <Box>
+                        <Tooltip delayDuration={0}>
+                          <Box css={{ display: "flex", alignItems: "center" }}>
+                            <Box css={{ mr: "$1" }}>
+                              $
+                              {Math.round(
+                                project.usage.revenue.thirtyDayTotal
+                              ).toLocaleString()}
+                            </Box>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                          </Box>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            Total demand side revenue accrued by the protocol
+                            over the last 30 days.
+                          </TooltipContent>
+                        </Tooltip>
+                      </Box>
+                    }
                   />
                   <Metric
                     label="90d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.ninetyDayTotal
-                    ).toLocaleString()}`}
+                    value={
+                      <Box>
+                        <Tooltip delayDuration={0}>
+                          <Box css={{ display: "flex", alignItems: "center" }}>
+                            <Box css={{ mr: "$1" }}>
+                              $
+                              {Math.round(
+                                project.usage.revenue.ninetyDayTotal
+                              ).toLocaleString()}
+                            </Box>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                          </Box>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            Total demand side revenue accrued by the protocol
+                            over the last 90 days.
+                          </TooltipContent>
+                        </Tooltip>
+                      </Box>
+                    }
                   />
                   <Metric
                     label="Total Revenue"

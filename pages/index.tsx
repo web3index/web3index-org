@@ -53,17 +53,15 @@ const Home = ({ faq, revenue, projects }) => {
       {
         Header: "30d Revenue",
         accessor: "usage.revenue.thirtyDayTotal",
+        tooltip:
+          "Total demand side revenue accrued by the protocol over the last 30 days.",
       },
       {
         Header: "90d Revenue",
         accessor: "usage.revenue.ninetyDayTotal",
+        tooltip:
+          "Total demand side revenue accrued by the protocol over the last 90 days.",
       },
-      // {
-      //   Header: "P/S Ratio",
-      //   accessor: "market",
-      //   tooltip:
-      //     "Market capitalization divided by the protocol's revenue for the previous 90 days.",
-      // },
       {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
