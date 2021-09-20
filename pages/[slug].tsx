@@ -209,7 +209,7 @@ const Project = ({ slug, index, projects, project }) => {
               gap: 0,
               "@bp2": {
                 gap: 100,
-                gridTemplateColumns: "33.334% calc(66.667% - 100px)",
+                gridTemplateColumns: "38% calc(62% - 100px)",
               },
             }}
           >
