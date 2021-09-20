@@ -12,7 +12,7 @@ const SubmitButton = ({ css = {}, ...props }) => {
       css={{ mx: "auto", display: "flex", alignItems: "center", ...css }}
       {...props}
     >
-      Submit a Project{" "}
+      Submit a Protocol{" "}
       <StyledIcon css={{ width: 15, height: 15, color: "$lowContrast" }} />
     </Button>
   );
