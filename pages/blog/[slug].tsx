@@ -48,7 +48,17 @@ const Post = ({ slug, content, data, projects }) => {
       ...seo.openGraph,
       title: `The Web3 Index - ${data.seoTitle}`,
       description: data.abstract,
-      url: `https://beta.web3index.org/blog/${slug}`,
+      url: `https://web3index.org/blog/${slug}`,
+      images: [
+        {
+          url: data.shareImage
+            ? data.shareImage
+            : "https://livepeer.com/img/OG.png",
+          alt: data.seoTitle,
+          width: 1200,
+          height: 630,
+        },
+      ],
     },
   };
 

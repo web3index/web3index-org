@@ -11,7 +11,8 @@
     "subcategory": "Compute, Video",
     "symbol": "LPT",
     "subgraph": true,
-    "coingeckoID": "livepeer"
+    "coingeckoID": "livepeer",
+    "genesisDate": "2018-10-01"
   },
   "thegraph": {
     "blockchain": "Ethereum",
@@ -24,7 +25,8 @@
     "subcategory": "Bandwidth, Indexing",
     "symbol": "GRT",
     "subgraph": true,
-    "coingeckoID": "the-graph"
+    "coingeckoID": "the-graph",
+    "genesisDate": "2018-10-01"
   },
   "arweave": {
     "blockchain": "Arweave",
@@ -36,7 +38,8 @@
     "stack": "Middleware",
     "subcategory": "Storage",
     "symbol": "AR",
-    "coingeckoID": "arweave"
+    "coingeckoID": "arweave",
+    "genesisDate": "2020-12-17"
   },
   "helium": {
     "blockchain": "Helium",
@@ -48,7 +51,8 @@
     "stack": "Middleware",
     "subcategory": "Bandwidth, Networking",
     "symbol": "HNT",
-    "coingeckoID": "helium"
+    "coingeckoID": "helium",
+    "genesisDate": "2019-07-28"
   },
   "filecoin": {
     "blockchain": "Filecoin",
@@ -60,7 +64,8 @@
     "stack": "Middleware",
     "subcategory": "Storage",
     "symbol": "FIL",
-    "coingeckoID": "filecoin"
+    "coingeckoID": "filecoin",
+    "genesisDate": "2020-10-14"
   },
   "akash": {
     "blockchain": "Akash",
@@ -73,6 +78,7 @@
     "subcategory": "Compute",
     "symbol": "AKT",
     "usage": "https://akashlytics.com/web3-index/revenue",
-    "coingeckoID": "akash-network"
+    "coingeckoID": "akash-network",
+    "genesisDate": "2020-09-24"
   }
 }

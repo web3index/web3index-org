@@ -174,7 +174,7 @@ const Project = ({ slug, index, projects, project }) => {
       ...seo.openGraph,
       title: `The Web3 Index - ${project.name}`,
       description: project.description,
-      url: `https://beta.web3index.org/project/${slug}`,
+      url: `https://web3index.org/project/${slug}`,
     },
   };
 
@@ -215,9 +215,9 @@ const Project = ({ slug, index, projects, project }) => {
           >
             <Box css={{ mt: "$5" }}>
               <Box css={{ fontSize: "$5", mb: "$3" }}>
-                <span role="img" aria-label="#1">
+                {/* <span role="img" aria-label="#1">
                   {trophies[index]}
-                </span>{" "}
+                </span>{" "} */}
                 #{index + 1}
               </Box>
               <Box
@@ -268,6 +268,27 @@ const Project = ({ slug, index, projects, project }) => {
                   <Metric label="Category" value={project.category} />
                   <Metric label="Subcategory" value={project.subcategory} />
                   <Metric label="Blockchain" value={project.blockchain} />
+                  <Metric label="Genesis Date" value={project.genesisDate} />
+                </Box>
+                <Box>
+                  <Metric
+                    label="30d Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.thirtyDayTotal
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="90d Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.ninetyDayTotal
+                    ).toLocaleString()}`}
+                  />
+                  <Metric
+                    label="Total Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.now
+                    ).toLocaleString()}`}
+                  />
                   <Metric
                     label="30d Trend"
                     value={
@@ -298,26 +319,6 @@ const Project = ({ slug, index, projects, project }) => {
                         </Tooltip>
                       </Box>
                     }
-                  />
-                </Box>
-                <Box>
-                  <Metric
-                    label="30d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.thirtyDayTotal
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="90d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.ninetyDayTotal
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="Total Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.now
-                    ).toLocaleString()}`}
                   />
                 </Box>
               </Box>
