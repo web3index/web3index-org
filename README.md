@@ -10,7 +10,7 @@ In order for a protocol to be considered for the index, its revenue data must be
 
 ### Method #1: The Graph (recommended)
 
-If the protocol you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a project's revenue data to it [here](https://thegraph.com/docs/developer/quick-start).
+If the protocol you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol's revenue data to it [here](https://thegraph.com/docs/developer/quick-start).
 
 Once you've successfully added your protocol to the subgraph, make sure to add the protocol to the Web3 Index [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
 
@@ -18,7 +18,7 @@ Once you've successfully added your protocol to the subgraph, make sure to add t
 
 If a protocol's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
 
-Step 1: Create a command line script inside `cmd/[your_project_name].ts`. This endpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_project_name].yml`). When executed, it should store the protocol's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
+Step 1: Create a command line script inside `cmd/[your_protocol_name].ts`. This endpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_protocol_name].yml`). When executed, it should store the protocol's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
 Step 2: Add your protocol to the Web3 Index [registry](./registry.json) using the protocol and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
@@ -46,7 +46,7 @@ If a protocol's blockchain is not supported by The Graph _and_ you can't use the
 }
 ```
 
-Once this endpoint is available add your project to the Web3 Index [registry](./registry.json), and include a `usage` field that points to your endpoint.
+Once this endpoint is available add your protocol to the Web3 Index [registry](./registry.json), and include a `usage` field that points to your endpoint.
 
 Note: your API codebase must be open sourced in order to be considered for the index.
 
