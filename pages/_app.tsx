@@ -26,22 +26,13 @@ const globalStyles = globalCss({
     backgroundColor: "$violet300",
   },
 
-  "@font-face": [
-    {
-      fontFamily: "Whyte Inktrap",
-      src: 'url("/fonts/whyte/inktrap-bold.woff2") format("woff2"), url("/fonts/whyte/inktrap-bold.woff") format("woff")',
-      fontWeight: 700,
-      fontStyle: "normal",
-      fontDisplay: "block",
-    },
-    {
-      fontFamily: "Whyte Inktrap",
-      src: 'url("/fonts/whyte/inktrap-heavy.woff2") format("woff2"), url("/fonts/whyte/inktrap-heavy.woff") format("woff")',
-      fontWeight: 900,
-      fontStyle: "normal",
-      fontDisplay: "block",
-    },
-  ],
+  "@font-face": {
+    fontFamily: "Whyte Inktrap",
+    src: 'url("/fonts/whyte/inktrap-heavy.woff2") format("woff2"), url("/fonts/whyte/inktrap-heavy.woff") format("woff")',
+    fontWeight: 900,
+    fontStyle: "normal",
+    fontDisplay: "block",
+  },
 });
 
 const App = ({ Component, pageProps }) => {

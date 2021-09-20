@@ -174,7 +174,7 @@ const Project = ({ slug, index, projects, project }) => {
       ...seo.openGraph,
       title: `The Web3 Index - ${project.name}`,
       description: project.description,
-      url: `https://beta.web3index.org/project/${slug}`,
+      url: `https://web3index.org/project/${slug}`,
     },
   };
 
@@ -209,15 +209,15 @@ const Project = ({ slug, index, projects, project }) => {
               gap: 0,
               "@bp2": {
                 gap: 100,
-                gridTemplateColumns: "33.334% calc(66.667% - 100px)",
+                gridTemplateColumns: "38% calc(62% - 100px)",
               },
             }}
           >
             <Box css={{ mt: "$5" }}>
               <Box css={{ fontSize: "$5", mb: "$3" }}>
-                <span role="img" aria-label="#1">
+                {/* <span role="img" aria-label="#1">
                   {trophies[index]}
-                </span>{" "}
+                </span>{" "} */}
                 #{index + 1}
               </Box>
               <Box
@@ -268,6 +268,65 @@ const Project = ({ slug, index, projects, project }) => {
                   <Metric label="Category" value={project.category} />
                   <Metric label="Subcategory" value={project.subcategory} />
                   <Metric label="Blockchain" value={project.blockchain} />
+                  <Metric label="Genesis Date" value={project.genesisDate} />
+                </Box>
+                <Box>
+                  <Metric
+                    label="30d Revenue"
+                    value={
+                      <Box>
+                        <Tooltip delayDuration={0}>
+                          <Box css={{ display: "flex", alignItems: "center" }}>
+                            <Box css={{ mr: "$1" }}>
+                              $
+                              {Math.round(
+                                project.usage.revenue.thirtyDayTotal
+                              ).toLocaleString()}
+                            </Box>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                          </Box>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            Total demand side revenue accrued by the protocol
+                            over the last 30 days.
+                          </TooltipContent>
+                        </Tooltip>
+                      </Box>
+                    }
+                  />
+                  <Metric
+                    label="90d Revenue"
+                    value={
+                      <Box>
+                        <Tooltip delayDuration={0}>
+                          <Box css={{ display: "flex", alignItems: "center" }}>
+                            <Box css={{ mr: "$1" }}>
+                              $
+                              {Math.round(
+                                project.usage.revenue.ninetyDayTotal
+                              ).toLocaleString()}
+                            </Box>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                          </Box>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            Total demand side revenue accrued by the protocol
+                            over the last 90 days.
+                          </TooltipContent>
+                        </Tooltip>
+                      </Box>
+                    }
+                  />
+                  <Metric
+                    label="Total Revenue"
+                    value={`$${Math.round(
+                      project.usage.revenue.now
+                    ).toLocaleString()}`}
+                  />
                   <Metric
                     label="30d Trend"
                     value={
@@ -298,26 +357,6 @@ const Project = ({ slug, index, projects, project }) => {
                         </Tooltip>
                       </Box>
                     }
-                  />
-                </Box>
-                <Box>
-                  <Metric
-                    label="30d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.thirtyDayTotal
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="90d Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.ninetyDayTotal
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="Total Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.now
-                    ).toLocaleString()}`}
                   />
                 </Box>
               </Box>

@@ -35,7 +35,7 @@ const CallToAction = ({ ...props }) => {
           alignItems: "center",
         }}
       >
-        Submit a Project{" "}
+        Submit a Protocol{" "}
         <StyledIcon css={{ width: 15, height: 15, color: "$lowContrast" }} />
       </Button>
     </Box>

@@ -1,6 +1,7 @@
 import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
+import Button from "../Button";
 
 const Header = ({ revenue, ...props }) => {
   return (
@@ -60,6 +61,32 @@ const Header = ({ revenue, ...props }) => {
             },
           }}
         />
+        <Button
+          as="a"
+          href="https://discord.gg/GsYEGuns9y"
+          target="_blank"
+          rel="noreferrer"
+          css={{
+            flex: "1 0 auto",
+            textAlign: "center",
+            backgroundColor: "$loContrast",
+            color: "$hiContrast",
+            border: "1px solid",
+            borderColor: "$border",
+            textDecoration: "none",
+            justifyContent: "center",
+            width: "100%",
+            mb: "$3",
+            "@bp2": {
+              mr: "$3",
+              mb: 0,
+              width: "auto",
+            },
+          }}
+        >
+          Chat on Discord
+        </Button>
+
         <SubmitButton
           css={{
             flex: "1 0 auto",
