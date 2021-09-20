@@ -2,29 +2,29 @@
 
 The Web3 Index reports on the fees being paid Web3 networks in an effort to showcase real usage across the Web3 stack. Stay up to date on the latest Web3 trends whether you’re a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising Web3 infrastructure, or simply a crypto-enthusiast passionate about the Web3 movement.
 
-Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total locked value (TLV)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network revenue and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the project.
+Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total locked value (TLV)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network revenue and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
 
-## Project Integration Instructions
+## Protocol Integration Instructions
 
-In order for a project to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. This data can be provided using one of several different methods.
+In order for a protocol to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. This data can be provided using one of several different methods.
 
 ### Method #1: The Graph (recommended)
 
-If the project you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a project's revenue data to it [here](https://thegraph.com/docs/developer/quick-start).
+If the protocol you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a project's revenue data to it [here](https://thegraph.com/docs/developer/quick-start).
 
-Once you've successfully added your project to the subgraph, make sure to add the project to the Web3 Index [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
+Once you've successfully added your protocol to the subgraph, make sure to add the protocol to the Web3 Index [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
 
 ### Method #2: The Web3 Index Database
 
-If a project's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
+If a protocol's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
 
-Step 1: Create a command line script inside `cmd/[your_project_name].ts`. This endpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_project_name].yml`). When executed, it should store the project's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
+Step 1: Create a command line script inside `cmd/[your_project_name].ts`. This endpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_project_name].yml`). When executed, it should store the protocol's revenue data using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
-Step 2: Add your project to the Web3 Index [registry](./registry.json) using the project and directory name you created. Make sure to set the set its `subgraph` field to `false`.
+Step 2: Add your protocol to the Web3 Index [registry](./registry.json) using the protocol and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
 ### Method #3: A Publically Accessible API Endpoint
 
-If a project's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
+If a protocol's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
 
 ```
 {
