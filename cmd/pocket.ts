@@ -59,17 +59,21 @@ const pocketImport = async () => {
     console.log(`Estimated revenue in the last hour: ${revenue} USD.`);
   }
 
-  // const project = await getProject(coin.name);
+  const project = await getProject(coin.name);
 
-  // console.log(`${project.name} stored day ${today} - ${today.getTime() / 1000} to DB - value: ${revenue}`);
+  console.log(
+    `${project.name} stored day ${today} - ${
+      today.getTime() / 1000
+    } to DB - value: ${revenue}`
+  );
 
-  // const fee = {
-  //     date: today.getTime() / 1000,
-  //     fees: revenue,
-  // };
-  // await storeDBData(fee, project.id);
+  const fee = {
+    date: today.getTime() / 1000,
+    fees: revenue,
+  };
+  await storeDBData(fee, project.id);
 
-  // console.log("Finished updating pocket network revenue...");
+  console.log("Finished updating pocket network revenue...");
 
   return;
 };
