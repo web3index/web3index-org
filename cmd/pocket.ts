@@ -17,7 +17,7 @@ const influxClient = new InfluxDB({
 const queryApi = influxClient.getQueryApi(influxOrg);
 
 const coin = {
-  name: "pocket network",
+  name: "pocket",
   symbol: "POKT",
 };
 
