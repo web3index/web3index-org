@@ -15,6 +15,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.18.0",
     "@mdx-js/loader": "^1.6.22",
     "@modulz/radix-icons": "^4.0.0",
     "@next/mdx": "^10.2.0",
