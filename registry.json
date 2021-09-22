@@ -1,86 +1,4 @@
 {
-  "livepeer": {
-    "blockchain": "Ethereum",
-    "category": "Work Protocol",
-    "color": "#00eb88",
-    "description": "A decentralized live video broadcast platform.",
-    "everestID": "0x49f6e21a4e3f20580624669acd83dac39a339042",
-    "image": "https://web3index.org/logos/livepeer.svg",
-    "name": "Livepeer",
-    "stack": "Middleware",
-    "subcategory": "Compute, Video",
-    "symbol": "LPT",
-    "subgraph": true,
-    "coingeckoID": "livepeer",
-    "genesisDate": "2018-10-01"
-  },
-  "thegraph": {
-    "blockchain": "Ethereum",
-    "category": "Work Protocol",
-    "color": "#6f4cff",
-    "everestID": "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",
-    "image": "https://cryptologos.cc/logos/the-graph-grt-logo.svg",
-    "name": "The Graph",
-    "stack": "Middleware",
-    "subcategory": "Bandwidth, Indexing",
-    "symbol": "GRT",
-    "subgraph": true,
-    "coingeckoID": "the-graph",
-    "genesisDate": "2018-10-01"
-  },
-  "arweave": {
-    "blockchain": "Arweave",
-    "category": "Work Protocol",
-    "color": "#3b3c40",
-    "everestID": "0x37453b7b89521570abee5d696eae5449f4e549ff",
-    "image": "https://web3index.org/logos/arweave.svg",
-    "name": "Arweave",
-    "stack": "Middleware",
-    "subcategory": "Storage",
-    "symbol": "AR",
-    "coingeckoID": "arweave",
-    "genesisDate": "2020-12-17"
-  },
-  "helium": {
-    "blockchain": "Helium",
-    "category": "Work Protocol",
-    "color": "#474DFF",
-    "everestID": "0x9741865c596110bed4794704de7096873a4adc7f",
-    "image": "https://cryptologos.cc/logos/helium-hnt-logo.svg",
-    "name": "Helium",
-    "stack": "Middleware",
-    "subcategory": "Bandwidth, Networking",
-    "symbol": "HNT",
-    "coingeckoID": "helium",
-    "genesisDate": "2019-07-28"
-  },
-  "filecoin": {
-    "blockchain": "Filecoin",
-    "category": "Work Protocol",
-    "color": "#398BEF",
-    "everestID": "0x4bf59fdad495836908cf02857d08ca053229c561",
-    "image": "https://cryptologos.cc/logos/filecoin-fil-logo.svg",
-    "name": "Filecoin",
-    "stack": "Middleware",
-    "subcategory": "Storage",
-    "symbol": "FIL",
-    "coingeckoID": "filecoin",
-    "genesisDate": "2020-10-14"
-  },
-  "akash": {
-    "blockchain": "Akash",
-    "category": "Work Protocol",
-    "color": "#E30613",
-    "everestID": "0x6dfa2de2b001d53a0d83e2ec092e048de13f22c3",
-    "image": "https://akashlytics.com/images/akash-logo.svg",
-    "name": "Akash",
-    "stack": "Middleware",
-    "subcategory": "Compute",
-    "symbol": "AKT",
-    "usage": "https://akashlytics.com/web3-index/revenue",
-    "coingeckoID": "akash-network",
-    "genesisDate": "2020-09-24"
-  },
   "pocket": {
     "blockchain": "Pocket Network",
     "category": "Work Protocol",
@@ -91,6 +9,7 @@
     "stack": "Middleware",
     "subcategory": "Infrastructure",
     "symbol": "POKT",
+    "subgraph": false,
     "genesisDate": "2020-07-28"
   }
 }
