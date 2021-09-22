@@ -80,5 +80,17 @@
     "usage": "https://akashlytics.com/web3-index/revenue",
     "coingeckoID": "akash-network",
     "genesisDate": "2020-09-24"
+  },
+  "pocket": {
+    "blockchain": "Pocket Network",
+    "category": "Work Protocol",
+    "color": "#5289EA",
+    "everestID": "0x7ed21153c5c5eaa661af2821b6f90e838677c349",
+    "image": "https://web3index.org/logos/pocket.svg",
+    "name": "Pocket Network",
+    "stack": "Middleware",
+    "subcategory": "Infrastructure",
+    "symbol": "POKT",
+    "genesisDate": "2020-07-28"
   }
 }
