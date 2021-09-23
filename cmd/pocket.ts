@@ -73,7 +73,7 @@ const pocketImport = async () => {
   };
   await storeDBData(fee, project.id);
 
-  console.log("Finished updating pocket network revenue...");
+  console.log("Finished updating pocket revenue...");
 
   return;
 };
