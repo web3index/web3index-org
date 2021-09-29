@@ -7,7 +7,6 @@ import Container from "../components/Container";
 import Header from "../components/Header";
 import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
-import { trophies } from "../lib/utils";
 import { getFaq } from "../lib/mdx";
 import { getProjects } from "./api/projects";
 
