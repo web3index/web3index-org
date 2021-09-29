@@ -7,8 +7,9 @@ import { pageview } from "../lib/utils";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import "video.js/dist/video-js.min.css";
+import "@videojs/themes/dist/fantasy/index.css";
 import "../css/tv.scss";
+import "../css/video.js.css";
 
 const queryClient = new QueryClient();
 

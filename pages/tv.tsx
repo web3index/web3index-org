@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import Layout from "../layouts/tv";
 import OldTV from "../components/OldTV";
+import { useRef } from "react";
 
 const TV = () => {
   const { isLoading, data } = useQuery(
@@ -19,6 +20,45 @@ const TV = () => {
     }
   );
 
+  const playerRef = useRef(null);
+
+  const videoJsOptions = {
+    // lookup the options in the docs for more options
+    autoplay: true,
+    controls: true,
+    responsive: true,
+    fluid: true,
+
+    // html5: {
+    //   vhs: {
+    //     enableLowInitialPlaylist: false,
+    //     smoothQualityChange: true,
+    //     overrideNative: true,
+    //   },
+    // },
+    sources: [
+      {
+        src: "https://cdn.livepeer.com/hls/c6e7en1y2trfc941/index.m3u8",
+        type: "application/x-mpegURL",
+      },
+    ],
+  };
+
+  const handlePlayerReady = (player) => {
+    playerRef.current = player;
+
+    player.hlsQualitySelector();
+
+    // you can handle player events here
+    player.on("waiting", () => {
+      console.log("player is waiting");
+    });
+
+    player.on("dispose", () => {
+      console.log("player will dispose");
+    });
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -26,16 +66,13 @@ const TV = () => {
       </Layout>
     );
   }
-  if (data.isActive) {
-    return (
-      <Layout>
-        <Player src="https://cdn.livepeer.com/hls/c6e7en1y2trfc941/index.m3u8" />
-      </Layout>
-    );
-  }
   return (
     <Layout>
-      <OldTV />
+      {data.isActive ? (
+        <Player options={videoJsOptions} onReady={handlePlayerReady} />
+      ) : (
+        <OldTV />
+      )}
     </Layout>
   );
 };

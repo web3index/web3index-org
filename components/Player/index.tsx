@@ -1,64 +1,50 @@
-import { useCallback, useEffect, useState } from "react";
+import React from "react";
 import videojs from "video.js";
-import "videojs-contrib-hls";
 import "videojs-contrib-quality-levels";
 import "videojs-hls-quality-selector";
-import Box from "../Box";
+import "video.js/dist/video-js.css";
 
-const Player = ({ src }) => {
-  const [videoEl, setVideoEl] = useState(null);
+export const VideoJS = (props) => {
+  const videoRef = React.useRef(null);
+  const playerRef = React.useRef(null);
+  const { options, onReady } = props;
 
-  const onVideo = useCallback((el) => {
-    setVideoEl(el);
+  React.useEffect(() => {
+    // make sure Video.js player is only initialized once
+    if (!playerRef.current) {
+      const videoElement = videoRef.current;
+      if (!videoElement) return;
+
+      const player = (playerRef.current = videojs(videoElement, options, () => {
+        console.log("player is ready");
+        onReady && onReady(player);
+      }));
+    } else {
+      // you can update player here [update player through props]
+      // const player = playerRef.current;
+      // player.autoplay(options.autoplay);
+      // player.src(options.sources);
+    }
+  }, [options, onReady]);
+
+  // Dispose the Video.js player when the functional component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
+      }
+    };
   }, []);
 
-  useEffect(() => {
-    if (videoEl == null) return;
-    const player = videojs(videoEl, {
-      autoplay: true,
-      controls: true,
-      sources: [
-        {
-          src,
-        },
-      ],
-    });
-
-    player.hlsQualitySelector();
-    player.ready(function () {
-      const promise = player.play();
-
-      if (promise !== undefined) {
-        promise
-          .then(function () {
-            console.log("Autoplay started!");
-            // Autoplay started!
-          })
-          .catch(function (error) {
-            console.log(error);
-            console.log("Autoplay was prevented");
-          });
-      }
-    });
-    player.on("error", () => {
-      player.src(src);
-    });
-  }, [src, videoEl]);
-
   return (
-    <>
-      <Box
-        as="video"
-        css={{ width: "100%", height: "calc(100vh - 164px)" }}
-        id="video"
-        muted
-        ref={onVideo}
-        className="h-full w-full video-js vjs-theme-city"
-        controls
-        playsInline
-      />
-    </>
+    <video
+      muted
+      autoPlay
+      ref={videoRef}
+      className="video-js vjs-big-play-centered"
+    />
   );
 };
 
-export default Player;
+export default VideoJS;
