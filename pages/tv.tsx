@@ -10,7 +10,7 @@ const TV = () => {
     "tv",
     async () => {
       const res = await axios.get(
-        "/api/stream/c6e78bdc-867d-4e1f-8fb3-9f24954b882e"
+        "/api/stream/0bb8feda-e95e-4afb-81b3-b9746be1dbf1"
       );
       return res.data;
     },
@@ -30,7 +30,7 @@ const TV = () => {
     fluid: true,
     sources: [
       {
-        src: "https://cdn.livepeer.com/hls/c6e7en1y2trfc941/index.m3u8",
+        src: "https://cdn.livepeer.com/hls/0bb8j4ngs9bf0nf3/index.m3u8",
         type: "application/x-mpegURL",
       },
     ],
