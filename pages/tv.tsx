@@ -28,14 +28,6 @@ const TV = () => {
     controls: true,
     responsive: true,
     fluid: true,
-
-    // html5: {
-    //   vhs: {
-    //     enableLowInitialPlaylist: false,
-    //     smoothQualityChange: true,
-    //     overrideNative: true,
-    //   },
-    // },
     sources: [
       {
         src: "https://cdn.livepeer.com/hls/c6e7en1y2trfc941/index.m3u8",

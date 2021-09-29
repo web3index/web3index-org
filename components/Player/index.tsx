@@ -38,12 +38,14 @@ export const VideoJS = (props) => {
   }, []);
 
   return (
-    <video
-      muted
-      autoPlay
-      ref={videoRef}
-      className="video-js vjs-big-play-centered"
-    />
+    <div data-vjs-player>
+      <video
+        muted
+        autoPlay
+        ref={videoRef}
+        className="video-js vjs-big-play-centered"
+      />
+    </div>
   );
 };
 
