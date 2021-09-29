@@ -6,6 +6,12 @@ import { IdProvider } from "@radix-ui/react-id";
 import { pageview } from "../lib/utils";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import "@videojs/themes/dist/fantasy/index.css";
+import "../css/tv.scss";
+import "../css/video.js.css";
+
+const queryClient = new QueryClient();
 
 const globalStyles = globalCss({
   body: {
@@ -63,8 +69,10 @@ const App = ({ Component, pageProps }) => {
         defaultTheme="dark"
         value={{ light: lightThemeClass.className }}
       >
-        <DefaultSeo {...SEO} />
-        <Component {...pageProps} />
+        <QueryClientProvider client={queryClient}>
+          <DefaultSeo {...SEO} />
+          <Component {...pageProps} />
+        </QueryClientProvider>
       </ThemeProvider>
     </IdProvider>
   );

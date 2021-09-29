@@ -1,6 +1,6 @@
-import Box from "../Box";
+import Box from "../components/Box";
+import Section from "../components/Section";
 import { TwitterLogoIcon, GitHubLogoIcon } from "@modulz/radix-icons";
-import ThemeToggle from "../ThemeToggle";
 import Link from "next/link";
 import { ReaderIcon } from "@modulz/radix-icons";
 
@@ -21,37 +21,42 @@ const DiscordIcon = ({ ...props }) => {
   );
 };
 
-const Footer = ({ logo = true, border = true, ...props }) => {
+const Index = ({ children }) => {
   return (
     <Box
       css={{
-        borderTop: "1px solid",
-        borderColor: border ? "$border" : "transparent",
-        py: "$4",
-        display: "grid",
-        gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
-        margin: "0 auto",
-        fontSize: "$1",
-        px: "$4",
-        "@bp2": {
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+        height: "100vh",
+        color: "$hiContrast",
+        background: "$loContrast",
+        "::selection": {
+          background: "$highlighter",
+        },
+        "::-moz-selection": {
+          background: "$highlighter",
         },
       }}
-      {...props}
     >
       <Box
         css={{
-          textAlign: "left",
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+          padding: "14px 0",
+        }}
+      >
+        <Box css={{ display: "flex", fontFamily: "$heading", fontSize: "$6" }}>
+          W
+        </Box>
+      </Box>
+      {children}
+
+      <Box
+        css={{
+          fontSize: "$1",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          mb: "$3",
-          order: 1,
-          "@bp2": {
-            mb: 0,
-            justifyContent: "flex-start",
-            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          },
+          height: 84,
         }}
       >
         <Link href="/blog" passHref>
@@ -122,33 +127,8 @@ const Footer = ({ logo = true, border = true, ...props }) => {
           <Box css={{ ml: "$2" }}>Discord</Box>
         </Box>
       </Box>
-      <Box
-        css={{
-          opacity: logo ? 1 : 0,
-          textAlign: "center",
-          order: 3,
-          fontFamily: "$heading",
-          "@bp2": {
-            order: 2,
-          },
-        }}
-      >
-        The Web3 Index
-      </Box>
-      <Box
-        css={{
-          display: "flex",
-          justifyContent: "flex-end",
-          order: 2,
-          "@bp2": {
-            order: 3,
-          },
-        }}
-      >
-        <ThemeToggle />
-      </Box>
     </Box>
   );
 };
 
-export default Footer;
+export default Index;

@@ -1,0 +1,287 @@
+.tv {
+  #screen {
+    width: 100%;
+    height: 100%;
+    background: transparent linear-gradient(to bottom, #85908c 0%, #323431 100%)
+      repeat scroll 0 0;
+    background-size: cover;
+  }
+
+  canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9998;
+    // background-color: #fff;
+    width: 100%;
+    height: 100%;
+
+    &.snow {
+      background-color: #aaa;
+      opacity: 0.2;
+    }
+  }
+
+  .screen-container {
+    width: 100vw;
+    height: calc(100vh - 166px);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .screen-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .vcr {
+    opacity: 0.6;
+  }
+  .video {
+    filter: blur(1px);
+    width: 100%;
+    height: 100%;
+  }
+  .image {
+    width: 100%;
+    height: auto;
+    filter: blur(1.2px);
+  }
+  .vignette {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/86186/crt.png);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    z-index: 10000;
+  }
+  .scanlines {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    background: linear-gradient(
+        transparentize(#121010, 1) 50%,
+        transparentize(darken(#121010, 10), 0.75) 50%
+      ),
+      linear-gradient(
+        90deg,
+        transparentize(#ff0000, 0.94),
+        transparentize(#00ff00, 0.98),
+        transparentize(#0000ff, 0.94)
+      );
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+
+  .wobblex {
+    animation: wobblex 100ms infinite;
+  }
+
+  .wobbley {
+    animation: wobbley 100ms infinite;
+  }
+
+  .glitch {
+    animation: 5s ease 2000ms normal none infinite running glitch;
+  }
+
+  @mixin pseudo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    content: " ";
+  }
+
+  @keyframes wobblex {
+    50% {
+      transform: translateX(1px);
+    }
+    51% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes wobbley {
+    0% {
+      transform: translateY(1px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  @keyframes glitch {
+    30% {
+    }
+    40% {
+      opacity: 1;
+      transform: scale(1, 1);
+      transform: skew(0, 0);
+    }
+    41% {
+      opacity: 0.8;
+      transform: scale(1, 1.2);
+      transform: skew(80deg, 0);
+    }
+    42% {
+      opacity: 0.8;
+      transform: scale(1, 1.2);
+      transform: skew(-50deg, 0);
+    }
+    43% {
+      opacity: 1;
+      transform: scale(1, 1);
+      transform: skew(0, 0);
+    }
+    65% {
+    }
+  }
+
+  @keyframes glitch1 {
+    0% {
+      transform: translateX(0);
+    }
+    30% {
+      transform: translateX(0);
+    }
+    31% {
+      transform: translateX(10px);
+    }
+    32% {
+      transform: translateX(0);
+    }
+    98% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(10px);
+    }
+  }
+  .text span:nth-child(2) {
+    animation: glitch2 1s infinite;
+  }
+  @keyframes glitch2 {
+    0% {
+      transform: translateX(0);
+    }
+    30% {
+      transform: translateX(0);
+    }
+    31% {
+      transform: translateX(-10px);
+    }
+    32% {
+      transform: translateX(0);
+    }
+    98% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-10px);
+    }
+  }
+
+  .overlay .text {
+    animation: 5s ease 2000ms normal none infinite running glitch;
+  }
+
+  .on > .screen-wrapper {
+    animation: 3000ms linear 0ms normal forwards 1 running on;
+  }
+  .off > .screen-wrapper {
+    animation: 750ms cubic-bezier(0.23, 1, 0.32, 1) 0ms normal forwards 1
+      running off;
+  }
+
+  @keyframes on {
+    0% {
+      transform: scale(1, 0.8) translate3d(0, 0, 0);
+      filter: brightness(4);
+      opacity: 1;
+    }
+    3.5% {
+      transform: scale(1, 0.8) translate3d(0, 100%, 0);
+    }
+
+    3.6% {
+      transform: scale(1, 0.8) translate3d(0, -100%, 0);
+      opacity: 1;
+    }
+
+    9% {
+      transform: scale(1.3, 0.6) translate3d(0, 100%, 0);
+      filter: brightness(4);
+      opacity: 0;
+    }
+
+    11% {
+      transform: scale(1, 1) translate3d(0, 0, 0);
+      filter: contrast(0) brightness(0);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1, 1) translate3d(0, 0, 0);
+      filter: contrast(1) brightness(1.2) saturate(1.3);
+      opacity: 1;
+    }
+  }
+
+  @keyframes off {
+    0% {
+      transform: scale(1, 1);
+      filter: brightness(1);
+    }
+    40% {
+      transform: scale(1, 0.005);
+      filter: brightness(100);
+    }
+    70% {
+      transform: scale(1, 0.005);
+    }
+    90% {
+      transform: scale(0.005, 0.005);
+    }
+    100% {
+      transform: scale(0, 0);
+    }
+  }
+
+  .roller {
+    position: relative;
+
+    // &::after {
+    // 	width: 100%;
+    // 	height: 3px;
+    // 	position: absolute;
+    // 	left: 0;
+    // 	top: 0;
+    // 	background-color: rgba(0,0,0,0.2);
+    // 	filter: blur(1px);
+    // 	content: "";
+    // 	animation: 1000ms linear 0ms forwards infinite roll;
+    // }
+    animation: 2000ms linear 0ms forwards infinite roll;
+  }
+
+  @keyframes roll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+}
+
+.dg.ac {
+  z-index: 10000 !important;
+  display: none;
+}

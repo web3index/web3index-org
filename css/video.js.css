@@ -1,0 +1,8 @@
+.vjs-tech {
+  height: calc(100vh - 164px) !important;
+}
+
+.video-js {
+  height: calc(100vh - 164px) !important;
+  padding-top: 0 !important;
+}
