@@ -15,8 +15,8 @@ const TV = () => {
       return res.data;
     },
     {
-      // Refetch the data every 4 seconds
-      refetchInterval: 4000,
+      // Refetch the data every 5 seconds
+      refetchInterval: 5000,
     }
   );
 
