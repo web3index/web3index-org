@@ -2,6 +2,7 @@ import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
 import Button from "../Button";
+import Link from "next/link";
 
 const Header = ({ revenue, ...props }) => {
   return (
@@ -49,6 +50,35 @@ const Header = ({ revenue, ...props }) => {
           percentChange={revenue.thirtyDayPercentChange}
           revenue={revenue.thirtyDayTotal}
         />
+        <Link href="/tv" passHref>
+          <Button
+            as="a"
+            css={{
+              flex: "1 0 auto",
+              textAlign: "center",
+              backgroundColor: "$loContrast",
+              color: "$hiContrast",
+              border: "1px solid",
+              borderColor: "$border",
+              textDecoration: "none",
+              justifyContent: "center",
+              width: "100%",
+              mb: "$3",
+              lineHeight: 1.2,
+              ml: "$3",
+              display: "flex",
+              "@bp2": {
+                mb: 0,
+                width: "auto",
+              },
+            }}
+          >
+            <Box css={{ mr: "$2" }}>TV</Box>
+            <span role="img" aria-label="tv">
+              📺
+            </span>
+          </Button>
+        </Link>
         <Box
           css={{
             width: "100%",

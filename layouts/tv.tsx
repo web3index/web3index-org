@@ -1,8 +1,7 @@
 import Box from "../components/Box";
-import Section from "../components/Section";
 import { TwitterLogoIcon, GitHubLogoIcon } from "@modulz/radix-icons";
 import Link from "next/link";
-import { ReaderIcon } from "@modulz/radix-icons";
+import { ReaderIcon, ListBulletIcon } from "@modulz/radix-icons";
 
 const DiscordIcon = ({ ...props }) => {
   return (
@@ -59,7 +58,7 @@ const Index = ({ children }) => {
           height: 84,
         }}
       >
-        <Link href="/blog" passHref>
+        <Link href="/" passHref>
           <Box
             as="a"
             css={{
@@ -68,6 +67,22 @@ const Index = ({ children }) => {
               display: "flex",
               alignItems: "center",
               pr: "$3",
+              fontWeight: 500,
+            }}
+          >
+            <ListBulletIcon />
+            <Box css={{ ml: "$2" }}>Index</Box>
+          </Box>
+        </Link>
+        <Link href="/blog" passHref>
+          <Box
+            as="a"
+            css={{
+              textDecoration: "none",
+              color: "$hiContrast",
+              display: "flex",
+              alignItems: "center",
+              px: "$2",
               fontWeight: 500,
             }}
           >
