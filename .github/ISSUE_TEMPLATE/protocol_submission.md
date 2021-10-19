@@ -31,16 +31,3 @@ i.e. "Work Protocol"
 ## Subcategory
 
 i.e. "Storage"
-
-## Blockchain
-
-i.e. "Ethereum". If it's a custom chain enter your protocol's name
-
-## Image
-
-Provide a link to an svg version of the logo.
-
-## Brand Color
-
-Enter the protocol's brand color in hex value format
-
