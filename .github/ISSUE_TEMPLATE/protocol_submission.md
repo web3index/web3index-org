@@ -14,9 +14,13 @@ i.e. Livepeer
 
 i.e. LPT
 
-## Brand Color
+## Description
 
-Enter the protocol's brand color in hex value format
+## Fee / revenue Data Source
+
+Will the protocol's fee data get sourced using The Web3 Index subgraph or a publically accessible endpoint? For more information on how to provide revenue data for protocol submission check out the README.
+
+## Why do you believe this project is a good fit for The Web3 Index?
 
 ## Category
 
@@ -28,20 +32,13 @@ i.e. "Storage"
 
 ## Blockchain
 
-i.e. "Ethereum". If it's a custom chain enter "Custom"
-
-## Everest ID
-
-Everest is used to pull information about the protocol such as the description. It can be found by searching for the protocol on [everest.link](https://everest.link).
-
-## Description
-
-Optional. If you don't provide a description it will pull from Everest
+i.e. "Ethereum". If it's a custom chain enter your protocol's name
 
 ## Image
 
 Provide a link to an svg version of the logo.
 
-## Revenue Data Source
+## Brand Color
 
-Will the protocol's revenue data get sourced using The Web3 Index subgraph or a publically accessible endpoint? For more information on how to provide revenue data for protocol submission check out the README.
+Enter the protocol's brand color in hex value format
+
