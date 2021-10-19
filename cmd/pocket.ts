@@ -145,7 +145,7 @@ const getProject = async (name: string) => {
     await prisma.project.create({
       data: {
         name: name,
-        lastImportedId: "1632268800",
+        lastImportedId: "1625112000", // July 1st 2021
       },
     });
 
