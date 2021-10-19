@@ -16,9 +16,11 @@ i.e. LPT
 
 ## Description
 
-## Fee / revenue Data Source
+## Fee / revenue data source
 
-Will the protocol's fee data get sourced using The Web3 Index subgraph or a publically accessible endpoint? For more information on how to provide revenue data for protocol submission check out the README.
+i.e. How is the revenue data sourced? Does it use the The Web3 Index subgraph, The Web3 Index DB, or publically accessible endpoint? For more information on how to provide revenue data for protocol submission check out the README.
+
+## Who are the demand and supply side participants in the protocol?
 
 ## Why do you believe this project is a good fit for The Web3 Index?
 
