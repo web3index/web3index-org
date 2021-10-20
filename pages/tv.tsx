@@ -36,21 +36,6 @@ const TV = () => {
     ],
   };
 
-  const handlePlayerReady = (player) => {
-    playerRef.current = player;
-
-    player.hlsQualitySelector();
-
-    // you can handle player events here
-    player.on("waiting", () => {
-      console.log("player is waiting");
-    });
-
-    player.on("dispose", () => {
-      console.log("player will dispose");
-    });
-  };
-
   if (isLoading) {
     return (
       <Layout>
@@ -60,11 +45,7 @@ const TV = () => {
   }
   return (
     <Layout>
-      {data.isActive ? (
-        <Player options={videoJsOptions} onReady={handlePlayerReady} />
-      ) : (
-        <OldTV />
-      )}
+      {data.isActive ? <Player options={videoJsOptions} /> : <OldTV />}
     </Layout>
   );
 };
