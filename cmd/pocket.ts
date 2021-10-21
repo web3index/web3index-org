@@ -17,7 +17,7 @@ const influxClient = new InfluxDB({
 });
 
 // .01 relays/pokt * 89% validator allocation
-const relayToPOKTRatio = 0.1 * 0.89;
+const relayToPOKTRatio = 0.01 * 0.89;
 
 const queryApi = influxClient.getQueryApi(influxOrg);
 
