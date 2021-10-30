@@ -80,5 +80,17 @@
     "usage": "https://akashlytics.com/web3-index/revenue",
     "coingeckoID": "akash-network",
     "genesisDate": "2020-09-24"
+  },
+  "phala": {
+    "blockchain": "Phala Blockchain",
+    "category": "Work Protocol",
+    "color": "#A7E300",
+    "everestID": "0x6dfa2de2b001d53a0d83e2ec092e048de13f22c3",
+    "image": "https://web3index.org/logos/phala.svg",
+    "name": "Phala Network",
+    "stack": "Middleware",
+    "subcategory": "Compute",
+    "symbol": "PHA",
+    "coingeckoID": "phala-network"
   }
 }
