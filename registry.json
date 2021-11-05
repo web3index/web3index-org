@@ -77,7 +77,6 @@
     "stack": "Middleware",
     "subcategory": "Compute",
     "symbol": "AKT",
-    "usage": "https://akashlytics.com/web3-index/revenue",
     "coingeckoID": "akash-network",
     "genesisDate": "2020-09-24"
   }
