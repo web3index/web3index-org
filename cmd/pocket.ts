@@ -3,7 +3,7 @@ import prisma from "../lib/prisma";
 // POKT Price API
 const axios = require("axios");
 const priceEndpoint =
-  "http://ec2-18-221-252-68.us-east-2.compute.amazonaws.com/prices/pokt";
+  "http://ec2-35-177-209-25.eu-west-2.compute.amazonaws.com/prices/pokt";
 
 // Pocket Network Metrics
 const { InfluxDB } = require("@influxdata/influxdb-client");
