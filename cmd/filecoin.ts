@@ -70,7 +70,7 @@ const filecoinImport = async () => {
 
     const fee = {
       date: fromDate.getTime() / 1000,
-      fees: element.revenue_supply_side,
+      fees: element.revenue,
     };
 
     console.log(
