@@ -12,6 +12,7 @@ model Project {
     name String @unique
     lastImportedId String
     days Day[]
+    delete Boolean?
 }
 
 model Day {
