@@ -25,6 +25,18 @@ const filecoinImport = async () => {
   // Get last imported id: we will start importing from there
   const project = await getProject(coin.name);
 
+  // Delete project if delete: True
+  const deleteProject = project.delete;
+  if (deleteProject) {
+    await prisma.project.update({
+      data: {
+        delete: false,
+        days: [],
+        lastImportedId: "0",
+      },
+    });
+  }
+
   const response = await axios
     .get(endpoint, {
       params: params,
