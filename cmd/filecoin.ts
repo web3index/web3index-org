@@ -29,9 +29,11 @@ const filecoinImport = async () => {
   const deleteProject = project.delete;
   if (deleteProject) {
     await prisma.project.update({
+      where: {
+        name: coin.name,
+      },
       data: {
         delete: false,
-        days: [],
         lastImportedId: "0",
       },
     });
