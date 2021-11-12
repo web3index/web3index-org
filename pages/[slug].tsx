@@ -216,9 +216,9 @@ const Project = ({ slug, index, projects, project }) => {
             <Box css={{ mt: "$5" }}>
               <Box css={{ mb: "$4" }}>
                 <Alert>
-                  The paid fees being reported for Filecoin do not currently
-                  meet The Web3 Index criteria. We&apos;re working on gathering
-                  the correct data. Check back soon.
+                  The paid fees being reported for Filecoin do not meet The Web3
+                  Index criteria. We&apos;re working on gathering the correct
+                  data. Check back soon.
                 </Alert>
               </Box>
               <Box css={{ fontSize: "$5", mb: "$3" }}>

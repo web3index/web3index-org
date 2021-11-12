@@ -298,9 +298,9 @@ function renderSwitch(cell) {
               </TooltipTrigger>
               <TooltipContent>
                 <TooltipArrow />
-                The paid fees being reported for Filecoin do not currently meet
-                The Web3 Index criteria. We&apos;re working on gathering the
-                correct data. Check back soon.
+                The paid fees being reported for Filecoin do not meet The Web3
+                Index criteria. We&apos;re working on gathering the correct
+                data. Check back soon.
               </TooltipContent>
             </Tooltip>
           )}
