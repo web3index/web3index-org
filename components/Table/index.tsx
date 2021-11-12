@@ -15,7 +15,13 @@ import {
   InfoCircledIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
+
+const StyledExclamationTriangleIcon = styled(ExclamationTriangleIcon, {
+  color: "#ffa726",
+  ml: "$2",
+});
 
 const Table = ({ columns, data, ...props }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -285,6 +291,19 @@ function renderSwitch(cell) {
           >
             ({cell.row.values.symbol})
           </Box>
+          {cell.row.values.symbol === "FIL" && (
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger>
+                <StyledExclamationTriangleIcon />
+              </TooltipTrigger>
+              <TooltipContent>
+                <TooltipArrow />
+                The paid fees being reported for Filecoin do not currently meet
+                The Web3 Index criteria. We&apos;re working on gathering the
+                correct data. Check back soon.
+              </TooltipContent>
+            </Tooltip>
+          )}
         </Box>
       );
     default:

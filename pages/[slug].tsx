@@ -1,7 +1,6 @@
 import Ajv from "ajv";
 import schema from "../schema.json";
 import registry from "../registry.json";
-import { trophies } from "../lib/utils";
 import Layout from "../layouts";
 import ProjectHeader from "../components/ProjectHeader";
 import Box from "../components/Box";
@@ -32,6 +31,7 @@ import seo from "../next-seo.config";
 import { useRouter } from "next/router";
 import { getProject } from "./api/projects/[id]";
 import { getProjects } from "./api/projects";
+import Alert from "../components/Alert";
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
@@ -214,6 +214,13 @@ const Project = ({ slug, index, projects, project }) => {
             }}
           >
             <Box css={{ mt: "$5" }}>
+              <Box css={{ mb: "$4" }}>
+                <Alert>
+                  The paid fees being reported for Filecoin do not currently
+                  meet The Web3 Index criteria. We&apos;re working on gathering
+                  the correct data. Check back soon.
+                </Alert>
+              </Box>
               <Box css={{ fontSize: "$5", mb: "$3" }}>
                 {/* <span role="img" aria-label="#1">
                   {trophies[index]}
