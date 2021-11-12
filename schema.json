@@ -65,6 +65,13 @@
       "examples": ["GRT"],
       "pattern": "^.*$"
     },
+    "delist": {
+      "$id": "#root/delist",
+      "title": "Delist",
+      "type": "boolean",
+      "default": "",
+      "examples": ["true"]
+    },
     "everestID": {
       "$id": "#root/everestID",
       "title": "Everestid",

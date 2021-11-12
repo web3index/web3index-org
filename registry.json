@@ -65,7 +65,8 @@
     "subcategory": "Storage",
     "symbol": "FIL",
     "coingeckoID": "filecoin",
-    "genesisDate": "2020-10-14"
+    "genesisDate": "2020-10-14",
+    "delist": true
   },
   "akash": {
     "blockchain": "Akash",

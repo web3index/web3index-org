@@ -15,13 +15,7 @@ import {
   InfoCircledIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
-
-const StyledExclamationTriangleIcon = styled(ExclamationTriangleIcon, {
-  color: "#ffa726",
-  ml: "$2",
-});
 
 const Table = ({ columns, data, ...props }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -36,7 +30,14 @@ const Table = ({ columns, data, ...props }) => {
               desc: true,
             },
           ],
-          hiddenColumns: ["revenue", "image", "symbol", "usage", "slug"],
+          hiddenColumns: [
+            "revenue",
+            "image",
+            "symbol",
+            "usage",
+            "slug",
+            "delist",
+          ],
         },
       },
       useSortBy
@@ -206,11 +207,13 @@ function renderSwitch(cell) {
       ).toLocaleString()}`;
     }
     case "usage.revenue.thirtyDayTotal": {
+      if (cell.row.values.delist) return;
       return `$${Math.round(
         cell.row.values.usage.revenue.thirtyDayTotal
       ).toLocaleString()}`;
     }
     case "usage.revenue.ninetyDayTotal": {
+      if (cell.row.values.delist) return;
       return `$${Math.round(
         cell.row.values.usage.revenue.ninetyDayTotal
       ).toLocaleString()}`;
@@ -234,6 +237,7 @@ function renderSwitch(cell) {
       );
     }
     case "usage.revenue.thirtyDayPercentChange": {
+      if (cell.row.values.delist) return;
       const color =
         cell.row.values.usage.revenue.thirtyDayPercentChange > 0
           ? defaultTheme.colors.green
@@ -255,6 +259,7 @@ function renderSwitch(cell) {
       );
     }
     case "lastThirtyDays": {
+      if (cell.row.values.delist) return;
       const color =
         cell.row.values.usage.revenue.thirtyDayPercentChange > 0
           ? defaultTheme.colors.green
@@ -291,19 +296,6 @@ function renderSwitch(cell) {
           >
             ({cell.row.values.symbol})
           </Box>
-          {cell.row.values.symbol === "FIL" && (
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger>
-                <StyledExclamationTriangleIcon />
-              </TooltipTrigger>
-              <TooltipContent>
-                <TooltipArrow />
-                The paid fees being reported for Filecoin do not meet The Web3
-                Index criteria. We&apos;re working on gathering the correct
-                data. Check back soon.
-              </TooltipContent>
-            </Tooltip>
-          )}
         </Box>
       );
     default:

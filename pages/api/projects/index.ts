@@ -45,20 +45,25 @@ export const getProjects = async () => {
             ...data.usage.revenue,
             oneWeekTotal,
             oneWeekPercentChange,
-            thirtyDayTotal,
+            thirtyDayTotal: registry[project].delist ? 0 : thirtyDayTotal,
             thirtyDayPercentChange,
-            ninetyDayTotal:
-              data.usage.revenue.now - data.usage.revenue.ninetyDaysAgo,
+            ninetyDayTotal: registry[project].delist
+              ? 0
+              : data.usage.revenue.now - data.usage.revenue.ninetyDaysAgo,
           },
         },
       });
 
-      totalParticipantRevenueNow += data.usage.revenue.now;
-      totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;
-      totalParticipantRevenueTwoWeeksAgo += data.usage.revenue.twoWeeksAgo;
-      totalParticipantRevenueThirtyDaysAgo += data.usage.revenue.thirtyDaysAgo;
-      totalParticipantRevenueSixtyDaysAgo += data.usage.revenue.sixtyDaysAgo;
-      totalParticipantRevenueNinetyDaysAgo += data.usage.revenue.ninetyDaysAgo;
+      if (!registry[project].delist) {
+        totalParticipantRevenueNow += data.usage.revenue.now;
+        totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;
+        totalParticipantRevenueTwoWeeksAgo += data.usage.revenue.twoWeeksAgo;
+        totalParticipantRevenueThirtyDaysAgo +=
+          data.usage.revenue.thirtyDaysAgo;
+        totalParticipantRevenueSixtyDaysAgo += data.usage.revenue.sixtyDaysAgo;
+        totalParticipantRevenueNinetyDaysAgo +=
+          data.usage.revenue.ninetyDaysAgo;
+      }
     }
   }
 
