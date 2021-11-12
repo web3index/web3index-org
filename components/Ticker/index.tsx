@@ -71,7 +71,7 @@ const Ticker = ({ projects }) => {
         >
           {projects.map(
             (project, i) =>
-              !project.delisted && <Project key={i} project={project} />
+              !project.delist && <Project key={i} project={project} />
           )}
         </Marquee>
       )}
