@@ -169,6 +169,9 @@ const Table = ({ columns, data, ...props }) => {
                           borderColor: "$border",
                           verticalAlign: "middle",
                           width: "auto",
+                          borderTopStyle: cell.row.values.delist
+                            ? "dashed"
+                            : "solid",
                           display: cell.column.hideOnMobile
                             ? "none"
                             : "table-cell",
@@ -207,13 +210,13 @@ function renderSwitch(cell) {
       ).toLocaleString()}`;
     }
     case "usage.revenue.thirtyDayTotal": {
-      if (cell.row.values.delist) return;
+      if (cell.row.values.delist) return "--";
       return `$${Math.round(
         cell.row.values.usage.revenue.thirtyDayTotal
       ).toLocaleString()}`;
     }
     case "usage.revenue.ninetyDayTotal": {
-      if (cell.row.values.delist) return;
+      if (cell.row.values.delist) return "--";
       return `$${Math.round(
         cell.row.values.usage.revenue.ninetyDayTotal
       ).toLocaleString()}`;
@@ -237,7 +240,7 @@ function renderSwitch(cell) {
       );
     }
     case "usage.revenue.thirtyDayPercentChange": {
-      if (cell.row.values.delist) return;
+      if (cell.row.values.delist) return "--";
       const color =
         cell.row.values.usage.revenue.thirtyDayPercentChange > 0
           ? defaultTheme.colors.green
@@ -259,7 +262,7 @@ function renderSwitch(cell) {
       );
     }
     case "lastThirtyDays": {
-      if (cell.row.values.delist) return;
+      if (cell.row.values.delist) return "--";
       const color =
         cell.row.values.usage.revenue.thirtyDayPercentChange > 0
           ? defaultTheme.colors.green

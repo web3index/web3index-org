@@ -19,7 +19,6 @@ import {
 import { styled } from "../stitches.config";
 
 const StyledExclamationTriangleIcon = styled(ExclamationTriangleIcon, {
-  color: "#ffa726",
   textAlign: "left",
 });
 
