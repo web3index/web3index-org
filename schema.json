@@ -65,9 +65,9 @@
       "examples": ["GRT"],
       "pattern": "^.*$"
     },
-    "delist": {
-      "$id": "#root/delist",
-      "title": "Delist",
+    "untracked": {
+      "$id": "#root/untracked",
+      "title": "Untracked",
       "type": "boolean",
       "default": "",
       "examples": ["true"]

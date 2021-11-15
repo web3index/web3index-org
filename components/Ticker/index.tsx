@@ -69,9 +69,10 @@ const Ticker = ({ projects }) => {
         <Marquee
           gradientColor={resolvedTheme === "dark" ? [0, 0, 0] : [255, 255, 255]}
         >
-          {projects.map(
+          {[...projects, ...projects].map(
             (project, i) =>
-              !project.delist && <Project key={i} project={project} />
+              !project.untracked &&
+              !project.hide && <Project key={i} project={project} />
           )}
         </Marquee>
       )}

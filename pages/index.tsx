@@ -28,7 +28,7 @@ const StyledTooltipTrigger = styled(TooltipTrigger, {
 });
 
 const Rank = ({ row }) => {
-  return row.values.delist ? (
+  return row.values.untracked ? (
     <Tooltip delayDuration={0}>
       <StyledTooltipTrigger>
         <StyledExclamationTriangleIcon />
@@ -99,8 +99,8 @@ const Home = ({ faq, revenue, projects }) => {
         accessor: "usage",
       },
       {
-        Header: "Delist",
-        accessor: "delist",
+        Header: "Untracked",
+        accessor: "untracked",
       },
     ],
     []

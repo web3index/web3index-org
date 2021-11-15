@@ -22,7 +22,7 @@ export const getProjects = async () => {
     const data: Project = await getProject(project);
     const valid = validate(data);
 
-    if (valid) {
+    if (valid && !registry[project].hide) {
       const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
         data.usage.revenue.now,
         data.usage.revenue.oneWeekAgo,
@@ -45,16 +45,16 @@ export const getProjects = async () => {
             ...data.usage.revenue,
             oneWeekTotal,
             oneWeekPercentChange,
-            thirtyDayTotal: registry[project].delist ? 0 : thirtyDayTotal,
+            thirtyDayTotal: registry[project].untracked ? 0 : thirtyDayTotal,
             thirtyDayPercentChange,
-            ninetyDayTotal: registry[project].delist
+            ninetyDayTotal: registry[project].untracked
               ? 0
               : data.usage.revenue.now - data.usage.revenue.ninetyDaysAgo,
           },
         },
       });
 
-      if (!registry[project].delist) {
+      if (!registry[project].untracked) {
         totalParticipantRevenueNow += data.usage.revenue.now;
         totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;
         totalParticipantRevenueTwoWeeksAgo += data.usage.revenue.twoWeeksAgo;

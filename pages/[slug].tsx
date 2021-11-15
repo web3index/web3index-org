@@ -214,7 +214,7 @@ const Project = ({ slug, index, projects, project }) => {
             }}
           >
             <Box css={{ mt: "$5" }}>
-              {!project.delist && (
+              {!project.untracked && (
                 <Box css={{ fontSize: "$5", mb: "$3" }}>
                   {/* <span role="img" aria-label="#1">
                   {trophies[index]}
@@ -254,7 +254,7 @@ const Project = ({ slug, index, projects, project }) => {
               <Box as="p" css={{ mt: 0, lineHeight: "24px", mb: "$4" }}>
                 {project.description}
               </Box>
-              {!project.delist && (
+              {!project.untracked && (
                 <Box
                   css={{
                     mb: "$4",
@@ -430,7 +430,7 @@ const Project = ({ slug, index, projects, project }) => {
                 },
               }}
             >
-              {project.delist ? (
+              {project.untracked ? (
                 <Box css={{ mb: "$4" }}>
                   <Alert>
                     It&apos;s been reported that the demand-side fees being

@@ -66,7 +66,7 @@
     "symbol": "FIL",
     "coingeckoID": "filecoin",
     "genesisDate": "2020-10-14",
-    "delist": true
+    "untracked": true
   },
   "akash": {
     "blockchain": "Akash",
