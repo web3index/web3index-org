@@ -91,6 +91,7 @@
     "stack": "Middleware",
     "subcategory": "Infrastructure",
     "symbol": "POKT",
-    "genesisDate": "2020-07-28"
+    "genesisDate": "2020-07-28",
+    "hide": true
   }
 }
