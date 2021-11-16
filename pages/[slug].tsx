@@ -469,7 +469,7 @@ export async function getStaticPaths() {
     const data = await getProject(project);
     const valid = validate(data);
 
-    if (valid) {
+    if (valid && !registry[project].hide) {
       paths.push({
         params: {
           slug: project,
