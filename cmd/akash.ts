@@ -2,7 +2,6 @@ import prisma from "../lib/prisma";
 
 const endpoint = "https://akashlytics.com/web3-index/revenue";
 const conversionFactor = 1;
-const batchSize = 30;
 const axios = require("axios");
 
 const coin = {
