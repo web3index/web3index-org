@@ -246,7 +246,7 @@ const getPOKTNetworkData = async (date: Date) => {
   const dateTo = new Date(dateFrom.setUTCDate(dateFrom.getUTCDate() + 1));
   const ISODateTo = formatDate(dateTo);
 
-  // For now, the API is only useful for a 1 day range requested data.
+  // TODO: Make use of hourly data instead of days
   const payload = { from: ISODateFrom, to: ISODateTo, debug: true };
 
   try {
