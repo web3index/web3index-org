@@ -4,6 +4,9 @@ import prisma from "../lib/prisma";
 const axios = require("axios");
 const priceEndpoint =
   "http://ec2-35-177-209-25.eu-west-2.compute.amazonaws.com/prices/pokt";
+const supplyEndpoint = "https://poktscan.com/api/pokt-network/supply";
+const totalAppStakesEndpoint =
+  "https://poktscan.com/api/pokt-network/app_staked_tokens";
 
 // Pocket Network Metrics
 const { InfluxDB } = require("@influxdata/influxdb-client");
@@ -53,13 +56,21 @@ const pocketImport = async () => {
 
   const days = dateRangeToList(fromDate, toDate);
   const dateDiff = dateDiffInDays(fromDate, toDate);
+
   const pocketPrices = await getPOKTDayPrices(
+    formatDate(fromDate),
+    formatDate(toDate)
+  );
+
+  const supplyData = await getPOKTSupply(
     formatDate(fromDate),
     formatDate(toDate)
   );
 
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DD
+
+    const { totalAppStakes } = await getPOKTotalAppStakes(day);
 
     if (dateDiff >= 1) {
       // If data was last updated was more than a day ago,
@@ -104,8 +115,14 @@ const pocketImport = async () => {
       (x) => x.date === dayISO
     );
 
+    const { supply: totalPOKTsupply } = supplyData.find(
+      (x) => x.date === dayISO
+    );
+
     if (successfulRelays > 0 && currentDayPrice > 0) {
-      revenue = successfulRelays * relayToPOKTRatio * currentDayPrice;
+      revenue =
+        (totalAppStakes / totalPOKTsupply) *
+        (successfulRelays * relayToPOKTRatio * currentDayPrice);
     }
 
     console.log(
@@ -231,6 +248,60 @@ const getPOKTDayPrices = async (dateFrom: string, dateTo: string) => {
   }
 };
 
+const getPOKTSupply = async (dateFrom: string, dateTo: string) => {
+  const daySupply: DaySupply[] = [];
+
+  const payload = { from: dateFrom, to: dateTo };
+  try {
+    const { data: response } = await axios.post(supplyEndpoint, payload);
+
+    if (!response) {
+      throw new Error("No data returned by the supply API.");
+    }
+
+    for (const entry of response.data) {
+      const supply = parseFloat(entry.supply);
+      const date = String(entry.date);
+
+      daySupply.push({ supply, date } as DaySupply);
+    }
+
+    return daySupply;
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+const getPOKTotalAppStakes = async (date: Date) => {
+  const dateFrom = date;
+  const ISODateFrom = formatDate(dateFrom);
+
+  const dateTo = new Date(dateFrom.setUTCDate(dateFrom.getUTCDate() + 1));
+  const ISODateTo = formatDate(dateTo);
+
+  // For now, the API is only useful for a 1 day range requested data.
+  const payload = { from: ISODateFrom, to: ISODateTo };
+
+  try {
+    const { data: response } = await axios.post(
+      totalAppStakesEndpoint,
+      payload
+    );
+
+    if (!response) {
+      throw new Error("No data returned by the poktscan API.");
+    }
+
+    const [data] = response;
+
+    return {
+      totalAppStakes: data.total_apps_staked_tokens,
+    };
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
 const dateDiffInDays = (fromDate: Date, toDate: Date): number => {
   const _MS_PER_DAY = 1000 * 60 * 60 * 24;
   const utc1 = Date.UTC(
@@ -278,6 +349,11 @@ const countRelays = (influxResponse: any): number => {
 type DayPrice = {
   date: string;
   price: number;
+};
+
+type DaySupply = {
+  date: string;
+  supply: number;
 };
 
 pocketImport()
