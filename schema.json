@@ -65,6 +65,13 @@
       "examples": ["GRT"],
       "pattern": "^.*$"
     },
+    "untracked": {
+      "$id": "#root/untracked",
+      "title": "Untracked",
+      "type": "boolean",
+      "default": "",
+      "examples": ["true"]
+    },
     "everestID": {
       "$id": "#root/everestID",
       "title": "Everestid",

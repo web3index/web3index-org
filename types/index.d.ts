@@ -31,6 +31,7 @@ export interface Project {
   color: Color;
   coingeckoID?: CoingeckoID;
   usage: Usage;
+  untracked: boolean;
   [k: string]: unknown;
 }
 export interface Usage {

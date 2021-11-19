@@ -1,7 +1,6 @@
 import Ajv from "ajv";
 import schema from "../schema.json";
 import registry from "../registry.json";
-import { trophies } from "../lib/utils";
 import Layout from "../layouts";
 import ProjectHeader from "../components/ProjectHeader";
 import Box from "../components/Box";
@@ -32,6 +31,7 @@ import seo from "../next-seo.config";
 import { useRouter } from "next/router";
 import { getProject } from "./api/projects/[id]";
 import { getProjects } from "./api/projects";
+import Alert from "../components/Alert";
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
@@ -214,12 +214,14 @@ const Project = ({ slug, index, projects, project }) => {
             }}
           >
             <Box css={{ mt: "$5" }}>
-              <Box css={{ fontSize: "$5", mb: "$3" }}>
-                {/* <span role="img" aria-label="#1">
+              {!project.untracked && (
+                <Box css={{ fontSize: "$5", mb: "$3" }}>
+                  {/* <span role="img" aria-label="#1">
                   {trophies[index]}
                 </span>{" "} */}
-                #{index + 1}
-              </Box>
+                  #{index + 1}
+                </Box>
+              )}
               <Box
                 css={{
                   mb: "$3",
@@ -252,114 +254,122 @@ const Project = ({ slug, index, projects, project }) => {
               <Box as="p" css={{ mt: 0, lineHeight: "24px", mb: "$4" }}>
                 {project.description}
               </Box>
-              <Box
-                css={{
-                  mb: "$4",
-                  display: "grid",
-                  gap: 30,
-                  gridTemplateColumns: "repeat(1, 1fr)",
-                  "@bp2": {
+              {!project.untracked && (
+                <Box
+                  css={{
+                    mb: "$4",
+                    display: "grid",
                     gap: 30,
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                  },
-                }}
-              >
-                <Box>
-                  <Metric label="Category" value={project.category} />
-                  <Metric label="Subcategory" value={project.subcategory} />
-                  <Metric label="Blockchain" value={project.blockchain} />
-                  <Metric label="Genesis Date" value={project.genesisDate} />
+                    gridTemplateColumns: "repeat(1, 1fr)",
+                    "@bp2": {
+                      gap: 30,
+                      gridTemplateColumns: "repeat(2, 1fr)",
+                    },
+                  }}
+                >
+                  <Box>
+                    <Metric label="Category" value={project.category} />
+                    <Metric label="Subcategory" value={project.subcategory} />
+                    <Metric label="Blockchain" value={project.blockchain} />
+                    <Metric label="Genesis Date" value={project.genesisDate} />
+                  </Box>
+                  <Box>
+                    <Metric
+                      label="30d Revenue"
+                      value={
+                        <Box>
+                          <Tooltip delayDuration={0}>
+                            <Box
+                              css={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Box css={{ mr: "$1" }}>
+                                $
+                                {Math.round(
+                                  project.usage.revenue.thirtyDayTotal
+                                ).toLocaleString()}
+                              </Box>
+                              <TooltipTrigger>
+                                <InfoCircledIcon />
+                              </TooltipTrigger>
+                            </Box>
+                            <TooltipContent>
+                              <TooltipArrow />
+                              Total demand side revenue accrued by the protocol
+                              over the last 30 days.
+                            </TooltipContent>
+                          </Tooltip>
+                        </Box>
+                      }
+                    />
+                    <Metric
+                      label="90d Revenue"
+                      value={
+                        <Box>
+                          <Tooltip delayDuration={0}>
+                            <Box
+                              css={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Box css={{ mr: "$1" }}>
+                                $
+                                {Math.round(
+                                  project.usage.revenue.ninetyDayTotal
+                                ).toLocaleString()}
+                              </Box>
+                              <TooltipTrigger>
+                                <InfoCircledIcon />
+                              </TooltipTrigger>
+                            </Box>
+                            <TooltipContent>
+                              <TooltipArrow />
+                              Total demand side revenue accrued by the protocol
+                              over the last 90 days.
+                            </TooltipContent>
+                          </Tooltip>
+                        </Box>
+                      }
+                    />
+                    <Metric
+                      label="Total Revenue"
+                      value={`$${Math.round(
+                        project.usage.revenue.now
+                      ).toLocaleString()}`}
+                    />
+                    <Metric
+                      label="30d Trend"
+                      value={
+                        <Box>
+                          <Tooltip delayDuration={0}>
+                            <Box
+                              css={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Box css={{ mr: "$1" }}>
+                                <RevenueChange
+                                  percentChange={Intl.NumberFormat("en-US", {
+                                    maximumFractionDigits: 2,
+                                  }).format(
+                                    project.usage.revenue.thirtyDayPercentChange
+                                  )}
+                                />
+                              </Box>
+                              <TooltipTrigger>
+                                <InfoCircledIcon />
+                              </TooltipTrigger>
+                            </Box>
+                            <TooltipContent>
+                              <TooltipArrow />
+                              Trend is the increase, or decrease, in the
+                              protocol&apos;s revenue between two periods.
+                              It&apos;s calculated by subtracting the previous
+                              30d revenue from the current 30d revenue, and then
+                              dividing that number by the previous 30d revenue.
+                            </TooltipContent>
+                          </Tooltip>
+                        </Box>
+                      }
+                    />
+                  </Box>
                 </Box>
-                <Box>
-                  <Metric
-                    label="30d Revenue"
-                    value={
-                      <Box>
-                        <Tooltip delayDuration={0}>
-                          <Box css={{ display: "flex", alignItems: "center" }}>
-                            <Box css={{ mr: "$1" }}>
-                              $
-                              {Math.round(
-                                project.usage.revenue.thirtyDayTotal
-                              ).toLocaleString()}
-                            </Box>
-                            <TooltipTrigger>
-                              <InfoCircledIcon />
-                            </TooltipTrigger>
-                          </Box>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            Total demand side revenue accrued by the protocol
-                            over the last 30 days.
-                          </TooltipContent>
-                        </Tooltip>
-                      </Box>
-                    }
-                  />
-                  <Metric
-                    label="90d Revenue"
-                    value={
-                      <Box>
-                        <Tooltip delayDuration={0}>
-                          <Box css={{ display: "flex", alignItems: "center" }}>
-                            <Box css={{ mr: "$1" }}>
-                              $
-                              {Math.round(
-                                project.usage.revenue.ninetyDayTotal
-                              ).toLocaleString()}
-                            </Box>
-                            <TooltipTrigger>
-                              <InfoCircledIcon />
-                            </TooltipTrigger>
-                          </Box>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            Total demand side revenue accrued by the protocol
-                            over the last 90 days.
-                          </TooltipContent>
-                        </Tooltip>
-                      </Box>
-                    }
-                  />
-                  <Metric
-                    label="Total Revenue"
-                    value={`$${Math.round(
-                      project.usage.revenue.now
-                    ).toLocaleString()}`}
-                  />
-                  <Metric
-                    label="30d Trend"
-                    value={
-                      <Box>
-                        <Tooltip delayDuration={0}>
-                          <Box css={{ display: "flex", alignItems: "center" }}>
-                            <Box css={{ mr: "$1" }}>
-                              <RevenueChange
-                                percentChange={Intl.NumberFormat("en-US", {
-                                  maximumFractionDigits: 2,
-                                }).format(
-                                  project.usage.revenue.thirtyDayPercentChange
-                                )}
-                              />
-                            </Box>
-                            <TooltipTrigger>
-                              <InfoCircledIcon />
-                            </TooltipTrigger>
-                          </Box>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            Trend is the increase, or decrease, in the
-                            protocol&apos;s revenue between two periods.
-                            It&apos;s calculated by subtracting the previous 30d
-                            revenue from the current 30d revenue, and then
-                            dividing that number by the previous 30d revenue.
-                          </TooltipContent>
-                        </Tooltip>
-                      </Box>
-                    }
-                  />
-                </Box>
-              </Box>
+              )}
               <Box>
                 <SocialButton
                   href={`https://twitter.com/${project.twitter}`}
@@ -420,17 +430,28 @@ const Project = ({ slug, index, projects, project }) => {
                 },
               }}
             >
-              <ResponsiveContainer key={project.slug} height={400} ref={ref}>
-                <LineAndBarGraph
-                  base={project.usage.revenue.oneWeekTotal}
-                  baseChange={project.usage.revenue.oneWeekPercentChange}
-                  color={project.color}
-                  days={project.usage.days}
-                  height={420}
-                  width={width}
-                  useWeekly={true}
-                />
-              </ResponsiveContainer>
+              {project.untracked ? (
+                <Box css={{ mb: "$4" }}>
+                  <Alert>
+                    It&apos;s been reported that the demand-side fees being
+                    reported for {project.name} are inaccurate. We have
+                    temporarily de-listed {project.name} from the index and will
+                    re-list the project when the correct data is available.
+                  </Alert>
+                </Box>
+              ) : (
+                <ResponsiveContainer key={project.slug} height={400} ref={ref}>
+                  <LineAndBarGraph
+                    base={project.usage.revenue.oneWeekTotal}
+                    baseChange={project.usage.revenue.oneWeekPercentChange}
+                    color={project.color}
+                    days={project.usage.days}
+                    height={420}
+                    width={width}
+                    useWeekly={true}
+                  />
+                </ResponsiveContainer>
+              )}
             </Box>
           </Box>
         </Container>
@@ -448,7 +469,7 @@ export async function getStaticPaths() {
     const data = await getProject(project);
     const valid = validate(data);
 
-    if (valid) {
+    if (valid && !registry[project].hide) {
       paths.push({
         params: {
           slug: project,

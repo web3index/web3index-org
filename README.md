@@ -4,17 +4,22 @@ The Web3 Index reports on the fees being paid Web3 networks in an effort to show
 
 Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total locked value (TLV)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network revenue and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
 
-## Protocol Integration Instructions
+## Protocol Application Instructions
 
-In order for a protocol to be considered for the index, its revenue data must be surfaced in a format that's consumable by the application. This data can be provided using one of several different methods.
+### Step 1: Submit an application
 
-### Method #1: The Graph (recommended)
+As the Web3 platform and ecosystem of applications continue to grow, there's been a surge in interest to be listed on this site. In order for a protocol to be considered for the index, we ask that you first submit [this application](https://github.com/web3index/web3index-org/issues/new?assignees=&labels=&template=protocol_submission.md&title=New+Protocol+Submission). 
+
+### Step 2: Complete an integration
+Protocol revenue data must be surfaced in a format that's consumable by The Web3 Index site. This data can be provided using one of several different methods.
+
+#### Method #1: The Graph (recommended)
 
 If the protocol you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol's revenue data to it [here](https://thegraph.com/docs/developer/quick-start).
 
 Once you've successfully added your protocol to the subgraph, make sure to add the protocol to the Web3 Index [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
 
-### Method #2: The Web3 Index Database
+#### Method #2: The Web3 Index Database
 
 If a protocol's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
 
@@ -22,7 +27,7 @@ Step 1: Create a command line script inside `cmd/[your_protocol_name].ts`. This 
 
 Step 2: Add your protocol to the Web3 Index [registry](./registry.json) using the protocol and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
-### Method #3: A Publically Accessible API Endpoint
+#### Method #3: A Publically Accessible API Endpoint
 
 If a protocol's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
 

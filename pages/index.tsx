@@ -9,14 +9,41 @@ import Faq from "../components/Faq";
 import CallToAction from "../components/CallToAction";
 import { getFaq } from "../lib/mdx";
 import { getProjects } from "./api/projects";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipArrow,
+  TooltipContent,
+} from "../components/Tooltip";
+import { styled } from "../stitches.config";
 
-const Rank = ({ row }) => (
-  <Box css={{ display: "flex", alignItems: "center" }}>
-    {/* <Box css={{ mr: "$2" }}>{trophies[+row.id]}</Box> */}
-    {+row.id + 1}
-  </Box>
-);
+const StyledExclamationTriangleIcon = styled(ExclamationTriangleIcon, {
+  textAlign: "left",
+});
 
+const StyledTooltipTrigger = styled(TooltipTrigger, {
+  padding: 0,
+  marginLeft: "-3px",
+});
+
+const Rank = ({ row }) => {
+  return row.values.untracked ? (
+    <Tooltip delayDuration={0}>
+      <StyledTooltipTrigger>
+        <StyledExclamationTriangleIcon />
+      </StyledTooltipTrigger>
+      <TooltipContent>
+        <TooltipArrow />
+        It&apos;s been reported that the demand-side fees being reported for
+        Filecoin are inaccurate. We have temporarily de-listed Filecoin from the
+        index and will re-list the project when the correct data is available.
+      </TooltipContent>
+    </Tooltip>
+  ) : (
+    <Box css={{ display: "flex", alignItems: "center" }}>{+row.id + 1}</Box>
+  );
+};
 const Home = ({ faq, revenue, projects }) => {
   const columns = useMemo(
     () => [
@@ -71,6 +98,10 @@ const Home = ({ faq, revenue, projects }) => {
         Header: "Usage",
         accessor: "usage",
       },
+      {
+        Header: "Untracked",
+        accessor: "untracked",
+      },
     ],
     []
   );
@@ -111,13 +142,14 @@ const Home = ({ faq, revenue, projects }) => {
 export async function getStaticProps() {
   const { projects, revenue } = await getProjects();
   const faq = await getFaq();
+  const sortedProjects = projects.sort((a, b) => {
+    return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
+  });
   return {
     props: {
       faq,
       revenue,
-      projects: projects.sort((a, b) => {
-        return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
-      }),
+      projects: sortedProjects,
     },
     revalidate: 1,
   };

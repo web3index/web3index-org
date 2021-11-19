@@ -3,7 +3,7 @@
     "blockchain": "Ethereum",
     "category": "Work Protocol",
     "color": "#00eb88",
-    "description": "A decentralized live video broadcast platform.",
+    "description": "Livepeer is a developer platform for decentralized video streaming powered by a token-coordinated network of video infrastructure providers.",
     "everestID": "0x49f6e21a4e3f20580624669acd83dac39a339042",
     "image": "https://web3index.org/logos/livepeer.svg",
     "name": "Livepeer",
@@ -65,7 +65,9 @@
     "subcategory": "Storage",
     "symbol": "FIL",
     "coingeckoID": "filecoin",
-    "genesisDate": "2020-10-14"
+    "genesisDate": "2020-10-14",
+    "untracked": true,
+    "hide": true
   },
   "akash": {
     "blockchain": "Akash",
@@ -77,7 +79,6 @@
     "stack": "Middleware",
     "subcategory": "Compute",
     "symbol": "AKT",
-    "usage": "https://akashlytics.com/web3-index/revenue",
     "coingeckoID": "akash-network",
     "genesisDate": "2020-09-24"
   },
@@ -91,6 +92,8 @@
     "stack": "Middleware",
     "subcategory": "Infrastructure",
     "symbol": "POKT",
-    "genesisDate": "2020-07-28"
+    "genesisDate": "2020-07-28",
+    "untracked": true,
+    "hide": true
   }
 }
