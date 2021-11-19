@@ -102,7 +102,9 @@ const pocketImport = async () => {
     if (results.length > 0) {
       successfulRelays = countRelays(results);
     }
-    console.log(`Successful relays on ${dayISO}: ${successfulRelays}.`);
+    console.log(
+      `Successful relays on ${dayISO}: ${numberWithCommas(successfulRelays)}.`
+    );
 
     const { price: currentDayPrice } = pocketPrices.find(
       (x) => x.date === dayISO
@@ -115,7 +117,7 @@ const pocketImport = async () => {
     }
 
     console.log(
-      `${project.name} estimated revenue on ${dayISO}: ${revenue.toLocaleString(
+      `Pocket estimated revenue on ${dayISO}: ${revenue.toLocaleString(
         "en-US",
         {
           style: "currency",
@@ -245,7 +247,7 @@ const getPOKTNetworkData = async (date: Date) => {
   const ISODateTo = formatDate(dateTo);
 
   // For now, the API is only useful for a 1 day range requested data.
-  const payload = { from: ISODateFrom, to: ISODateTo };
+  const payload = { from: ISODateFrom, to: ISODateTo, debug: true };
 
   try {
     const { data: response } = await axios.post(
@@ -259,13 +261,29 @@ const getPOKTNetworkData = async (date: Date) => {
 
     const [data] = response;
 
+    const entry: BlockData = pickEntry(data.blocks);
+
     return {
-      totalAppStakes: data.total_apps_staked_tokens,
-      totalPOKTsupply: data.total_supply,
+      totalAppStakes: entry.apps_staked_tokens,
+      totalPOKTsupply: entry.total_supply,
     };
   } catch (e) {
     throw new Error(e);
   }
+};
+
+const pickEntry = (blocksData: BlockData[]) => {
+  let maxid = 0;
+  let maxObj: BlockData;
+
+  blocksData.forEach(function (obj: BlockData) {
+    if (obj.height > maxid) {
+      maxObj = obj;
+      maxid = maxObj.height;
+    }
+  });
+
+  return maxObj as BlockData;
 };
 
 const dateDiffInDays = (fromDate: Date, toDate: Date): number => {
@@ -302,6 +320,10 @@ const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
 };
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const countRelays = (influxResponse: any): number => {
   let counter = 0;
 
@@ -317,9 +339,11 @@ type DayPrice = {
   price: number;
 };
 
-type DaySupply = {
-  date: string;
-  supply: number;
+type BlockData = {
+  height: number;
+  time: string;
+  apps_staked_tokens: number;
+  total_supply: number;
 };
 
 pocketImport()
