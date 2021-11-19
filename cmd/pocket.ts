@@ -4,9 +4,7 @@ import prisma from "../lib/prisma";
 const axios = require("axios");
 const priceEndpoint =
   "http://ec2-35-177-209-25.eu-west-2.compute.amazonaws.com/prices/pokt";
-const supplyEndpoint = "https://poktscan.com/api/pokt-network/supply";
-const totalAppStakesEndpoint =
-  "https://poktscan.com/api/pokt-network/app_staked_tokens";
+const poktNetworkDataEndpoint = "https://poktscan.com/api/pokt-network/summary";
 
 // Pocket Network Metrics
 const { InfluxDB } = require("@influxdata/influxdb-client");
@@ -62,15 +60,10 @@ const pocketImport = async () => {
     formatDate(toDate)
   );
 
-  const supplyData = await getPOKTSupply(
-    formatDate(fromDate),
-    formatDate(toDate)
-  );
-
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DD
 
-    const { totalAppStakes } = await getPOKTotalAppStakes(day);
+    const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
 
     if (dateDiff >= 1) {
       // If data was last updated was more than a day ago,
@@ -112,10 +105,6 @@ const pocketImport = async () => {
     console.log(`Successful relays on ${dayISO}: ${successfulRelays}.`);
 
     const { price: currentDayPrice } = pocketPrices.find(
-      (x) => x.date === dayISO
-    );
-
-    const { supply: totalPOKTsupply } = supplyData.find(
       (x) => x.date === dayISO
     );
 
@@ -248,31 +237,7 @@ const getPOKTDayPrices = async (dateFrom: string, dateTo: string) => {
   }
 };
 
-const getPOKTSupply = async (dateFrom: string, dateTo: string) => {
-  const daySupply: DaySupply[] = [];
-
-  const payload = { from: dateFrom, to: dateTo };
-  try {
-    const { data: response } = await axios.post(supplyEndpoint, payload);
-
-    if (!response) {
-      throw new Error("No data returned by the supply API.");
-    }
-
-    for (const entry of response.data) {
-      const supply = parseFloat(entry.supply);
-      const date = String(entry.date);
-
-      daySupply.push({ supply, date } as DaySupply);
-    }
-
-    return daySupply;
-  } catch (e) {
-    throw new Error(e);
-  }
-};
-
-const getPOKTotalAppStakes = async (date: Date) => {
+const getPOKTNetworkData = async (date: Date) => {
   const dateFrom = date;
   const ISODateFrom = formatDate(dateFrom);
 
@@ -284,7 +249,7 @@ const getPOKTotalAppStakes = async (date: Date) => {
 
   try {
     const { data: response } = await axios.post(
-      totalAppStakesEndpoint,
+      poktNetworkDataEndpoint,
       payload
     );
 
@@ -296,6 +261,7 @@ const getPOKTotalAppStakes = async (date: Date) => {
 
     return {
       totalAppStakes: data.total_apps_staked_tokens,
+      totalPOKTsupply: data.total_supply,
     };
   } catch (e) {
     throw new Error(e);
