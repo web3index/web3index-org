@@ -23,6 +23,21 @@ const heliumImport = async () => {
 
   // Get last imported id: we will start importing from there
   const project = await getProject(coin.name);
+
+  // Delete project if delete: true
+  const deleteProject = project.delete;
+  if (deleteProject) {
+    await prisma.project.update({
+      where: {
+        name: coin.name,
+      },
+      data: {
+        delete: false,
+        lastImportedId: "0",
+      },
+    });
+  }
+
   const lastId = project.lastImportedId;
   const parsedId = parseInt(lastId, 10);
   if (isNaN(parsedId)) {
@@ -197,10 +212,11 @@ const dateDiffInDays = (a: Date, b: Date) => {
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 };
 
-heliumImport().then(() => {
-  process.exit(0);
-}).catch((err) => {
-  console.log(err);
-  process.exit(1)
-});
-
+heliumImport()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });

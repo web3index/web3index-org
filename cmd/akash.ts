@@ -22,6 +22,21 @@ const akashImport = async () => {
   // Get last imported id: we will start importing from there
   console.log("Getting project id for ", coin.name);
   const project = await getProject(coin.name);
+
+  // Delete project if delete: true
+  const deleteProject = project.delete;
+  if (deleteProject) {
+    await prisma.project.update({
+      where: {
+        name: coin.name,
+      },
+      data: {
+        delete: false,
+        lastImportedId: "0",
+      },
+    });
+  }
+
   console.log("Project id: ", project);
   const lastId = project.lastImportedId;
   const parsedId = parseInt(lastId, 10);

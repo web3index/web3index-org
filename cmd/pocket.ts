@@ -40,6 +40,21 @@ const pocketImport = async () => {
   const revenueBlockchains = `["0001","0003","0004","0005","000A","0006","0007","0009","000B","0010","0021","0022","0023","0024","0025","0026","0027","000C","0028", "0040"]`;
 
   const project = await getProject(coin.name);
+
+  // Delete project if delete: true
+  const deleteProject = project.delete;
+  if (deleteProject) {
+    await prisma.project.update({
+      where: {
+        name: coin.name,
+      },
+      data: {
+        delete: false,
+        lastImportedId: "0",
+      },
+    });
+  }
+
   const lastId = project.lastImportedId;
   const parsedId = parseInt(lastId);
 

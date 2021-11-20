@@ -75,6 +75,21 @@ const arweaveImport = async () => {
 
   // Get last imported id: we will start importing from there
   const project = await getProject(coin.name);
+
+  // Delete project if delete: true
+  const deleteProject = project.delete;
+  if (deleteProject) {
+    await prisma.project.update({
+      where: {
+        name: coin.name,
+      },
+      data: {
+        delete: false,
+        lastImportedId: "0",
+      },
+    });
+  }
+
   const lastId = project.lastImportedId;
   const parsedId = parseInt(lastId, 10);
   let retry = 0;
@@ -119,16 +134,18 @@ const arweaveImport = async () => {
   while (!exit) {
     let data;
     console.log(JSON.stringify(variables));
-    
+
     retry = 0;
-    while (retry < 10){
+    while (retry < 10) {
       try {
         data = await gqlclient.request(queryGetTranasctions, variables);
         retry = 10;
       } catch (e) {
         retry++;
-        console.log("Error executing gql query GetTransactions. Retry - " + retry);
-        if (retry == 10){
+        console.log(
+          "Error executing gql query GetTransactions. Retry - " + retry
+        );
+        if (retry == 10) {
           throw new Error("Error executing gql query GetTransactions.");
         }
       }
@@ -329,11 +346,11 @@ const isSameDate = (firstDate: number, secondDate: number) => {
   );
 };
 
-arweaveImport().then(() => {
-  process.exit(0);
-})
-.catch((err) => {
-  console.log(err);
-  process.exit(1)
-});
-
+arweaveImport()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
