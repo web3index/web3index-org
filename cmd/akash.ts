@@ -2,7 +2,6 @@ import prisma from "../lib/prisma";
 
 const endpoint = "https://akashlytics.com/web3-index/revenue";
 const conversionFactor = 1;
-const batchSize = 30;
 const axios = require("axios");
 
 const coin = {
@@ -30,23 +29,16 @@ const akashImport = async () => {
     throw new Error("unable to parse int.");
   }
 
-  let toDate = new Date();
+  const toDate = new Date();
   toDate.setUTCHours(0, 0, 0, 0);
 
-  console.log(
-    "Project: " +
-      project.name +
-      " - to date: " +
-      toDate
-  );
+  console.log("Project: " + project.name + " - to date: " + toDate);
 
-  const response = await axios
-    .get(endpoint)
-    .catch(function (error) {
-      console.log("Error getting data from endpoint ", endpoint, error);
-    });
+  const response = await axios.get(endpoint).catch(function (error) {
+    console.log("Error getting data from endpoint ", endpoint, error);
+  });
 
-  console.log("response: ", response.data)
+  console.log("response: ", response.data);
   console.log(response.data.days.length);
   console.log(response.data.days[0]);
 
@@ -61,7 +53,7 @@ const akashImport = async () => {
     const fee = {
       date: element.date,
       fees: element.revenue * conversionFactor,
-      blockHeight: (element.date).toString(),
+      blockHeight: element.date.toString(),
     };
     await storeDBData(fee, project.id);
   }
@@ -141,10 +133,10 @@ const storeDBData = async (
 
 console.log("import akash");
 
-akashImport().then(() => {
-  process.exit(0);
-})
-.catch(() => {
-  process.exit(1)
-});
-
+akashImport()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch(() => {
+    process.exit(1);
+  });
