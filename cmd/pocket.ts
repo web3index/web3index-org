@@ -84,7 +84,7 @@ const pocketImport = async () => {
       // If data was last updated was more than a day ago,
       // we need to fetch all relays for the past days.
       fluxQuery = `
-        from(bucket: "mainnetRelayApp1d")
+        from(bucket: "mainnetRelayApp60m")
         |> range(start: ${dayISO}T00:00:00Z, stop: ${dayISO}T23:59:59Z)
           |> filter(fn: (r) =>
             r._measurement == "relay" and
