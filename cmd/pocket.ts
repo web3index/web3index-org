@@ -36,7 +36,7 @@ const pocketImport = async () => {
   let successfulRelays = 0;
   let revenue = 0;
   let fluxQuery = "";
-  let influxBucket = "mainnetRelayApp60m";
+  let influxBucket = "";
 
   const revenueBlockchains = `["0001","0003","0004","0005","000A","0006","0007","0009","000B","0010","0021","0022","0023","0024","0025","0026","0027","000C","0028", "0040"]`;
 
@@ -76,16 +76,18 @@ const pocketImport = async () => {
     formatDate(toDate)
   );
 
+  const aggsLimitDate = new Date("2021-09-17");
+
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DD
 
     const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
 
-    const aggsLimitDate = new Date("2021-09-17");
-
     // No data before 2021-09-17 for 60m aggregates.
     if (day.getTime() < aggsLimitDate.getTime()) {
       influxBucket = "mainnetRelayApp1d";
+    } else {
+      influxBucket = "mainnetRelayApp60m";
     }
 
     if (dateDiff >= 1) {
