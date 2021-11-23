@@ -87,21 +87,23 @@ const heliumImport = async () => {
     const date = fromDate;
     for (let index = response.data.data.length - 1; index >= 0; index--) {
       const element = response.data.data[index];
-      console.log(
-        "Store day " +
-          date +
-          " - " +
-          date.getTime() / 1000 +
-          " to DB - value: " +
-          element.state_channel * conversionFactor
-      );
-      const fee = {
-        date: date.getTime() / 1000,
-        fees: element.state_channel * conversionFactor,
-        blockHeight: (date.getTime() / 1000).toString(),
-      };
-      await storeDBData(fee, project.id);
-      date.setDate(date.getDate() + 1);
+      if (element?.state_channel) {
+        console.log(
+          "Store day " +
+            date +
+            " - " +
+            date.getTime() / 1000 +
+            " to DB - value: " +
+            element.state_channel * conversionFactor
+        );
+        const fee = {
+          date: date.getTime() / 1000,
+          fees: element.state_channel * conversionFactor,
+          blockHeight: (date.getTime() / 1000).toString(),
+        };
+        await storeDBData(fee, project.id);
+        date.setDate(date.getDate() + 1);
+      }
     }
 
     fromDate = toDate;
