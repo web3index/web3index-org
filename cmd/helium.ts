@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma";
 
-const endpoint = "https://api.helium.io/v1/dc_burns/sum";
+const endpoint = "https://helium-api.stakejoy.com/v1/dc_burns/sum";
 const conversionFactor = 0.00001;
 const bucket = "day";
 const batchSize = 30;
