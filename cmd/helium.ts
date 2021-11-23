@@ -1,6 +1,7 @@
 import prisma from "../lib/prisma";
+import randomUseragent from "random-useragent";
 
-const endpoint = "https://helium-api.stakejoy.com/v1/dc_burns/sum";
+const endpoint = "https://api.helium.io/v1/dc_burns/sum";
 const conversionFactor = 0.00001;
 const bucket = "day";
 const batchSize = 30;
@@ -70,6 +71,9 @@ const heliumImport = async () => {
 
     const response = await axios
       .get(endpoint, {
+        headers: {
+          "User-Agent": randomUseragent.getRandom(), // prevents getting rate limited
+        },
         params: {
           min_time: parseISODate(fromDate),
           max_time: parseISODate(toDate),
