@@ -170,6 +170,9 @@ const Post = ({ slug, content, data, projects }) => {
                 "@bp2": {
                   px: 20,
                 },
+                img: {
+                  width: "100%",
+                },
               }}
             >
               {mdx}
