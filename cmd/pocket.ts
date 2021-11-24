@@ -36,6 +36,7 @@ const pocketImport = async () => {
   let successfulRelays = 0;
   let revenue = 0;
   let fluxQuery = "";
+  let influxBucket = "";
 
   const revenueBlockchains = `["0001","0003","0004","0005","000A","0006","0007","0009","000B","0010","0021","0022","0023","0024","0025","0026","0027","000C","0028", "0040"]`;
 
@@ -75,16 +76,25 @@ const pocketImport = async () => {
     formatDate(toDate)
   );
 
+  const aggsLimitDate = new Date("2021-09-17");
+
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DD
 
     const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
 
+    // No data before 2021-09-17 for 60m aggregates.
+    if (day.getTime() < aggsLimitDate.getTime()) {
+      influxBucket = "mainnetRelayApp1d";
+    } else {
+      influxBucket = "mainnetRelayApp60m";
+    }
+
     if (dateDiff >= 1) {
       // If data was last updated was more than a day ago,
       // we need to fetch all relays for the past days.
       fluxQuery = `
-        from(bucket: "mainnetRelayApp1d")
+        from(bucket: "${influxBucket}")
         |> range(start: ${dayISO}T00:00:00Z, stop: ${dayISO}T23:59:59Z)
           |> filter(fn: (r) =>
             r._measurement == "relay" and
@@ -99,7 +109,7 @@ const pocketImport = async () => {
       // If data was last updated less than a day ago,
       // we will only update with data from the past hour.
       fluxQuery = `
-        from(bucket: "mainnetRelayApp60m")
+        from(bucket: "${influxBucket}")
           |> range(start: -1h)
           |> filter(fn: (r) =>
             r._measurement == "relay" and
