@@ -53,7 +53,7 @@ const Post = ({ slug, content, data, projects }) => {
         {
           url: data.shareImage
             ? data.shareImage
-            : "https://livepeer.com/img/OG.png",
+            : "https://web3index.org/images/og/launch-image.jpg",
           alt: data.seoTitle,
           width: 1200,
           height: 630,
