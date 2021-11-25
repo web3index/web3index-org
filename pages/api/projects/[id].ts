@@ -92,7 +92,7 @@ const getRevenueFromDB = async (projectId, date, prisma) => {
 
 const getRevenueByBlock = async (id, blockNumber) => {
   return await request(
-    "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
+    process.env.NEXT_PUBLIC_SUBGRAPH,
     gql`
       query ($id: String!, $block: Block_height) {
         protocol(id: $id, block: $block) {
@@ -109,7 +109,7 @@ const getRevenueByBlock = async (id, blockNumber) => {
 
 const getUsageFromSubgraph = async (id) => {
   const data = await request(
-    "https://api.thegraph.com/subgraphs/name/web3index/the-web3-index",
+    process.env.NEXT_PUBLIC_SUBGRAPH,
     gql`
       query ($id: String!) {
         protocol(id: $id) {
