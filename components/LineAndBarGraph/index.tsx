@@ -15,7 +15,7 @@ const LineAndBarGraph = ({
   width,
   height,
   color: brandColor,
-  title = "Total Generated Revenue",
+  title = "Demand-side Protocol Fees",
   days,
   useWeekly = false,
 }) => {

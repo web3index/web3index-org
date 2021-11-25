@@ -275,7 +275,7 @@ const Project = ({ slug, index, projects, project }) => {
                   </Box>
                   <Box>
                     <Metric
-                      label="30d Revenue"
+                      label="30d Fees"
                       value={
                         <Box>
                           <Tooltip delayDuration={0}>
@@ -294,7 +294,7 @@ const Project = ({ slug, index, projects, project }) => {
                             </Box>
                             <TooltipContent>
                               <TooltipArrow />
-                              Total demand side revenue accrued by the protocol
+                              Total demand-side fees accrued by the protocol
                               over the last 30 days.
                             </TooltipContent>
                           </Tooltip>
@@ -302,7 +302,7 @@ const Project = ({ slug, index, projects, project }) => {
                       }
                     />
                     <Metric
-                      label="90d Revenue"
+                      label="90d Fees"
                       value={
                         <Box>
                           <Tooltip delayDuration={0}>
@@ -321,7 +321,7 @@ const Project = ({ slug, index, projects, project }) => {
                             </Box>
                             <TooltipContent>
                               <TooltipArrow />
-                              Total demand side revenue accrued by the protocol
+                              Total demand-side fees accrued by the protocol
                               over the last 90 days.
                             </TooltipContent>
                           </Tooltip>
@@ -329,7 +329,7 @@ const Project = ({ slug, index, projects, project }) => {
                       }
                     />
                     <Metric
-                      label="Total Revenue"
+                      label="Total Fees"
                       value={`$${Math.round(
                         project.usage.revenue.now
                       ).toLocaleString()}`}
@@ -358,10 +358,11 @@ const Project = ({ slug, index, projects, project }) => {
                             <TooltipContent>
                               <TooltipArrow />
                               Trend is the increase, or decrease, in the
-                              protocol&apos;s revenue between two periods.
-                              It&apos;s calculated by subtracting the previous
-                              30d revenue from the current 30d revenue, and then
-                              dividing that number by the previous 30d revenue.
+                              protocol&apos;s demand-side fees between two
+                              periods. It&apos;s calculated by subtracting the
+                              previous 30d fees from the current 30d Fees, and
+                              then dividing that number by the previous 30d
+                              fees.
                             </TooltipContent>
                           </Tooltip>
                         </Box>

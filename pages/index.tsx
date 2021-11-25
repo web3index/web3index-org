@@ -77,22 +77,22 @@ const Home = ({ faq, revenue, projects }) => {
         hideOnMobile: true,
       },
       {
-        Header: "30d Revenue",
+        Header: "30d Fees",
         accessor: "usage.revenue.thirtyDayTotal",
         tooltip:
-          "Total demand side revenue accrued by the protocol over the last 30 days.",
+          "Total demand-side fees accrued by the protocol over the last 30 days.",
       },
       {
-        Header: "90d Revenue",
+        Header: "90d Fees",
         accessor: "usage.revenue.ninetyDayTotal",
         tooltip:
-          "Total demand side revenue accrued by the protocol over the last 90 days.",
+          "Total demand-side fees accrued by the protocol over the last 90 days.",
       },
       {
         Header: "30d Trend",
         accessor: "usage.revenue.thirtyDayPercentChange",
         tooltip:
-          "Trend is the increase, or decrease, in the protocol's revenue between two periods. It's calculated by subtracting the previous 30d revenue from the current 30d revenue, and then dividing that number by the previous 30d revenue.",
+          "Trend is the increase, or decrease, in the protocol's demand-side fees between two periods. It's calculated by subtracting the previous 30d fees from the current 30d fees, and then dividing that number by the previous 30d fees.",
       },
       {
         Header: "Usage",
