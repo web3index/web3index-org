@@ -23,7 +23,7 @@
     "@radix-ui/colors": "^0.1.7",
     "@radix-ui/react-accordion": "^0.0.13",
     "@radix-ui/react-icons": "^1.0.3",
-    "@radix-ui/react-tooltip": "^0.1.0",
+    "@radix-ui/react-tooltip": "0.1.0",
     "@stitches/core": "latest",
     "@stitches/react": "latest",
     "@videojs/http-streaming": "^2.11.0",
