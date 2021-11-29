@@ -87,7 +87,7 @@ const pocketImport = async () => {
     if (day.getTime() < aggsLimitDate.getTime()) {
       influxBucket = "mainnetRelayApp1d";
     } else {
-      influxBucket = "mainnetRelayApp60m";
+      influxBucket = "mainnetRelayApp10m";
     }
 
     if (dateDiff >= 1) {
