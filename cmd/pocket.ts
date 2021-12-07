@@ -78,8 +78,14 @@ const pocketImport = async () => {
 
   const aggsLimitDate = new Date("2021-09-17");
 
+  console.log(`Date from: ${fromDate}`);
+  console.log(`Date to: ${toDate}`);
+  console.log(`List of days: ${days}`);
+  console.log(`Days difference: ${dateDiff}`);
+
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DD
+    console.log(`Day ISO: ${dayISO}`);
 
     const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
 
