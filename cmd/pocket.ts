@@ -64,8 +64,10 @@ const pocketImport = async () => {
   }
 
   const fromDate = new Date(parsedId * 1000);
+  console.log(`Date from (prev setUTCHours): ${fromDate}`);
   fromDate.setUTCHours(0, 0, 0, 0);
   const toDate = new Date();
+  console.log(`Date to (prev setUTCHours): ${toDate}`);
   toDate.setUTCHours(0, 0, 0, 0);
 
   const days = dateRangeToList(fromDate, toDate);
