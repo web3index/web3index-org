@@ -162,6 +162,8 @@ const pocketImport = async () => {
       fees: revenue,
     };
 
+    console.log(`Stored 'lastImportedId' (UNIX timestamp): ${fee.date}`);
+
     await storeDBData(fee, project.id);
   }
 
