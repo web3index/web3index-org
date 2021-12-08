@@ -78,6 +78,7 @@ const pocketImport = async () => {
 
   console.log(`Date from: ${fromDate}`);
   console.log(`Date to: ${toDate}`);
+  console.log(`List of days: ${days}`);
   console.log(`Days difference: ${dateDiff}`);
 
   for (const day of days) {
