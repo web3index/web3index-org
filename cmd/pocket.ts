@@ -78,7 +78,6 @@ const pocketImport = async () => {
 
   console.log(`Date from: ${fromDate}`);
   console.log(`Date to: ${toDate}`);
-  console.log(`List of days: ${days}`);
   console.log(`Days difference: ${dateDiff}`);
 
   for (const day of days) {
@@ -161,6 +160,8 @@ const pocketImport = async () => {
       date: dateUnixTimestamp,
       fees: revenue,
     };
+
+    console.log(`Stored 'lastImportedId' (UNIX timestamp): ${fee.date}`);
 
     await storeDBData(fee, project.id);
   }
