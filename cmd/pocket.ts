@@ -84,6 +84,7 @@ const pocketImport = async () => {
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DD
     console.log(`Day ISO: ${dayISO}`);
+    const dateUnixTimestamp = day.getTime() / 1000;
 
     const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
 
