@@ -76,14 +76,9 @@ const pocketImport = async () => {
 
   const aggsLimitDate = new Date("2021-09-17");
 
-  console.log(`Date from: ${fromDate}`);
-  console.log(`Date to: ${toDate}`);
-  console.log(`List of days: ${days}`);
-  console.log(`Days difference: ${dateDiff}`);
-
   for (const day of days) {
+    let timeUnitMsg = "on day";
     const dayISO = formatDate(day); // YYYY-MM-DD
-    console.log(`Day ISO: ${dayISO}`);
     const dateUnixTimestamp = day.getTime() / 1000;
 
     const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
@@ -111,6 +106,7 @@ const pocketImport = async () => {
           )
         `;
     } else {
+      timeUnitMsg = "in the last hour of day";
       // If data was last updated less than a day ago,
       // we will only update with data from the past hour.
       fluxQuery = `
@@ -132,8 +128,11 @@ const pocketImport = async () => {
     if (results.length > 0) {
       successfulRelays = countRelays(results);
     }
+
     console.log(
-      `Successful relays on ${dayISO}: ${numberWithCommas(successfulRelays)}.`
+      `Successful relays ${timeUnitMsg} ${dayISO}: ${numberWithCommas(
+        successfulRelays
+      )}.`
     );
 
     const { price: currentDayPrice } = pocketPrices.find(
@@ -160,8 +159,6 @@ const pocketImport = async () => {
       date: dateUnixTimestamp,
       fees: revenue,
     };
-
-    console.log(`Stored 'lastImportedId' (UNIX timestamp): ${fee.date}`);
 
     await storeDBData(fee, project.id);
   }
