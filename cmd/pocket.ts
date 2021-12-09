@@ -156,8 +156,6 @@ const pocketImport = async () => {
       )} USD.`
     );
 
-    const dateUnixTimestamp = day.getTime() / 1000;
-
     const fee = {
       date: dateUnixTimestamp,
       fees: revenue,
