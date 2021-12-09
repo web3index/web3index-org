@@ -76,8 +76,9 @@ const pocketImport = async () => {
 
   const aggsLimitDate = new Date("2021-09-17");
 
+  let timeUnitMsg = "on day";
+
   for (const day of days) {
-    let timeUnitMsg = "on day";
     const dayISO = formatDate(day); // YYYY-MM-DD
     const dateUnixTimestamp = day.getTime() / 1000;
 
