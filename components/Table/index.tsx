@@ -214,10 +214,10 @@ const poktDisclaimer = (
     <Box>
       The Web3 Index tracks developers&apos; dilutionary payment activity, but
       does not count it towards fees to avoid confusing apples with oranges
-      (opportunity costs vs direct costs). The Pocket DAO is planning a shift
-      from developers paying via dilution, to developers paying via the burning
-      of their stake in proportion to their usage. Once the DAO makes this
-      change, burned staked tokens will count towards fees on the index.
+      (implicit costs vs direct costs). The Pocket DAO is planning a shift from
+      developers paying via dilution, to developers paying via the burning of
+      their stake in proportion to their usage. Once the DAO makes this change,
+      burned staked tokens will count towards fees on the index.
     </Box>
   </>
 );
