@@ -278,7 +278,7 @@ const Project = ({ slug, index, projects, project }) => {
                   <Box>
                     <Metric
                       label={
-                        paymentType === "dilution" ? "30d dilution" : "30d fees"
+                        paymentType === "dilution" ? "30d Dilution" : "30d Fees"
                       }
                       value={
                         <Box>
@@ -308,7 +308,7 @@ const Project = ({ slug, index, projects, project }) => {
                     />
                     <Metric
                       label={
-                        paymentType === "dilution" ? "90d dilution" : "90d fees"
+                        paymentType === "dilution" ? "90d Dilution" : "90d Fees"
                       }
                       value={
                         <Box>
@@ -339,8 +339,8 @@ const Project = ({ slug, index, projects, project }) => {
                     <Metric
                       label={
                         paymentType === "dilution"
-                          ? "Total dilution"
-                          : "Total fees"
+                          ? "Total Dilution"
+                          : "Total Fees"
                       }
                       value={`$${Math.round(
                         project.usage[paymentType].now
