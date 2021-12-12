@@ -36,11 +36,37 @@ export const getProjects = async () => {
           data.usage.revenue.sixtyDaysAgo
         );
 
+      const [oneWeekDilutionTotal, oneWeekDilutionPercentChange] =
+        getTwoPeriodPercentChange(
+          data.usage.dilution.now,
+          data.usage.dilution.oneWeekAgo,
+          data.usage.dilution.twoWeeksAgo
+        );
+
+      const [thirtyDayDilutionTotal, thirtyDayDilutionPercentChange] =
+        getTwoPeriodPercentChange(
+          data.usage.dilution.now,
+          data.usage.dilution.thirtyDaysAgo,
+          data.usage.dilution.sixtyDaysAgo
+        );
+
       projects.push({
         ...data,
         slug: project,
         usage: {
           ...data.usage,
+          dilution: {
+            ...data.usage.dilution,
+            oneWeekTotal: oneWeekDilutionTotal,
+            oneWeekPercentChange: oneWeekDilutionPercentChange,
+            thirtyDayTotal: registry[project].untracked
+              ? 0
+              : thirtyDayDilutionTotal,
+            thirtyDayPercentChange: thirtyDayDilutionPercentChange,
+            ninetyDayTotal: registry[project].untracked
+              ? 0
+              : data.usage.dilution.now - data.usage.dilution.ninetyDaysAgo,
+          },
           revenue: {
             ...data.usage.revenue,
             oneWeekTotal,
@@ -53,7 +79,6 @@ export const getProjects = async () => {
           },
         },
       });
-
       if (!registry[project].untracked) {
         totalParticipantRevenueNow += data.usage.revenue.now;
         totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;

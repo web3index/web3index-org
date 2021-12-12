@@ -4,10 +4,16 @@ import Marquee from "react-fast-marquee";
 import { useTheme } from "next-themes";
 import LineGraph from "../LineGraph";
 import { defaultTheme } from "../../stitches.config";
+import registry from "../../registry.json";
 
 const Project = ({ project }) => {
+  const paymentType =
+    registry[project.name.toLowerCase()]?.paymentType === "dilution"
+      ? "dilution"
+      : "revenue";
+
   const color =
-    project.usage.revenue.thirtyDayPercentChange > 0
+    project.usage[paymentType].thirtyDayPercentChange > 0
       ? defaultTheme.colors.green
       : defaultTheme.colors.red;
 
@@ -42,7 +48,7 @@ const Project = ({ project }) => {
         <RevenueChange
           percentChange={Intl.NumberFormat("en-US", {
             maximumFractionDigits: 2,
-          }).format(project.usage.revenue.thirtyDayPercentChange)}
+          }).format(project.usage[paymentType].thirtyDayPercentChange)}
           css={{ ml: "$2" }}
         />
       </Box>
