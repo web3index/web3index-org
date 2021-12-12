@@ -36,6 +36,7 @@ export interface Project {
 }
 export interface Usage {
   revenue: Revenue;
+  dilution: Revenue;
   days: Days;
   [k: string]: unknown;
 }
@@ -53,5 +54,6 @@ export interface Revenue {
 export interface Items {
   date: Date;
   revenue: Revenue;
+  dilution: Revenue;
   [k: string]: unknown;
 }

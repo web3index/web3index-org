@@ -16,6 +16,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "@radix-ui/react-icons";
+import registry from "../../registry.json";
 
 const Table = ({ columns, data, ...props }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -202,7 +203,31 @@ const StyledImage = styled("img", {
   mr: "$3",
 });
 
+const poktDisclaimer = (
+  <>
+    <Box css={{ mb: "$2" }}>
+      Pocket has a unique payment mechanism. Developers stake POKT upfront to
+      lock in a guaranteed amount of bandwidth and pay through dilution as the
+      protocol mints new POKT and rewards node operators based directly on the
+      amount of usage of the network.
+    </Box>
+    <Box>
+      The Web3 Index tracks developers&apos; dilutionary payment activity, but
+      does not count it towards fees to avoid confusing apples with oranges
+      (implicit costs vs direct costs). The Pocket DAO is planning a shift from
+      developers paying via dilution, to developers paying via the burning of
+      their stake in proportion to their usage. Once the DAO makes this change,
+      burned staked tokens will count towards fees on the index.
+    </Box>
+  </>
+);
+
 function renderSwitch(cell) {
+  const paymentType =
+    registry[cell.row.values.name.toLowerCase()]?.paymentType === "dilution"
+      ? "dilution"
+      : "revenue";
+
   switch (cell.column.id) {
     case "usage.revenue.oneWeekTotal": {
       return `$${Math.round(
@@ -211,15 +236,75 @@ function renderSwitch(cell) {
     }
     case "usage.revenue.thirtyDayTotal": {
       if (cell.row.values.untracked) return "--";
-      return `$${Math.round(
-        cell.row.values.usage.revenue.thirtyDayTotal
-      ).toLocaleString()}`;
+      return paymentType === "dilution" ? (
+        <Box>
+          <Box css={{ mb: "$2" }}>$0.00</Box>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Box css={{ display: "flex", alignItems: "center" }}>
+                <Box css={{ fontSize: "$1", color: "$gray500" }}>
+                  ($
+                  {Math.round(
+                    cell.row.values.usage.dilution.thirtyDayTotal
+                  ).toLocaleString()}{" "}
+                  diluted)
+                </Box>{" "}
+                <Box
+                  as={InfoCircledIcon}
+                  css={{ ml: "$2", color: "$gray500" }}
+                />
+              </Box>
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow />
+              {poktDisclaimer}
+            </TooltipContent>
+          </Tooltip>
+        </Box>
+      ) : (
+        <Box>
+          $
+          {Math.round(
+            cell.row.values.usage.revenue.thirtyDayTotal
+          ).toLocaleString()}
+        </Box>
+      );
     }
     case "usage.revenue.ninetyDayTotal": {
       if (cell.row.values.untracked) return "--";
-      return `$${Math.round(
-        cell.row.values.usage.revenue.ninetyDayTotal
-      ).toLocaleString()}`;
+      return paymentType === "dilution" ? (
+        <Box>
+          <Box css={{ mb: "$2" }}>$0.00</Box>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Box css={{ display: "flex", alignItems: "center" }}>
+                <Box css={{ fontSize: "$1", color: "$gray500" }}>
+                  ($
+                  {Math.round(
+                    cell.row.values.usage.dilution.ninetyDayTotal
+                  ).toLocaleString()}{" "}
+                  diluted)
+                </Box>{" "}
+                <Box
+                  as={InfoCircledIcon}
+                  css={{ ml: "$2", color: "$gray500" }}
+                />
+              </Box>
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow />
+              {poktDisclaimer}
+            </TooltipContent>
+          </Tooltip>
+        </Box>
+      ) : (
+        <Box>
+          $
+          {Math.round(
+            cell.row.values.usage.revenue.ninetyDayTotal
+          ).toLocaleString()}
+        </Box>
+      );
     }
     case "totalRevenue": {
       return `$${Math.round(
@@ -229,7 +314,6 @@ function renderSwitch(cell) {
     case "usage.revenue.oneWeekPercentChange": {
       return (
         <Box css={{ display: "flex" }}>
-          {/* <LineGraph color={color} days={lastTwoWeeks} /> */}
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
@@ -242,7 +326,7 @@ function renderSwitch(cell) {
     case "usage.revenue.thirtyDayPercentChange": {
       if (cell.row.values.untracked) return "--";
       const color =
-        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+        cell.row.values.usage[paymentType].thirtyDayPercentChange > 0
           ? defaultTheme.colors.green
           : defaultTheme.colors.red;
 
@@ -255,7 +339,9 @@ function renderSwitch(cell) {
           <RevenueChange
             percentChange={Intl.NumberFormat("en-US", {
               maximumFractionDigits: 2,
-            }).format(cell.row.values.usage.revenue.thirtyDayPercentChange)}
+            }).format(
+              cell.row.values.usage[paymentType].thirtyDayPercentChange
+            )}
             css={{ ml: "$2" }}
           />
         </Box>
@@ -264,7 +350,7 @@ function renderSwitch(cell) {
     case "lastThirtyDays": {
       if (cell.row.values.untracked) return "--";
       const color =
-        cell.row.values.usage.revenue.thirtyDayPercentChange > 0
+        cell.row.values.usage[paymentType].thirtyDayPercentChange > 0
           ? defaultTheme.colors.green
           : defaultTheme.colors.red;
 
