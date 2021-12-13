@@ -237,22 +237,21 @@ function renderSwitch(cell) {
     case "usage.revenue.thirtyDayTotal": {
       if (cell.row.values.untracked) return "--";
       return paymentType === "dilution" ? (
-        <Box>
-          <Box css={{ mb: "$2" }}>$0.00</Box>
+        <Box css={{ color: "$gray500" }}>
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
-              <Box css={{ display: "flex", alignItems: "center" }}>
-                <Box css={{ fontSize: "$1", color: "$gray500" }}>
-                  ($
-                  {Math.round(
-                    cell.row.values.usage.dilution.thirtyDayTotal
-                  ).toLocaleString()}{" "}
-                  diluted)
-                </Box>{" "}
-                <Box
-                  as={InfoCircledIcon}
-                  css={{ ml: "$2", color: "$gray500" }}
-                />
+              <Box>
+                <Box css={{ mb: "$2", fontSize: "$1" }}>$0.00 spent</Box>
+                <Box css={{ display: "flex", alignItems: "center" }}>
+                  <Box css={{ fontSize: "$1" }}>
+                    $
+                    {Math.round(
+                      cell.row.values.usage.dilution.thirtyDayTotal
+                    ).toLocaleString()}{" "}
+                    diluted
+                  </Box>{" "}
+                  <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
+                </Box>
               </Box>
             </TooltipTrigger>
             <TooltipContent>
@@ -273,22 +272,21 @@ function renderSwitch(cell) {
     case "usage.revenue.ninetyDayTotal": {
       if (cell.row.values.untracked) return "--";
       return paymentType === "dilution" ? (
-        <Box>
-          <Box css={{ mb: "$2" }}>$0.00</Box>
+        <Box css={{ color: "$gray500" }}>
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
-              <Box css={{ display: "flex", alignItems: "center" }}>
-                <Box css={{ fontSize: "$1", color: "$gray500" }}>
-                  ($
-                  {Math.round(
-                    cell.row.values.usage.dilution.ninetyDayTotal
-                  ).toLocaleString()}{" "}
-                  diluted)
-                </Box>{" "}
-                <Box
-                  as={InfoCircledIcon}
-                  css={{ ml: "$2", color: "$gray500" }}
-                />
+              <Box>
+                <Box css={{ mb: "$2", fontSize: "$1" }}>$0.00 spent</Box>
+                <Box css={{ display: "flex", alignItems: "center" }}>
+                  <Box css={{ fontSize: "$1" }}>
+                    $
+                    {Math.round(
+                      cell.row.values.usage.dilution.ninetyDayTotal
+                    ).toLocaleString()}{" "}
+                    diluted
+                  </Box>{" "}
+                  <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
+                </Box>
               </Box>
             </TooltipTrigger>
             <TooltipContent>
