@@ -213,11 +213,11 @@ const poktDisclaimer = (
     </Box>
     <Box>
       The Web3 Index tracks developers&apos; dilutionary payment activity, but
-      does not count it towards fees to avoid confusing apples with oranges
-      (implicit vs direct costs). The Pocket DAO is planning a shift from
-      developers paying via dilution, to developers paying via the burning of
-      their stake in proportion to their usage. Once the DAO makes this change,
-      burned staked tokens will count towards fees on the index.
+      does not count it towards fees to avoid conflating implicit costs with
+      direct costs. The Pocket DAO is planning a shift from developers paying
+      via dilution, to developers paying via the burning of their stake in
+      proportion to their usage. Once the DAO makes this change, burned staked
+      tokens will count towards fees on the index.
     </Box>
   </>
 );
@@ -237,7 +237,7 @@ function renderSwitch(cell) {
     case "usage.revenue.thirtyDayTotal": {
       if (cell.row.values.untracked) return "--";
       return paymentType === "dilution" ? (
-        <Box css={{ color: "$gray500" }}>
+        <Box>
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
               <Box>
@@ -272,7 +272,7 @@ function renderSwitch(cell) {
     case "usage.revenue.ninetyDayTotal": {
       if (cell.row.values.untracked) return "--";
       return paymentType === "dilution" ? (
-        <Box css={{ color: "$gray500" }}>
+        <Box>
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>
               <Box>
