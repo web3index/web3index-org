@@ -18,9 +18,24 @@ export const getProjects = async () => {
   let totalParticipantRevenueSixtyDaysAgo = 0;
   let totalParticipantRevenueNinetyDaysAgo = 0;
 
+  const days = [];
   for (const project in registry) {
     const data: Project = await getProject(project);
     const valid = validate(data);
+
+    if (
+      registry[project].name !== "Pocket" &&
+      registry[project].name !== "Filecoin"
+    ) {
+      data.usage.days.map((day) => {
+        if (days.some((d) => d.date === day.date)) {
+          const index = days.findIndex((x) => x.date === day.date);
+          days[index].revenue = days[index].revenue + day.revenue;
+        } else {
+          days.push(day);
+        }
+      });
+    }
 
     if (valid && !registry[project].hide) {
       const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
@@ -116,6 +131,7 @@ export const getProjects = async () => {
       thirtyDayTotal,
       thirtyDayPercentChange,
     },
+    days: days.sort((a, b) => (a.date > b.date ? 1 : -1)),
   };
 };
 

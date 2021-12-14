@@ -180,7 +180,6 @@ const getUsageFromSubgraph = async (id) => {
       days.push({
         date: nextDay,
         revenue: 0,
-        empty: true,
       });
     }
     timestamp = nextDay;
