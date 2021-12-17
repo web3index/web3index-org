@@ -1,4 +1,5 @@
-import { useTable, useSortBy } from "react-table";
+import { useMemo } from "react";
+import { useTable, useSortBy, useGroupBy } from "react-table";
 import Box from "../Box";
 import Section from "../Section";
 import RevenueChange from "../RevenueChange";
@@ -18,7 +19,94 @@ import {
 } from "@radix-ui/react-icons";
 import registry from "../../registry.json";
 
-const Table = ({ columns, data, ...props }) => {
+const Table = ({ data, ...props }) => {
+  const columns = useMemo(
+    () => [
+      {
+        Header: "#",
+        accessor: "rank",
+        Cell: ({ row }) => (
+          <Box css={{ display: "flex", alignItems: "center" }}>
+            {+row.id + 1}
+          </Box>
+        ),
+        className: "sticky",
+        hideOnMobile: true,
+      },
+      {
+        Header: "Network",
+        accessor: "name",
+        className: "sticky",
+      },
+      {
+        Header: "Symbol",
+        accessor: "symbol",
+      },
+      {
+        Header: "Image",
+        accessor: "image",
+      },
+      {
+        Header: "Slug",
+        accessor: "slug",
+      },
+      {
+        Header: "Blockchain",
+        accessor: "blockchain",
+        hideOnMobile: true,
+      },
+      {
+        Header: "30d Fees",
+        accessor: "usage.revenue.thirtyDayTotal",
+        Cell: ({ row }) => {
+          if (!row.values.usage.revenue.thirtyDayTotal) {
+            return <Box>$0</Box>;
+          }
+          return (
+            <Box>
+              $
+              {Math.round(
+                row.values.usage.revenue.thirtyDayTotal
+              ).toLocaleString()}
+            </Box>
+          );
+        },
+      },
+      {
+        Header: "30d Dilution",
+        accessor: "usage.dilution.thirtyDayTotal",
+        Cell: ({ row }) => {
+          if (!row.values.usage.dilution.thirtyDayTotal) {
+            return <Box>$0</Box>;
+          }
+          return (
+            <Box>
+              $
+              {Math.round(
+                row.values.usage.dilution.thirtyDayTotal
+              ).toLocaleString()}
+            </Box>
+          );
+        },
+      },
+      {
+        Header: "30d Trend",
+        accessor: "usage.revenue.thirtyDayPercentChange",
+        tooltip:
+          "Trend is the increase, or decrease, in the protocol's demand-side fees between two periods. It's calculated by subtracting the previous 30d fees from the current 30d fees, and then dividing that number by the previous 30d fees.",
+      },
+      {
+        Header: "Usage",
+        accessor: "usage",
+      },
+      {
+        Header: "Untracked",
+        accessor: "untracked",
+      },
+    ],
+    []
+  );
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
@@ -41,6 +129,7 @@ const Table = ({ columns, data, ...props }) => {
           ],
         },
       },
+      useGroupBy,
       useSortBy
     );
 
@@ -101,7 +190,7 @@ const Table = ({ columns, data, ...props }) => {
                     css={{
                       display: "flex",
                       alignItems: "center",
-                      pt: "24px",
+                      pt: 24,
                       pb: "$3",
                       px: i === 1 ? "$3" : "$4",
                       "@bp1": {
@@ -164,7 +253,7 @@ const Table = ({ columns, data, ...props }) => {
                         css={{
                           backgroundColor: "$loContrast",
                           px: i === 1 ? "$3" : "$4",
-                          py: 20,
+                          py: 16,
                           fontSize: "$2",
                           borderTop: rowIndex ? "1px solid" : 0,
                           borderColor: "$border",
@@ -233,76 +322,6 @@ function renderSwitch(cell) {
       return `$${Math.round(
         cell.row.values.usage.revenue.oneWeekTotal
       ).toLocaleString()}`;
-    }
-    case "usage.revenue.thirtyDayTotal": {
-      if (cell.row.values.untracked) return "--";
-      return paymentType === "dilution" ? (
-        <Box>
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <Box>
-                <Box css={{ mb: "$2", fontSize: "$1" }}>$0.00 spent</Box>
-                <Box css={{ display: "flex", alignItems: "center" }}>
-                  <Box css={{ fontSize: "$1" }}>
-                    $
-                    {Math.round(
-                      cell.row.values.usage.dilution.thirtyDayTotal
-                    ).toLocaleString()}{" "}
-                    diluted
-                  </Box>{" "}
-                  <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
-                </Box>
-              </Box>
-            </TooltipTrigger>
-            <TooltipContent>
-              <TooltipArrow />
-              {poktDisclaimer}
-            </TooltipContent>
-          </Tooltip>
-        </Box>
-      ) : (
-        <Box>
-          $
-          {Math.round(
-            cell.row.values.usage.revenue.thirtyDayTotal
-          ).toLocaleString()}
-        </Box>
-      );
-    }
-    case "usage.revenue.ninetyDayTotal": {
-      if (cell.row.values.untracked) return "--";
-      return paymentType === "dilution" ? (
-        <Box>
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <Box>
-                <Box css={{ mb: "$2", fontSize: "$1" }}>$0.00 spent</Box>
-                <Box css={{ display: "flex", alignItems: "center" }}>
-                  <Box css={{ fontSize: "$1" }}>
-                    $
-                    {Math.round(
-                      cell.row.values.usage.dilution.ninetyDayTotal
-                    ).toLocaleString()}{" "}
-                    diluted
-                  </Box>{" "}
-                  <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
-                </Box>
-              </Box>
-            </TooltipTrigger>
-            <TooltipContent>
-              <TooltipArrow />
-              {poktDisclaimer}
-            </TooltipContent>
-          </Tooltip>
-        </Box>
-      ) : (
-        <Box>
-          $
-          {Math.round(
-            cell.row.values.usage.revenue.ninetyDayTotal
-          ).toLocaleString()}
-        </Box>
-      );
     }
     case "totalRevenue": {
       return `$${Math.round(
