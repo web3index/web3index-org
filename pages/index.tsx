@@ -1,7 +1,7 @@
 import Layout from "../layouts";
 import { useMemo } from "react";
 import Box from "../components/Box";
-import Table from "../components/Table";
+import Listing from "../components/Listing";
 import Section from "../components/Section";
 import Container from "../components/Container";
 import Header from "../components/Header";
@@ -16,12 +16,13 @@ const Home = ({ faq, revenue, projects }) => {
       <Section>
         <Container size="4">
           <Header css={{ mb: "$4" }} revenue={revenue} />
-          <Table
+          <Listing
             data={projects}
             css={{
               border: "1px solid",
               borderColor: "$border",
               borderRadius: "$4",
+              pt: "$3",
               mb: "$5",
               width: "100%",
               overflow: "scroll",
