@@ -20,6 +20,10 @@ import {
 } from "@radix-ui/react-icons";
 import registry from "../../registry.json";
 
+const StyledImage = styled("img", {
+  mr: "$3",
+});
+
 const Listing = ({ data, ...props }) => {
   const columns = useMemo(
     () => [
@@ -103,7 +107,28 @@ const Listing = ({ data, ...props }) => {
             accessor: "usage.revenue.thirtyDayTotal",
             Cell: ({ row }) => {
               if (!row.values.usage.revenue.thirtyDayTotal) {
-                return <Box>$0</Box>;
+                return (
+                  <Box>
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger asChild>
+                        <Box css={{ display: "flex", alignItems: "center" }}>
+                          <Box>$0</Box>
+                          <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
+                        </Box>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <TooltipArrow />
+                        <Box>
+                          The Pocket DAO is planning a shift from developers
+                          paying via dilution, to developers paying via the
+                          burning of their stake in proportion to their usage.
+                          Once the DAO makes this change, burned staked tokens
+                          will count towards explicit fees on the index.
+                        </Box>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Box>
+                );
               }
               return (
                 <Box>
@@ -125,10 +150,31 @@ const Listing = ({ data, ...props }) => {
               }
               return (
                 <Box>
-                  $
-                  {Math.round(
-                    row.values.usage.dilution.thirtyDayTotal
-                  ).toLocaleString()}
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Box css={{ display: "flex", alignItems: "center" }}>
+                        <Box>
+                          $
+                          {Math.round(
+                            row.values.usage.dilution.thirtyDayTotal
+                          ).toLocaleString()}
+                        </Box>
+                        <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
+                      </Box>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <TooltipArrow />
+                      <Box>
+                        Pocket has a unique payment mechanism. Developers stake
+                        POKT upfront to lock in a guaranteed amount of bandwidth
+                        and pay through dilution as the protocol mints new POKT
+                        and rewards node operators based directly on the amount
+                        of usage of the network. The Web3 Index tracks
+                        developers&apos; dilutionary payment activity as
+                        implicit costs incurred by developers.
+                      </Box>
+                    </TooltipContent>
+                  </Tooltip>
                 </Box>
               );
             },
@@ -147,7 +193,28 @@ const Listing = ({ data, ...props }) => {
             css: { fontSize: "11px", color: "$gray400" },
             Cell: ({ row }) => {
               if (!row.values.usage.revenue.ninetyDayTotal) {
-                return <Box>$0</Box>;
+                return (
+                  <Box>
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger asChild>
+                        <Box css={{ display: "flex", alignItems: "center" }}>
+                          <Box>$0</Box>
+                          <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
+                        </Box>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <TooltipArrow />
+                        <Box>
+                          The Pocket DAO is planning a shift from developers
+                          paying via dilution, to developers paying via the
+                          burning of their stake in proportion to their usage.
+                          Once the DAO makes this change, burned staked tokens
+                          will count towards explicit fees on the index.
+                        </Box>
+                      </TooltipContent>
+                    </Tooltip>
+                  </Box>
+                );
               }
               return (
                 <Box>
@@ -171,10 +238,31 @@ const Listing = ({ data, ...props }) => {
               }
               return (
                 <Box>
-                  $
-                  {Math.round(
-                    row.values.usage.dilution.ninetyDayTotal
-                  ).toLocaleString()}
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Box css={{ display: "flex", alignItems: "center" }}>
+                        <Box>
+                          $
+                          {Math.round(
+                            row.values.usage.dilution.ninetyDayTotal
+                          ).toLocaleString()}
+                        </Box>
+                        <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
+                      </Box>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <TooltipArrow />
+                      <Box>
+                        Pocket has a unique payment mechanism. Developers stake
+                        POKT upfront to lock in a guaranteed amount of bandwidth
+                        and pay through dilution as the protocol mints new POKT
+                        and rewards node operators based directly on the amount
+                        of usage of the network. The Web3 Index tracks
+                        developers&apos; dilutionary payment activity as
+                        implicit costs incurred by developers.
+                      </Box>
+                    </TooltipContent>
+                  </Tooltip>
                 </Box>
               );
             },
@@ -425,126 +513,5 @@ const Listing = ({ data, ...props }) => {
     </Section>
   );
 };
-
-const StyledImage = styled("img", {
-  mr: "$3",
-});
-
-const poktDisclaimer = (
-  <>
-    <Box css={{ mb: "$2" }}>
-      Pocket has a unique payment mechanism. Developers stake POKT upfront to
-      lock in a guaranteed amount of bandwidth and pay through dilution as the
-      protocol mints new POKT and rewards node operators based directly on the
-      amount of usage of the network.
-    </Box>
-    <Box>
-      The Web3 Index tracks developers&apos; dilutionary payment activity, but
-      does not count it towards fees to avoid conflating implicit costs with
-      direct costs. The Pocket DAO is planning a shift from developers paying
-      via dilution, to developers paying via the burning of their stake in
-      proportion to their usage. Once the DAO makes this change, burned staked
-      tokens will count towards fees on the index.
-    </Box>
-  </>
-);
-
-function renderSwitch(cell) {
-  const paymentType =
-    registry[cell.row.values.name.toLowerCase()]?.paymentType === "dilution"
-      ? "dilution"
-      : "revenue";
-
-  switch (cell.column.id) {
-    // case "usage.revenue.oneWeekTotal": {
-    //   return `$${Math.round(
-    //     cell.row.values.usage.revenue.oneWeekTotal
-    //   ).toLocaleString()}`;
-    // }
-    // case "totalRevenue": {
-    //   return `$${Math.round(
-    //     cell.row.values.usage.revenue.now
-    //   ).toLocaleString()}`;
-    // }
-    // case "usage.revenue.oneWeekPercentChange": {
-    //   return (
-    //     <Box css={{ display: "flex" }}>
-    //       <RevenueChange
-    //         percentChange={Intl.NumberFormat("en-US", {
-    //           maximumFractionDigits: 2,
-    //         }).format(cell.row.values.usage.revenue.oneWeekPercentChange)}
-    //         css={{ ml: "$2" }}
-    //       />
-    //     </Box>
-    //   );
-    // }
-    // case "usage.revenue.thirtyDayPercentChange": {
-    //   if (cell.row.values.untracked) return "--";
-    //   const color =
-    //     cell.row.values.usage[paymentType].thirtyDayPercentChange > 0
-    //       ? defaultTheme.colors.green
-    //       : defaultTheme.colors.red;
-
-    //   // Get last two periods excluding current day
-    //   const lastTwoPeriods = cell.row.values.usage.days.slice(-61).slice(0, 60);
-
-    //   return (
-    //     <Box css={{ display: "flex" }}>
-    //       <LineGraph color={color} days={lastTwoPeriods} />
-    //       <RevenueChange
-    //         percentChange={Intl.NumberFormat("en-US", {
-    //           maximumFractionDigits: 2,
-    //         }).format(
-    //           cell.row.values.usage[paymentType].thirtyDayPercentChange
-    //         )}
-    //         css={{ ml: "$2" }}
-    //       />
-    //     </Box>
-    //   );
-    // }
-    // case "lastThirtyDays": {
-    //   if (cell.row.values.untracked) return "--";
-    //   const color =
-    //     cell.row.values.usage[paymentType].thirtyDayPercentChange > 0
-    //       ? defaultTheme.colors.green
-    //       : defaultTheme.colors.red;
-
-    //   // Get last 60 days excluding current day
-    //   const lastSixtyDays = cell.row.values.usage.days.slice(-61).slice(0, 60);
-
-    //   return (
-    //     <Box css={{ display: "flex" }}>
-    //       <LineGraph color={color} days={lastSixtyDays} />
-    //     </Box>
-    //   );
-    // }
-    // case "name":
-    //   return (
-    //     <Box
-    //       css={{
-    //         display: "flex",
-    //         alignItems: "center",
-    //       }}
-    //     >
-    //       <StyledImage width={32} height={32} src={cell.row.values.image} />
-    //       {cell.render("Cell")}
-    //       <Box
-    //         css={{
-    //           ml: "$2",
-    //           color: "$gray500",
-    //           display: "none",
-    //           "@bp1": {
-    //             display: "block",
-    //           },
-    //         }}
-    //       >
-    //         ({cell.row.values.symbol})
-    //       </Box>
-    //     </Box>
-    //   );
-    default:
-      return cell.render("Cell");
-  }
-}
 
 export default Listing;
