@@ -17,6 +17,7 @@
   "dependencies": {
     "@influxdata/influxdb-client": "^1.18.0",
     "@mdx-js/loader": "^1.6.22",
+    "@modulz/design-system": "^0.6.2",
     "@modulz/radix-icons": "^4.0.0",
     "@next/mdx": "^10.2.0",
     "@prisma/client": "^2.22.1",
