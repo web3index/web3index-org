@@ -413,78 +413,73 @@ const Listing = ({ data, ...props }) => {
         <Thead>
           {headerGroups.map((headerGroup, i) => (
             <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(
-                (column, i) => (
-                  console.log(column.css),
-                  (
-                    <Th
-                      key={i}
-                      className={column?.className}
-                      css={{
-                        backgroundColor: "$loContrast",
-                        minWidth: column.minWidth,
-                        width: column.width,
-                        verticalAlign: "middle",
-                        py: 0,
-                        px: 0,
-                        fontSize: 12,
+              {headerGroup.headers.map((column, i) => (
+                <Th
+                  key={i}
+                  className={column?.className}
+                  css={{
+                    backgroundColor: "$loContrast",
+                    minWidth: column.minWidth,
+                    width: column.width,
+                    verticalAlign: "middle",
+                    py: 0,
+                    px: 0,
+                    fontSize: 12,
 
-                        // display: column.hideOnMobile ? "none" : "initial",
-                        "@bp1": {
-                          width: column.width ? column.width : "auto",
-                          position: "relative !important",
-                        },
-                      }}
-                      {...column.getHeaderProps(
-                        column.getSortByToggleProps({ title: undefined })
+                    // display: column.hideOnMobile ? "none" : "initial",
+                    "@bp1": {
+                      width: column.width ? column.width : "auto",
+                      position: "relative !important",
+                    },
+                  }}
+                  {...column.getHeaderProps(
+                    column.getSortByToggleProps({ title: undefined })
+                  )}
+                >
+                  <Box
+                    css={{
+                      display: "flex",
+                      alignItems: "center",
+                      pt: "$2",
+                      pb: "$2",
+                      px: i === 1 ? "$3" : "$4",
+
+                      "@bp1": {
+                        px: "$4",
+                        pr: 0,
+                      },
+                      ...column.css,
+                    }}
+                  >
+                    <Box css={{ fontWeight: 600 }}>
+                      {column.render("Header")}
+                    </Box>
+                    {/* Add a sort direction indicator */}
+                    <Box css={{ minWidth: 20 }}>
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <ChevronDownIcon />
+                        ) : (
+                          <ChevronUpIcon />
+                        )
+                      ) : (
+                        ""
                       )}
-                    >
-                      <Box
-                        css={{
-                          display: "flex",
-                          alignItems: "center",
-                          pt: "$2",
-                          pb: "$2",
-                          px: i === 1 ? "$3" : "$4",
-
-                          "@bp1": {
-                            px: "$4",
-                            pr: 0,
-                          },
-                          ...column.css,
-                        }}
-                      >
-                        <Box css={{ fontWeight: 600 }}>
-                          {column.render("Header")}
-                        </Box>
-                        {/* Add a sort direction indicator */}
-                        <Box css={{ minWidth: 20 }}>
-                          {column.isSorted ? (
-                            column.isSortedDesc ? (
-                              <ChevronDownIcon />
-                            ) : (
-                              <ChevronUpIcon />
-                            )
-                          ) : (
-                            ""
-                          )}
-                        </Box>
-                        {column.tooltip && (
-                          <Tooltip delayDuration={0}>
-                            <TooltipTrigger>
-                              <InfoCircledIcon />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <TooltipArrow />
-                              {column.tooltip}
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </Box>
-                    </Th>
-                  )
-                )
-              )}
+                    </Box>
+                    {column.tooltip && (
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <InfoCircledIcon />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <TooltipArrow />
+                          {column.tooltip}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </Th>
+              ))}
             </Tr>
           ))}
         </Thead>
