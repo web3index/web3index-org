@@ -44,8 +44,8 @@ const feeTooltip = (
       In certain protocols, user/developer stake represents an allotment of
       usage on the network. If this usage triggers inflation, then the cost to
       stake for demand side participants is quantified as being equivalent to
-      the dilution of its stake incurred as work is rendered and is categorized
-      as an implicit fee.
+      the dilution incurred as a result of its usage and is categorized as an
+      implicit fee.
     </Box>
 
     <Box>
