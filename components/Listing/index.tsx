@@ -24,6 +24,39 @@ const StyledImage = styled("img", {
   mr: "$3",
 });
 
+const feeTooltip = (
+  <Box
+    css={{
+      " > div": {
+        mb: "$3",
+      },
+    }}
+  >
+    <Box>Fees are generally categorized as explicit or implicit.</Box>
+
+    <Box>
+      An example of an explicit fee could be a single payment for work rendered
+      by a protocol. Examples of this would be a payment to query indexed data
+      on The Graph, or a payment to store data on Arweave.
+    </Box>
+
+    <Box>
+      In certain protocols, user/developer stake represents an allotment of
+      usage on the network. If this usage triggers inflation, then the cost to
+      stake for demand side participants is quantified as being equivalent to
+      the dilution of its stake incurred as work is rendered and is categorized
+      as an implicit fee.
+    </Box>
+
+    <Box>
+      Please note a user/developer stake in isolation does not count toward
+      explicit fees unless the staked balance reduces as protocol services are
+      rendered. In this case the spent/burned amount of the staked balance would
+      constitute an explicit fee.
+    </Box>
+  </Box>
+);
+
 const Listing = ({ data, ...props }) => {
   const columns = useMemo(
     () => [
@@ -98,6 +131,7 @@ const Listing = ({ data, ...props }) => {
       },
       {
         Header: "30d Fees",
+        tooltip: feeTooltip,
         columns: [
           {
             Header: "Explicit",
@@ -184,6 +218,7 @@ const Listing = ({ data, ...props }) => {
 
       {
         Header: "90d Fees",
+        tooltip: feeTooltip,
         columns: [
           {
             Header: "Explicit",
