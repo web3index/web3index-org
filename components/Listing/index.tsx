@@ -35,7 +35,7 @@ const feeTooltip = (
     <Box>Fees are generally categorized as explicit or implicit.</Box>
 
     <Box>
-      An example of an explicit fee could be a single payment for work rendered
+      An example of an explicit fee would be direct payment for work rendered
       by a protocol. Examples of this would be a payment to query indexed data
       on The Graph, or a payment to store data on Arweave.
     </Box>
