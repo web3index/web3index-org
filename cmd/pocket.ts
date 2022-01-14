@@ -6,21 +6,8 @@ const priceEndpoint =
   "http://ec2-35-177-209-25.eu-west-2.compute.amazonaws.com/prices/pokt";
 const poktNetworkDataEndpoint = "https://poktscan.com/api/pokt-network/summary";
 
-// Pocket Network Metrics
-const { InfluxDB } = require("@influxdata/influxdb-client");
-const influxURL = "https://influx.portal.pokt.network:8086";
-const influxToken = process.env.POCKET_INFLUX_TOKEN;
-const influxOrg = "pocket";
-const influxClient = new InfluxDB({
-  url: influxURL,
-  token: influxToken,
-  timeout: 600000,
-});
-
 // .01 relays/pokt * 89% validator allocation
 const relayToPOKTRatio = 0.01 * 0.89;
-
-const queryApi = influxClient.getQueryApi(influxOrg);
 
 const coin = {
   name: "pocket",
@@ -32,13 +19,8 @@ const coin = {
 const pocketImport = async () => {
   // This will fetch successfuly relays on the network for blockchains with revenue
   // and sum up the fees for the day, on an hourly basis; totalling to the day's revenue.
-  let results: any[] = [];
-  let successfulRelays = 0;
   let revenue = 0;
-  let fluxQuery = "";
-  let influxBucket = "";
-
-  const revenueBlockchains = `["0001","0003","0004","0005","000A","0006","0007","0009","000B","0010","0021","0022","0023","0024","0025","0026","0027","000C","0028", "0040"]`;
+  let successfulRelays = 0;
 
   const project = await getProject(coin.name);
 
@@ -74,59 +56,24 @@ const pocketImport = async () => {
     formatDate(toDate)
   );
 
-  const aggsLimitDate = new Date("2021-09-17");
+  let timeUnitMsg = "on day";
 
   for (const day of days) {
-    let timeUnitMsg = "on day";
     const dayISO = formatDate(day); // YYYY-MM-DD
     const dateUnixTimestamp = day.getTime() / 1000;
 
-    const { totalAppStakes, totalPOKTsupply } = await getPOKTNetworkData(day);
+    const { totalAppStakes, totalPOKTsupply, totalRelays1d, totalRelays1hr } =
+      await getPOKTNetworkData(day);
 
-    // No data before 2021-09-17 for 60m aggregates.
-    if (day.getTime() < aggsLimitDate.getTime()) {
-      influxBucket = "mainnetRelayApp1d";
-    } else {
-      influxBucket = "mainnetRelayApp10m";
-    }
-
-    if (dateDiff >= 1) {
+    if (dateDiff < 1) {
       // If data was last updated was more than a day ago,
       // we need to fetch all relays for the past days.
-      fluxQuery = `
-        from(bucket: "${influxBucket}")
-        |> range(start: ${dayISO}T00:00:00Z, stop: ${dayISO}T23:59:59Z)
-          |> filter(fn: (r) =>
-            r._measurement == "relay" and
-            r._field == "count" and
-            (r.method != "synccheck" and r.method != "chaincheck") and
-            contains(value: r["blockchain"], set: ${revenueBlockchains}) and
-            r.result == "200" and
-            r.nodePublicKey == "network"
-          )
-        `;
-    } else {
+      successfulRelays = totalRelays1hr;
       timeUnitMsg = "in the last hour of day";
+    } else {
       // If data was last updated less than a day ago,
       // we will only update with data from the past hour.
-      fluxQuery = `
-        from(bucket: "${influxBucket}")
-          |> range(start: -1h)
-          |> filter(fn: (r) =>
-            r._measurement == "relay" and
-            r._field == "count" and
-            (r.method != "synccheck" and r.method != "chaincheck") and
-            contains(value: r["blockchain"], set: ${revenueBlockchains}) and
-            r.result == "200" and
-            r.nodePublicKey == "network"
-          )
-        `;
-    }
-
-    results = (await queryApi.collectRows(fluxQuery)) as any[];
-
-    if (results.length > 0) {
-      successfulRelays = countRelays(results);
+      successfulRelays = totalRelays1d;
     }
 
     console.log(
@@ -139,6 +86,8 @@ const pocketImport = async () => {
       (x) => x.date === dayISO
     );
 
+    console.log("currentDayPrice", currentDayPrice);
+
     if (successfulRelays > 0 && currentDayPrice > 0) {
       revenue =
         (totalAppStakes / totalPOKTsupply) *
@@ -146,7 +95,7 @@ const pocketImport = async () => {
     }
 
     console.log(
-      `${project.name} estimated revenue on ${dayISO}: ${revenue.toLocaleString(
+      `pocket estimated revenue on ${dayISO}: ${revenue.toLocaleString(
         "en-US",
         {
           style: "currency",
@@ -288,18 +237,29 @@ const getPOKTNetworkData = async (date: Date) => {
 
     const [data] = response;
 
-    const entry: BlockData = pickEntry(data.blocks);
+    const blocks = data.blocks as BlockData[];
+
+    const latestBlock: BlockData = filterLastBlock(blocks);
+    const lastFourBlocks: BlockData[] = filterLastFourBlocks(blocks);
+
+    const totalRelays1d = data.total_relays_completed;
+    const totalRelays1hr = lastFourBlocks.reduce(
+      (sum, block) => sum + block.total_relays_completed,
+      0
+    );
 
     return {
-      totalAppStakes: entry.apps_staked_tokens,
-      totalPOKTsupply: entry.total_supply,
+      totalAppStakes: latestBlock.apps_staked_tokens,
+      totalPOKTsupply: latestBlock.total_supply,
+      totalRelays1d,
+      totalRelays1hr,
     };
   } catch (e) {
     throw new Error(e);
   }
 };
 
-const pickEntry = (blocksData: BlockData[]) => {
+const filterLastBlock = (blocksData: BlockData[]) => {
   let maxid = 0;
   let maxObj: BlockData;
 
@@ -311,6 +271,27 @@ const pickEntry = (blocksData: BlockData[]) => {
   });
 
   return maxObj as BlockData;
+};
+
+const filterLastFourBlocks = (blocksData: BlockData[]) => {
+  let blockNumbers = [];
+  const latestBlocks = [];
+
+  blocksData.forEach(function (obj: BlockData) {
+    blockNumbers.push(obj.height);
+  });
+
+  blockNumbers = blockNumbers
+    .sort((a, b) => (a < b ? 1 : a > b ? -1 : 0))
+    .slice(0, 4);
+
+  blocksData.forEach(function (obj: BlockData) {
+    if (blockNumbers.includes(obj.height)) {
+      latestBlocks.push(obj);
+    }
+  });
+
+  return latestBlocks;
 };
 
 const dateDiffInDays = (fromDate: Date, toDate: Date): number => {
@@ -351,26 +332,17 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const countRelays = (influxResponse: any): number => {
-  let counter = 0;
-
-  for (const relayObject of influxResponse) {
-    counter += relayObject._value;
-  }
-
-  return counter;
-};
-
 type DayPrice = {
   date: string;
   price: number;
 };
 
 type BlockData = {
-  height: number;
   time: string;
-  apps_staked_tokens: number;
+  height: number;
   total_supply: number;
+  apps_staked_tokens: number;
+  total_relays_completed: number;
 };
 
 pocketImport()
