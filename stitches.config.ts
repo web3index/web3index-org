@@ -3,8 +3,8 @@ export * from "@stitches/react";
 
 export const defaultTheme = {
   colors: {
-    blur: "rgba(0, 0, 0, 0.5)",
-    border: "#424242",
+    blur: "rgba(22, 22, 24, 0.5)",
+    border: "#2e2e32",
     gray100: "#424242",
     gray200: "#616161",
     gray300: "#757575",
@@ -16,7 +16,7 @@ export const defaultTheme = {
     gray800: "#F5F5F5",
     gray900: "#FAFAFA",
     hiContrast: "#ffffff",
-    loContrast: "#000000",
+    loContrast: "#161618",
     table: "transparent",
     black: "#000000",
     white: "#ffffff",

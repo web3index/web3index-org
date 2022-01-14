@@ -122,6 +122,8 @@ const Project = ({ slug, index, projects, project }) => {
   const ref = useRef(null);
   const isClient = typeof window === "object";
   const [width, setWidth] = useState(ref?.current?.container?.clientWidth);
+  const paymentType =
+    registry[slug]?.paymentType === "dilution" ? "dilution" : "revenue";
 
   useEffect(() => {
     if (!isClient) {
@@ -275,7 +277,9 @@ const Project = ({ slug, index, projects, project }) => {
                   </Box>
                   <Box>
                     <Metric
-                      label="30d Fees"
+                      label={
+                        paymentType === "dilution" ? "30d Dilution" : "30d Fees"
+                      }
                       value={
                         <Box>
                           <Tooltip delayDuration={0}>
@@ -285,7 +289,7 @@ const Project = ({ slug, index, projects, project }) => {
                               <Box css={{ mr: "$1" }}>
                                 $
                                 {Math.round(
-                                  project.usage.revenue.thirtyDayTotal
+                                  project.usage[paymentType].thirtyDayTotal
                                 ).toLocaleString()}
                               </Box>
                               <TooltipTrigger>
@@ -294,15 +298,18 @@ const Project = ({ slug, index, projects, project }) => {
                             </Box>
                             <TooltipContent>
                               <TooltipArrow />
-                              Total demand-side fees accrued by the protocol
-                              over the last 30 days.
+                              {paymentType === "dilution"
+                                ? "Total dilution incurred by the demand-side of the protocol over the last 30 days."
+                                : "Total demand-side fees accrued by the protocol over the last 30 days."}
                             </TooltipContent>
                           </Tooltip>
                         </Box>
                       }
                     />
                     <Metric
-                      label="90d Fees"
+                      label={
+                        paymentType === "dilution" ? "90d Dilution" : "90d Fees"
+                      }
                       value={
                         <Box>
                           <Tooltip delayDuration={0}>
@@ -312,7 +319,7 @@ const Project = ({ slug, index, projects, project }) => {
                               <Box css={{ mr: "$1" }}>
                                 $
                                 {Math.round(
-                                  project.usage.revenue.ninetyDayTotal
+                                  project.usage[paymentType].ninetyDayTotal
                                 ).toLocaleString()}
                               </Box>
                               <TooltipTrigger>
@@ -321,17 +328,22 @@ const Project = ({ slug, index, projects, project }) => {
                             </Box>
                             <TooltipContent>
                               <TooltipArrow />
-                              Total demand-side fees accrued by the protocol
-                              over the last 90 days.
+                              {paymentType === "dilution"
+                                ? "Total dilution incurred by the demand-side of the protocol over the last 30 days."
+                                : "Total demand-side fees accrued by the protocol over the last 30 days."}
                             </TooltipContent>
                           </Tooltip>
                         </Box>
                       }
                     />
                     <Metric
-                      label="Total Fees"
+                      label={
+                        paymentType === "dilution"
+                          ? "Total Dilution"
+                          : "Total Fees"
+                      }
                       value={`$${Math.round(
-                        project.usage.revenue.now
+                        project.usage[paymentType].now
                       ).toLocaleString()}`}
                     />
                     <Metric
@@ -347,7 +359,8 @@ const Project = ({ slug, index, projects, project }) => {
                                   percentChange={Intl.NumberFormat("en-US", {
                                     maximumFractionDigits: 2,
                                   }).format(
-                                    project.usage.revenue.thirtyDayPercentChange
+                                    project.usage[paymentType]
+                                      .thirtyDayPercentChange
                                   )}
                                 />
                               </Box>
@@ -357,12 +370,25 @@ const Project = ({ slug, index, projects, project }) => {
                             </Box>
                             <TooltipContent>
                               <TooltipArrow />
-                              Trend is the increase, or decrease, in the
-                              protocol&apos;s demand-side fees between two
-                              periods. It&apos;s calculated by subtracting the
-                              previous 30d fees from the current 30d Fees, and
-                              then dividing that number by the previous 30d
-                              fees.
+                              {paymentType === "dilution" ? (
+                                <Box>
+                                  Trend is the increase or decrease in the
+                                  protocol&apos;s dilutionary activity between
+                                  two periods. It&apos;s calculated by
+                                  subtracting the previous 30d dilution from the
+                                  current 30d dilution, and then dividing that
+                                  number by the previous 30d dilution.
+                                </Box>
+                              ) : (
+                                <Box>
+                                  Trend is the increase or decrease in the
+                                  protocol&apos;s demand-side fees between two
+                                  periods. It&apos;s calculated by subtracting
+                                  the previous 30d fees from the current 30d
+                                  fees, and then dividing that number by the
+                                  previous 30d fees.
+                                </Box>
+                              )}
                             </TooltipContent>
                           </Tooltip>
                         </Box>
@@ -443,13 +469,18 @@ const Project = ({ slug, index, projects, project }) => {
               ) : (
                 <ResponsiveContainer key={project.slug} height={400} ref={ref}>
                   <LineAndBarGraph
-                    base={project.usage.revenue.oneWeekTotal}
-                    baseChange={project.usage.revenue.oneWeekPercentChange}
+                    base={project.usage[paymentType].oneWeekTotal}
+                    baseChange={project.usage[paymentType].oneWeekPercentChange}
                     color={project.color}
                     days={project.usage.days}
                     height={420}
                     width={width}
                     useWeekly={true}
+                    title={
+                      paymentType === "dilution"
+                        ? "Demand-side Protocol Dilution"
+                        : "Demand-side Protocol Fees"
+                    }
                   />
                 </ResponsiveContainer>
               )}
