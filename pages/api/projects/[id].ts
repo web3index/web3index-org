@@ -14,6 +14,17 @@ const utcThirtyDaysBack = utcCurrentTime.subtract(30, "day").unix();
 const utcSixtyDaysBack = utcCurrentTime.subtract(60, "day").unix();
 const utcNinetyDaysBack = utcCurrentTime.subtract(90, "day").unix();
 
+const EMPTY = {
+  now: 0,
+  oneDayAgo: 0,
+  twoDaysAgo: 0,
+  oneWeekAgo: 0,
+  twoWeeksAgo: 0,
+  thirtyDaysAgo: 0,
+  sixtyDaysAgo: 0,
+  ninetyDaysAgo: 0,
+};
+
 const getUsageFromDB = async (name) => {
   const project = await prisma.project.findFirst({
     where: {
@@ -41,29 +52,27 @@ const getUsageFromDB = async (name) => {
     take: 1000,
   });
 
+  const revenue = {
+    now: now.sum.revenue, // total revenue as of now
+    oneDayAgo: await getRevenueFromDB(project.id, utcOneDayBack, prisma), // total revenue as of 1 day ago
+    twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
+    oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
+    twoWeeksAgo: await getRevenueFromDB(project.id, utcTwoWeeksBack, prisma), // total revenue as of two weeks ago
+    thirtyDaysAgo: await getRevenueFromDB(
+      project.id,
+      utcThirtyDaysBack,
+      prisma
+    ), // total revenue as of thirty days ago
+    sixtyDaysAgo: await getRevenueFromDB(project.id, utcSixtyDaysBack, prisma), // total revenue as of sixty days ago
+    ninetyDaysAgo: await getRevenueFromDB(
+      project.id,
+      utcNinetyDaysBack,
+      prisma
+    ), // total revenue as of ninety days ago
+  };
   const tmp = {
-    revenue: {
-      now: now.sum.revenue, // total revenue as of now
-      oneDayAgo: await getRevenueFromDB(project.id, utcOneDayBack, prisma), // total revenue as of 1 day ago
-      twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
-      oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
-      twoWeeksAgo: await getRevenueFromDB(project.id, utcTwoWeeksBack, prisma), // total revenue as of two weeks ago
-      thirtyDaysAgo: await getRevenueFromDB(
-        project.id,
-        utcThirtyDaysBack,
-        prisma
-      ), // total revenue as of thirty days ago
-      sixtyDaysAgo: await getRevenueFromDB(
-        project.id,
-        utcSixtyDaysBack,
-        prisma
-      ), // total revenue as of sixty days ago
-      ninetyDaysAgo: await getRevenueFromDB(
-        project.id,
-        utcNinetyDaysBack,
-        prisma
-      ), // total revenue as of ninety days ago
-    },
+    revenue: registry[name].paymentType === "dilution" ? EMPTY : revenue,
+    dilution: registry[name].paymentType === "dilution" ? revenue : EMPTY,
     days: days,
   };
 
@@ -179,17 +188,19 @@ const getUsageFromSubgraph = async (id) => {
 
   days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
 
+  const revenue = {
+    now: +data.protocol.revenueUSD,
+    oneDayAgo: +oneDayResult.protocol.revenueUSD,
+    twoDaysAgo: +twoDayResult.protocol.revenueUSD,
+    oneWeekAgo: +oneWeekResult.protocol.revenueUSD,
+    twoWeeksAgo: +twoWeekResult.protocol.revenueUSD,
+    thirtyDaysAgo: +thirtyDayResult.protocol.revenueUSD,
+    sixtyDaysAgo: +sixtyDayResult.protocol.revenueUSD,
+    ninetyDaysAgo: +ninetyDayResult.protocol.revenueUSD,
+  };
   return {
-    revenue: {
-      now: +data.protocol.revenueUSD,
-      oneDayAgo: +oneDayResult.protocol.revenueUSD,
-      twoDaysAgo: +twoDayResult.protocol.revenueUSD,
-      oneWeekAgo: +oneWeekResult.protocol.revenueUSD,
-      twoWeeksAgo: +twoWeekResult.protocol.revenueUSD,
-      thirtyDaysAgo: +thirtyDayResult.protocol.revenueUSD,
-      sixtyDaysAgo: +sixtyDayResult.protocol.revenueUSD,
-      ninetyDaysAgo: +ninetyDayResult.protocol.revenueUSD,
-    },
+    revenue,
+    dilution: registry[id].paymentType === "dilution" ? revenue : EMPTY,
     days,
   };
 };
