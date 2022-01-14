@@ -65,15 +65,15 @@ const pocketImport = async () => {
     const { totalAppStakes, totalPOKTsupply, totalRelays1d, totalRelays1hr } =
       await getPOKTNetworkData(day);
 
-    if (dateDiff < 1) {
+    if (dateDiff >= 1) {
       // If data was last updated was more than a day ago,
       // we need to fetch all relays for the past days.
-      successfulRelays = totalRelays1hr;
-      timeUnitMsg = "in the last hour of day";
+      successfulRelays = totalRelays1d;
     } else {
       // If data was last updated less than a day ago,
       // we will only update with data from the past hour.
-      successfulRelays = totalRelays1d;
+      successfulRelays = totalRelays1hr;
+      timeUnitMsg = "in the last hour of day";
     }
 
     console.log(
