@@ -86,8 +86,6 @@ const pocketImport = async () => {
       (x) => x.date === dayISO
     );
 
-    console.log("currentDayPrice", currentDayPrice);
-
     if (successfulRelays > 0 && currentDayPrice > 0) {
       revenue =
         (totalAppStakes / totalPOKTsupply) *
