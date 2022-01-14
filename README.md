@@ -2,7 +2,7 @@
 
 The Web3 Index reports on the fees being paid into Web3 networks in an effort to showcase real usage across the Web3 stack. Stay up to date on the latest Web3 trends whether you’re a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising Web3 infrastructure, or simply a crypto-enthusiast passionate about the Web3 movement.
 
-Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total locked value (TLV)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network revenue and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
+Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total value locked (TVL)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network fees and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
 
 ## Protocol Application Instructions
 
@@ -12,17 +12,17 @@ As the Web3 platform and ecosystem of applications continue to grow, there's bee
 
 ### Step 2: Complete an integration
 
-Protocol revenue data must be surfaced in a format that's consumable by The Web3 Index site. This data can be provided using one of several different methods.
+Protocol fee data must be surfaced in a format that's consumable by The Web3 Index site. This data can be provided using one of several different methods.
 
 #### Method #1: The Graph (recommended)
 
-If the protocol you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol's revenue data to it [here](https://thegraph.com/docs/developer/quick-start).
+If the protocol you'd like to add to the index is built on Ethereum or any other blockchain supported by The Graph, we recommend adding it to The Web3 Index subgraph. You can find the subgraph [here](https://github.com/web3index/subgraph) and instructions on how to add a protocol's fee data to it [here](https://thegraph.com/docs/developer/quick-start).
 
 Once you've successfully added your protocol to the subgraph, make sure to add the protocol to the Web3 Index [registry](./registry.json) using its subgraph protocol entity id as the key and set its `subgraph` field to `true`.
 
 #### Method #2: The Web3 Index Database
 
-If a protocol's blockchain is not supported by The Graph, you can index its revenue data using the Web Index's own database.
+If a protocol's blockchain is not supported by The Graph, you can index its fee data using the Web Index's own database.
 
 Step 1: Create a command line script inside `cmd/[your_protocol_name].ts`. This endpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_protocol_name].yml`). When executed, it should store the protocol's paid fees using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
@@ -30,7 +30,7 @@ Step 2: Add your protocol to the Web3 Index [registry](./registry.json) using th
 
 #### Method #3: A Publically Accessible API Endpoint
 
-If a protocol's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide revenue data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
+If a protocol's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide fee data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
 
 ```
 {

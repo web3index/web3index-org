@@ -93,7 +93,7 @@ const pocketImport = async () => {
     }
 
     console.log(
-      `pocket estimated revenue on ${dayISO}: ${revenue.toLocaleString(
+      `${project.name} estimated revenue on ${dayISO}: ${revenue.toLocaleString(
         "en-US",
         {
           style: "currency",
