@@ -4,7 +4,7 @@ import redstone from "redstone-api";
 import prisma from "../lib/prisma";
 
 const endpoint = "https://arweave.net/graphql";
-const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
+const gqlclient = new GraphQLClient(endpoint, { timeout: 600000 });
 
 const queryGetTranasctions = gql`
   query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
