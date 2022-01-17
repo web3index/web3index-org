@@ -9,7 +9,7 @@ const gqlclient = new GraphQLClient(endpoint, { timeout: 600000 });
 const queryGetTranasctions = gql`
   query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
     transactions(
-      first: 50
+      first: 100
       sort: HEIGHT_ASC
       block: { min: $minblock, max: $maxblock }
       after: $cursor
@@ -136,7 +136,7 @@ const arweaveImport = async () => {
     console.log(JSON.stringify(variables));
 
     retry = 0;
-    while (retry < 10) {
+    while (retry < 50) {
       try {
         data = await gqlclient.request(queryGetTranasctions, variables);
         retry = 10;
