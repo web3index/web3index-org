@@ -9,7 +9,7 @@ const gqlclient = new GraphQLClient(endpoint, { timeout: 600000 });
 const queryGetTranasctions = gql`
   query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
     transactions(
-      first: 1000
+      first: 50
       sort: HEIGHT_ASC
       block: { min: $minblock, max: $maxblock }
       after: $cursor
