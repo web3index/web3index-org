@@ -116,10 +116,10 @@ const arweaveImport = async () => {
   }
   console.log("Last imported block: " + previousBlockHeight);
 
+  let lastBlockId = 852000; 
   let variables = {
     minblock: parsedId,
-    maxblock: 852000,
-    //maxblock: lastBlockId,
+    maxblock: lastBlockId,
     cursor: "",
   };
   let cursor;
