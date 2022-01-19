@@ -135,28 +135,32 @@ const Post = ({ slug, content, data, projects }) => {
                 alignItems: "center",
               }}
             >
-              <Box
-                as="img"
-                css={{
-                  width: "30",
-                  height: 30,
-                  borderRadius: "$round",
-                  objectFit: "contain",
-                  mr: "$3",
-                }}
-                src={data.avatar}
-              />
+              {data?.avatar && (
+                <Box
+                  as="img"
+                  css={{
+                    width: "30",
+                    height: 30,
+                    borderRadius: "$round",
+                    objectFit: "contain",
+                    mr: "$3",
+                  }}
+                  src={data.avatar}
+                />
+              )}
               <Box css={{ fontSize: "$1" }}>
                 <Box css={{ mb: "$1" }}>{data.author}</Box>
-                <Box
-                  as="a"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://twitter.com/${data.twitter}`}
-                  css={{ color: "$blue", textDecoration: "none" }}
-                >
-                  @{data.twitter}
-                </Box>
+                {data?.twitter && (
+                  <Box
+                    as="a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://twitter.com/${data.twitter}`}
+                    css={{ color: "$blue", textDecoration: "none" }}
+                  >
+                    @{data.twitter}
+                  </Box>
+                )}
               </Box>
             </Box>
           </Box>
