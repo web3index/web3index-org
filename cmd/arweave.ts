@@ -118,7 +118,8 @@ const arweaveImport = async () => {
 
   let variables = {
     minblock: parsedId,
-    maxblock: lastBlockId,
+    maxblock: 852000,
+    //maxblock: lastBlockId,
     cursor: "",
   };
   let cursor;
@@ -136,7 +137,7 @@ const arweaveImport = async () => {
     console.log(JSON.stringify(variables));
 
     retry = 0;
-    while (retry < 50) {
+    while (retry < 10) {
       try {
         data = await gqlclient.request(queryGetTranasctions, variables);
         retry = 10;
