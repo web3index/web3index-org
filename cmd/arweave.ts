@@ -118,7 +118,7 @@ const arweaveImport = async () => {
 
   let variables = {
     minblock: parsedId,
-    maxblock: parsedId + 20,
+    maxblock: parsedId + 30,
     cursor: "",
   };
   let cursor;
@@ -206,12 +206,14 @@ const arweaveImport = async () => {
     }
 
     // If there is an additional page and the last block has been validated by the blockchain continue with the loop
+    console.log("hasNextPage", data.transactions.pageInfo.hasNextPage);
+    console.log("exit", exit);
     if (data.transactions.pageInfo.hasNextPage && !exit) {
       const project = await getProject(coin.name);
       await storeDBData(dayData, project.id);
       variables = {
         minblock: +project.lastImportedId,
-        maxblock: +project.lastImportedId + 20,
+        maxblock: +project.lastImportedId + 30,
         cursor: cursor,
       };
       console.log(JSON.stringify(dayData));
