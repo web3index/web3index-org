@@ -104,7 +104,7 @@ const arweaveImport = async () => {
   } catch (e) {
     throw new Error("unable to get last block id from blockchain.");
   }
-  //lastBlockId = parsedId + 30000;
+
   console.log("last block id: " + lastBlockId);
 
   // Get block height for last imported id
@@ -116,10 +116,9 @@ const arweaveImport = async () => {
   }
   console.log("Last imported block: " + previousBlockHeight);
 
-  lastBlockId = 852000; 
   let variables = {
     minblock: parsedId,
-    maxblock: lastBlockId,
+    maxblock: parsedId + 20,
     cursor: "",
   };
   let cursor;
@@ -182,8 +181,9 @@ const arweaveImport = async () => {
         ARinUSDT = await getHistoricalData(coin.symbol, blockUnixTimestamp);
         console.log("Value: " + ARinUSDT);
         console.log("Block ID: " + element.node.block.id);
-        dayData.blockHeight = element.node.block.height;
       }
+
+      dayData.blockHeight = element.node.block.height;
 
       // New day. Store information in DB
       if (!isSameDate(dayData.date, blockUnixTimestamp)) {
@@ -207,11 +207,14 @@ const arweaveImport = async () => {
 
     // If there is an additional page and the last block has been validated by the blockchain continue with the loop
     if (data.transactions.pageInfo.hasNextPage && !exit) {
+      const project = await getProject(coin.name);
+      await storeDBData(dayData, project.id);
       variables = {
-        minblock: parsedId,
-        maxblock: lastBlockId,
+        minblock: +project.lastImportedId,
+        maxblock: +project.lastImportedId + 20,
         cursor: cursor,
       };
+      console.log(JSON.stringify(dayData));
     } else {
       console.log("Exiting loop...");
       console.log("New day: store info in DB.");
@@ -322,7 +325,7 @@ const storeDBData = async (
   }
 
   // update lastBlockID
-  await prisma.project.updateMany({
+  await prisma.project.update({
     where: {
       name: coin.name,
     },
