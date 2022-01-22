@@ -20,7 +20,7 @@ const OldTV = () => {
         image: {
           enabled: true,
           options: {
-            src: "https://images.unsplash.com/photo-1505977404378-3a0e28ec6488?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE0NTg5fQ",
+            src: "https://images.unsplash.com/photo-1617837965531-66ab6fd22120?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2848&q=80",
             blur: 1.2,
           },
         },
