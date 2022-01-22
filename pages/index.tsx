@@ -56,7 +56,7 @@ export async function getStaticProps() {
       revenue,
       projects: sortedProjects,
     },
-    revalidate: 1,
+    revalidate: 30,
   };
 }
 
