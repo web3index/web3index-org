@@ -100,6 +100,8 @@
     "category": "Work Protocol",
     "color": "#20ee82",
     "everestID": "0xfbe90bab805db288d4ca587c349c6a524f43a599",
+    "twitter": "Sia__Foundation",
+    "github": "SiaFoundation",
     "image": "https://web3index.org/logos/sia.svg",
     "name": "Sia",
     "stack": "Middleware",

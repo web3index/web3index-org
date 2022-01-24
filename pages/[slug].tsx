@@ -399,7 +399,11 @@ const Project = ({ slug, index, projects, project }) => {
               )}
               <Box>
                 <SocialButton
-                  href={`https://twitter.com/${project.twitter}`}
+                  href={`https://twitter.com/${
+                    registry[slug].twitter
+                      ? registry[slug].twitter
+                      : project.twitter
+                  }`}
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -408,7 +412,11 @@ const Project = ({ slug, index, projects, project }) => {
                   Twitter
                 </SocialButton>
                 <SocialButton
-                  href={`https://github.com/${project.github}`}
+                  href={`https://github.com/${
+                    registry[slug].github
+                      ? registry[slug].github
+                      : project.github
+                  }`}
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -418,7 +426,9 @@ const Project = ({ slug, index, projects, project }) => {
                 </SocialButton>
                 <SocialButton
                   href={
-                    project.website.includes("https")
+                    registry[slug].website
+                      ? registry[slug].website
+                      : project.website.includes("https")
                       ? project.website
                       : `https://${project.website}`
                   }
@@ -552,7 +562,7 @@ export async function getStaticProps({ params }) {
       },
       projects,
     },
-    revalidate: 1,
+    revalidate: 30,
   };
 }
 
