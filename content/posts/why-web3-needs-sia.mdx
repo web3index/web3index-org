@@ -1,0 +1,59 @@
+---
+title: Why Web3 Needs Sia
+seoTitle: Why Web3 Needs Sia
+abstract: The Internet was born decentralized. How did we allow it to become the centralized, dependent, controlled-by-few, fragile network it is today?
+author: Salva Herrera / @SiaStats
+isPublished: true
+publishedOn: 2022-01-20T09:15:00-0400
+shareImage: https://web3index.org/images/og/why-web3-needs-sia.png
+---
+
+The Internet was born decentralized. How did we allow it to become the centralized, dependent, controlled-by-few, fragile network it is today? “This is for everyone” was the ethos of Tim Berners-Lee, one of the fathers of the Web. Unfortunately, today, not everyone is equal on the Internet – we have service providers, and then we have users. The former can deplatform, change terms, censor, and exert surveillance over the latter. Inequality reigns – your socioeconomic class determines the degree of privacy you give up and the surveillance inflicted upon you. We were once citizens on a global network – since then, we have been downgraded to mere customers.
+
+Web3 is the attempt to take back the essence of what the Internet should be: open-sourced, free (as in freedom), privacy-focused, users in control of their data without the need to trust third parties, no single points of failure, safe, unstoppable, and able to scale infinitely.
+
+Decentralization is paramount for the web3 paradigm, but it usually comes with gaps and friction in the user experience: downloading a blockchain, transacting with tokens, making complex decisions… The easy approach (and sadly, quite common) to fill those gaps is by using centralized structures, either permanently or just aiming to be a transitory solution. Reality shows us that once a project relies on centralized components, it becomes increasingly complicated, and most of the time, impossible to separate the centralized aspect. The other path is building without compromising decentralization at any point in the process. It is a long and tedious approach, and usually comes with friction and even exasperation on the user base during the early stages of a project.
+
+A true decentralized web3 project is one where every single step in the data flow remains positively decentralized. From the way the data is stored to the way it is retrieved and delivered to final users; this includes how they identify on the network and how they autonomously ensure the authenticity, fidelity and correct version of what they retrieve.
+
+The Sia protocol was born in 2015 with a [clear ethos of full decentralization](https://blog.sia.tech/the-sia-ethos-48f72f1cf382). Since then, it has been a challenging road paved with innovation, engineering milestones, and developmental breakthroughs. And today it is prepared to serve the new Internet paradigm. One that is truly for everyone and empowers everyone.
+
+## Sia: A decentralized marketplace of cloud storage
+
+Sia works as a marketplace that is peer to peer and connects the two sides without any intermediaries: there are “renters”, users that aim to store data on the network, and there are “hosts”, the providers of the storage and bandwidth services. The market itself is decentralized – hosts post on the Sia blockchain their IP address, while renters scan periodically through the announced hosts to check their current prices and build a record of uptimes. While there are third-party tools that benchmark hosts in the default Sia experience, renters autonomously choose which hosts can store their data based on their needs, pricing, and uptime which they can assess themselves.
+
+The renter and the host then sign a File Contract on the Sia blockchain, where the renter deposits the potential payment in SiaCoin (SC, the token of the network), and the host also deposits collateral (in SC as well) as a guarantee of good faith. These contracts work similarly to a Lightning network – once open, for every data fragment that gets transferred, in or out of the host, the renter will make a micro-payment that is kept in a private payment channel (this avoids clogging the blockchain). When the end of the contract approaches, based on cryptography and Merkle roots, the host is required to submit proof to the blockchain that the renter’s data is still intact and preserved. If successful, the blockchain releases the payment to the host, otherwise, it will destroy the collateral if it has failed. This way, Sia operates based on incentive structures rather than trust and human intervention.
+
+By Sia standards, the data uploaded by the renter is encrypted on his side with wallet keys. Files are divided and uploaded redundantly to multiple hosts using erasure coding schemes. This method ensures that even if a majority of the hosts go offline or lose the data, the renter will be able to download and reconstruct the original files, granting high rates of data availability and performance.
+
+Today, Sia is a network made from more than 600 hosts in 60 countries representing 6.5 PetaBytes of storage. Renters are currently storing almost 2 PB of data, spending around $20,000 per month. More network stats can be found at [SiaStats](https://siastats.info). Sia is the underlying storage layer of multiple services, including the file sharing website [PixelDrain](https://pixeldrain.com/), the professionally oriented and S3-compatible cloud storage service [Filebase](https://filebase.com/), and the personal cloud storage [Arzen](https://arzen.tech/).
+
+And of course, it is also the home of [Skynet](https://siasky.net/).
+
+## Skynet: a framework for the new Internet
+
+As we said before, the real challenge on decentralized platforms is addressing the inevitable friction that arises when users interact with a blockchain without compromising decentralization at any step. How do you deliver content stored on Sia hosts to users that do not even know what Sia or a blockchain is, while preserving Sia’s decentralization?
+
+Skynet was born as a developmental breakthrough on Sia while creating a file sharing system between users. If each stored file has a unique tag (a hash, called skylink), and two renters have file contracts with the same hosts, now renter A can upload a file, and then share with renter B just the skylink, being this sufficient for downloading the file directly from the Sia hosts. But what happens if now renter C is a public portal serving files stored on Sia over the HTTP protocol? This makes it possible for renter A to upload a file to Sia, and then non-Sia users to access it from their web browsers through the portal of renter C. This also enables a non-Sia user to upload files in one portal, and then these files be accessible from any other portal (public or private) or on any local computer running a Skynet client.
+
+This way, portals are interoperable. Uploaded data is unstoppable and uncensorable, always available from other public portals or private ones anybody can launch. The mesh of portals becomes a decentralized Content Delivery Network (CDN) serving the data stored on Sia to the outside world. All of this is Skynet… and it is also much more.
+
+Instead of simple files, the delivered data can be entire self-contained web-apps or the frontend of an app, all of them saving the user-generated data as new files on Skynet. This enables unstoppable and permissionless dapps (decentralized apps), as for example Vup (a private and cross-platform cloud with folder syncing), Rift (a complete workspace for document editing, file sharing and social feeds), SkyDocs (a Google Docs alternative) or DeFi frontends like 1inch.
+
+Skynet has its own cross-app and cross-portal universal user identification system - MySky. It represents a framework where the user-generated content always remains under his control and can be shared between different apps. For example, social feeds or a list of friends can seamlessly work between alternative social networks. Two users can see each other’s feeds across different apps. The user can decide to switch to an alternative app, being all his previous data (like social posts) already populated on the new one once logging in. The users become the sole owners of their content and data. They can’t be deplatformed or their access to data interrupted. Neither can the owners of the Skynet portals, as data, apps and user accounts exist independent of the portals and are available in all of them.
+
+Skynet also empowers users by giving them control of the app versioning they use, something of capital importance on DeFi apps. Thanks to [Homescreen](https://homescreen.hns.siasky.net/), the user installs specific app versions on his personal space and decides when (or if) upgrading. This takes the control of web3 frontends from developers back to the users – even if a developer removes features, or the app becomes maliciously tampered, the user will always have access to the version of his choice, stored and associated to his MySky account.
+
+Currently 21 million files, representing 265 TB of data, are stored among known public Skynet portals. In the immediate future, Skynet aims to simplify the process of launching portals, incentivize content creators and curators through an on-blockchain monetization system, and scale the content distribution by data downloading directly from Sia hosts to web browsers (without the intermediation of portals).
+
+## Joining forces at The Web3 Index
+
+Being the developer of a network stats website that sets the focus on adoption metrics, I was personally thrilled when I discovered The Web3 Index project, where projects are aggregated and ranked based on rigorous and objective real-world adoption metrics. If the blockchain space and web3 protocols in particular, aim to become credible and mainstream, we need to move away from useless indexes as coin price and market caps.
+
+I feel very proud of Sia/Skynet joining The Web3 Index in its early stages, sharing space and comparative metrics with other protocols that will shape the future of the Internet as well. In fact, Sia and Skynet have partnered, or worked together, with some of the protocols already included at the Index. Akash and Skynet together today are providing a [full-stack solution](https://siasky.net/news/akashnetwork-and-skynetlabs-integrate/) for dapps that require both front- and back-ends. [Lisky](https://showcase.ethglobal.com/ethonline2021/lisky-decentralized-live-streaming) is a live streaming dapp that leverages both Livepeer (transcoding, stream delivery) and Skynet (frontend, user login).
+
+Becoming part of The Web3 Index will hopefully help increase awareness of the whole web3 space and speed up its implementation, while aiding developers discover Sia/Skynet and bridge it with the rest of the web3 protocols.
+
+Sia is not shy on its ambition of becoming the storage backbone of the Internet, nor is Skynet on its goal of becoming the de facto technology that delivers the web3 experiences to end users.
+
+_Salva Herrera is the developer of the network metrics website SiaStats.info and active member of the Sia community since 2017. I am thankful to the Sia Foundation team for the support and feedback on this blog post._

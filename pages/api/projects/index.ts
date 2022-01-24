@@ -38,16 +38,16 @@ export const getProjects = async () => {
 
       const [oneWeekDilutionTotal, oneWeekDilutionPercentChange] =
         getTwoPeriodPercentChange(
-          data.usage.dilution.now,
-          data.usage.dilution.oneWeekAgo,
-          data.usage.dilution.twoWeeksAgo
+          data.usage?.dilution?.now,
+          data.usage?.dilution?.oneWeekAgo,
+          data.usage?.dilution?.twoWeeksAgo
         );
 
       const [thirtyDayDilutionTotal, thirtyDayDilutionPercentChange] =
         getTwoPeriodPercentChange(
-          data.usage.dilution.now,
-          data.usage.dilution.thirtyDaysAgo,
-          data.usage.dilution.sixtyDaysAgo
+          data.usage?.dilution?.now,
+          data.usage?.dilution?.thirtyDaysAgo,
+          data.usage?.dilution?.sixtyDaysAgo
         );
 
       projects.push({
@@ -65,7 +65,7 @@ export const getProjects = async () => {
             thirtyDayPercentChange: thirtyDayDilutionPercentChange,
             ninetyDayTotal: registry[project].untracked
               ? 0
-              : data.usage.dilution.now - data.usage.dilution.ninetyDaysAgo,
+              : data.usage.dilution?.now - data.usage.dilution?.ninetyDaysAgo,
           },
           revenue: {
             ...data.usage.revenue,
