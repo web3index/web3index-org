@@ -110,5 +110,21 @@
     "coingeckoID": "siacoin",
     "genesisDate": "2015-06-06",
     "usage": "https://siastats.info/navigator-api/web3index/revenue"
+  },
+  "storj": {
+    "blockchain": "Ethereum",
+    "category": "Work Protocol",
+    "color": "#276CFF",
+    "everestID": "0x73f4121922f8cf89144e7cb29e325fe3595b8b09",
+    "twitter": "storj",
+    "github": "storj",
+    "image": "https://web3index.org/logos/storj.svg",
+    "name": "Storj",
+    "stack": "Middleware",
+    "subcategory": "Storage",
+    "symbol": "STORJ",
+    "coingeckoID": "storj",
+    "genesisDate": "2014-08-01",
+    "usage": "https://stats.storjshare.io/payout.json"
   }
 }
