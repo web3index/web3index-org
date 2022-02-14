@@ -41,6 +41,9 @@ If a protocol's blockchain is not supported by The Graph _and_ you can't use the
     "twoDaysAgo": 60390.5, // total revenue as of two days ago
     "oneWeekAgo": 58620.2, // total revenue as of one week ago
     "twoWeeksAgo": 53635.26 // total revenue as of two weeks ago
+    "thirtyDaysAgo": 48620.2, // total revenue as of thirty days ago
+    "sixtyDaysAgo": 33635.26 // total revenue as of sixty days ago,
+    "ninetyDaysAgo": 23635.26 // total revenue as of ninety days ago
   },
   "days": [
     {
