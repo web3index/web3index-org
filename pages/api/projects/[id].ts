@@ -226,6 +226,9 @@ export const getProject = async (id) => {
   else if (registry[id].usage) {
     const res = await fetch(registry[id].usage);
     usage = await res.json();
+
+    // make sure days in endpoint provided are sorted ascending
+    usage.days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
   }
   // else get usage from the Web3 Index DB
   else {

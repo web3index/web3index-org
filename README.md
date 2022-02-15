@@ -1,6 +1,6 @@
 # The Web3 Index
 
-The Web3 Index reports on the fees being paid into Web3 networks in an effort to showcase real usage across the Web3 stack. Stay up to date on the latest Web3 trends whether you’re a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising Web3 infrastructure, or simply a crypto-enthusiast passionate about the Web3 movement.
+The Web3 Index reports on the fees being paid into web3 network protocols in an effort to showcase real usage across the web3 stack. Stay up to date on the latest web3 trends whether you’re a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising web3 infrastructure, or simply a crypto-enthusiast passionate about the web3 movement.
 
 Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total value locked (TVL)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network fees and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
 
@@ -8,7 +8,7 @@ Unlike most indexes in defi (a sector of web3) that weight listings based on mar
 
 ### Step 1: Submit an application
 
-As the Web3 platform and ecosystem of applications continue to grow, there's been a surge in interest to be listed on this site. In order for a protocol to be considered for the index, we ask that you first submit [this application](https://github.com/web3index/web3index-org/issues/new?assignees=&labels=&template=protocol_submission.md&title=New+Protocol+Submission).
+As the web3 ecosystem of applications continues to grow, there's been a surge in interest to be listed on this site. In order for a protocol to be considered for the index, we ask that you first submit [this application](https://github.com/web3index/web3index-org/issues/new?assignees=&labels=&template=protocol_submission.md&title=New+Protocol+Submission).
 
 ### Step 2: Complete an integration
 
@@ -26,7 +26,7 @@ If a protocol's blockchain is not supported by The Graph, you can index its fee 
 
 Step 1: Create a command line script inside `cmd/[your_protocol_name].ts`. This endpoint will get called every hour by a Github action (create your Github action in `.github/workflows/[your_protocol_name].yml`). When executed, it should store the protocol's paid fees using the [Prisma](https://www.prisma.io/docs/concepts/components/prisma-client/crud) ORM according to the database [schema](./prisma/schema.prisma).
 
-Step 2: Add your protocol to the Web3 Index [registry](./registry.json) using the protocol and directory name you created. Make sure to set the set its `subgraph` field to `false`.
+Step 2: Add your protocol to The Web3 Index [registry](./registry.json) using the protocol and directory name you created. Make sure to set the set its `subgraph` field to `false`.
 
 #### Method #3: A Publically Accessible API Endpoint
 
@@ -41,6 +41,9 @@ If a protocol's blockchain is not supported by The Graph _and_ you can't use the
     "twoDaysAgo": 60390.5, // total revenue as of two days ago
     "oneWeekAgo": 58620.2, // total revenue as of one week ago
     "twoWeeksAgo": 53635.26 // total revenue as of two weeks ago
+    "thirtyDaysAgo": 48620.2, // total revenue as of thirty days ago
+    "sixtyDaysAgo": 33635.26 // total revenue as of sixty days ago,
+    "ninetyDaysAgo": 23635.26 // total revenue as of ninety days ago
   },
   "days": [
     {
@@ -52,7 +55,7 @@ If a protocol's blockchain is not supported by The Graph _and_ you can't use the
 }
 ```
 
-Once this endpoint is available add your protocol to the Web3 Index [registry](./registry.json), and include a `usage` field that points to your endpoint.
+Once this endpoint is available add your protocol to The Web3 Index [registry](./registry.json), and include a `usage` field that points to your endpoint.
 
 Note: your API codebase must be open sourced in order to be considered for the index.
 
