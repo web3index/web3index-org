@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { request, gql } from "graphql-request";
 import registry from "../../../registry.json";
 import dayjs from "dayjs";
-import { getBlocksFromTimestamps } from "../../../lib/utils";
+import { getSnapshots, getSubgraph, sumArrays } from "../../../lib/utils";
 import prisma from "../../../lib/prisma";
 
 const utcCurrentTime = dayjs();
@@ -99,71 +99,58 @@ const getRevenueFromDB = async (projectId, date, prisma) => {
   return rev.sum.revenue;
 };
 
-const getRevenueByBlock = async (id, blockNumber) => {
-  return await request(
-    process.env.NEXT_PUBLIC_SUBGRAPH,
-    gql`
-      query ($id: String!, $block: Block_height) {
-        protocol(id: $id, block: $block) {
-          revenueUSD
-        }
-      }
-    `,
-    {
-      id,
-      block: { number: blockNumber },
-    }
-  );
-};
-
-const getUsageFromSubgraph = async (id) => {
-  const data = await request(
-    process.env.NEXT_PUBLIC_SUBGRAPH,
-    gql`
-      query ($id: String!) {
-        protocol(id: $id) {
-          revenueUSD
-          days(first: 1000) {
-            date
+const getUsageFromSubgraph = async (id, networks) => {
+  const dayDataPromises = [];
+  const snapshotPromises = [];
+  networks.map((n) => {
+    const data = request(
+      getSubgraph(n),
+      gql`
+        query ($id: String!) {
+          protocol(id: $id) {
             revenueUSD
+            days(first: 1000) {
+              date
+              revenueUSD
+            }
           }
         }
-      }
-    `,
-    { id }
-  );
+      `,
+      { id }
+    );
+    dayDataPromises.push(data);
+    snapshotPromises.push(getSnapshots(id, n));
+  });
+
+  const dayData = await Promise.all(dayDataPromises);
+  const snapshotData = await Promise.all(snapshotPromises);
+
+  let totalRevenue = 0;
+
+  dayData.map((d) => {
+    totalRevenue += +d.protocol.revenueUSD;
+  });
 
   const [
-    oneDayBlock,
-    twoDayBlock,
-    oneWeekBlock,
-    twoWeekBlock,
-    thirtyDayBlock,
-    sixtyDayBlock,
-    ninetyDayBlock,
-  ] = await getBlocksFromTimestamps([
-    utcOneDayBack,
-    utcTwoDaysBack,
-    utcOneWeekBack,
-    utcTwoWeeksBack,
-    utcThirtyDaysBack,
-    utcSixtyDaysBack,
-    utcNinetyDaysBack,
-  ]);
-
-  const oneDayResult = await getRevenueByBlock(id, oneDayBlock);
-  const twoDayResult = await getRevenueByBlock(id, twoDayBlock);
-  const oneWeekResult = await getRevenueByBlock(id, oneWeekBlock);
-  const twoWeekResult = await getRevenueByBlock(id, twoWeekBlock);
-  const thirtyDayResult = await getRevenueByBlock(id, thirtyDayBlock);
-  const sixtyDayResult = await getRevenueByBlock(id, sixtyDayBlock);
-  const ninetyDayResult = await getRevenueByBlock(id, ninetyDayBlock);
+    oneDayAgo,
+    twoDaysAgo,
+    oneWeekAgo,
+    twoWeeksAgo,
+    thirtyDaysAgo,
+    sixtyDaysAgo,
+    ninetyDaysAgo,
+  ] = [...sumArrays(...snapshotData)];
 
   const dayIndexSet = new Set();
   const oneDay = 24 * 60 * 60;
 
+  let daysRaw = [];
+  dayData.map((d) => {
+    daysRaw = [...daysRaw, ...d.protocol.days];
+  });
+
   let days = [];
-  data.protocol.days.forEach((day) => {
+  daysRaw.forEach((day) => {
     dayIndexSet.add((day.date / oneDay).toFixed(0));
     days.push({
       date: day.date,
@@ -189,14 +176,14 @@ const getUsageFromSubgraph = async (id) => {
   days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
 
   const revenue = {
-    now: +data.protocol.revenueUSD,
-    oneDayAgo: +oneDayResult.protocol.revenueUSD,
-    twoDaysAgo: +twoDayResult.protocol.revenueUSD,
-    oneWeekAgo: +oneWeekResult.protocol.revenueUSD,
-    twoWeeksAgo: +twoWeekResult.protocol.revenueUSD,
-    thirtyDaysAgo: +thirtyDayResult.protocol.revenueUSD,
-    sixtyDaysAgo: +sixtyDayResult.protocol.revenueUSD,
-    ninetyDaysAgo: +ninetyDayResult.protocol.revenueUSD,
+    now: totalRevenue,
+    oneDayAgo,
+    twoDaysAgo,
+    oneWeekAgo,
+    twoWeeksAgo,
+    thirtyDaysAgo,
+    sixtyDaysAgo,
+    ninetyDaysAgo,
   };
   return {
     revenue,
@@ -219,8 +206,8 @@ export const getProject = async (id) => {
   let usage;
 
   // if project is part of the web3 index subgraph get it from the subgraph
-  if (registry[id].subgraph) {
-    usage = await getUsageFromSubgraph(id);
+  if (registry[id].subgraphs) {
+    usage = await getUsageFromSubgraph(id, registry[id].subgraphs);
   }
   // if project is providing its own usage endpoint, fetch it
   else if (registry[id].usage) {

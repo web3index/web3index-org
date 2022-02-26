@@ -1,22 +1,22 @@
 {
   "livepeer": {
     "blockchain": "Ethereum",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#00eb88",
-    "description": "Livepeer is a developer platform for decentralized video streaming powered by a token-coordinated network of video infrastructure providers.",
+    "description": "Livepeer is a protocol for decentralized video broadcasting.",
     "everestID": "0x49f6e21a4e3f20580624669acd83dac39a339042",
     "image": "https://web3index.org/logos/livepeer.svg",
     "name": "Livepeer",
     "stack": "Middleware",
     "subcategory": "Compute, Video",
     "symbol": "LPT",
-    "subgraph": true,
+    "subgraphs": ["mainnet", "arbitrum-one"],
     "coingeckoID": "livepeer",
     "genesisDate": "2018-10-01"
   },
   "thegraph": {
     "blockchain": "Ethereum",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#6f4cff",
     "everestID": "0xda80bd825c1272de7b99d0b0a5e8a6d3df129165",
     "image": "https://cryptologos.cc/logos/the-graph-grt-logo.svg",
@@ -24,13 +24,13 @@
     "stack": "Middleware",
     "subcategory": "Bandwidth, Indexing",
     "symbol": "GRT",
-    "subgraph": true,
+    "subgraphs": ["mainnet"],
     "coingeckoID": "the-graph",
     "genesisDate": "2018-10-01"
   },
   "arweave": {
     "blockchain": "Arweave",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#3b3c40",
     "everestID": "0x37453b7b89521570abee5d696eae5449f4e549ff",
     "image": "https://web3index.org/logos/arweave.svg",
@@ -43,7 +43,7 @@
   },
   "helium": {
     "blockchain": "Helium",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#474DFF",
     "everestID": "0x9741865c596110bed4794704de7096873a4adc7f",
     "image": "https://cryptologos.cc/logos/helium-hnt-logo.svg",
@@ -56,7 +56,7 @@
   },
   "filecoin": {
     "blockchain": "Filecoin",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#398BEF",
     "everestID": "0x4bf59fdad495836908cf02857d08ca053229c561",
     "image": "https://cryptologos.cc/logos/filecoin-fil-logo.svg",
@@ -71,7 +71,7 @@
   },
   "akash": {
     "blockchain": "Akash",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#E30613",
     "everestID": "0x6dfa2de2b001d53a0d83e2ec092e048de13f22c3",
     "image": "https://akashlytics.com/images/akash-logo.svg",
@@ -84,7 +84,7 @@
   },
   "pocket": {
     "blockchain": "Pocket",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#1D8AED",
     "everestID": "0x7ed21153c5c5eaa661af2821b6f90e838677c349",
     "image": "https://web3index.org/logos/pocket.svg",
@@ -97,7 +97,7 @@
   },
   "sia": {
     "blockchain": "Sia",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#20ee82",
     "everestID": "0xfbe90bab805db288d4ca587c349c6a524f43a599",
     "twitter": "Sia__Foundation",
@@ -113,7 +113,7 @@
   },
   "storj": {
     "blockchain": "Ethereum",
-    "category": "Work Protocol",
+    "category": "Network Protocol",
     "color": "#276CFF",
     "everestID": "0x73f4121922f8cf89144e7cb29e325fe3595b8b09",
     "twitter": "storj",

@@ -3,16 +3,22 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
-import Box from "../components/Box";
 
-export const getBlocksFromTimestamps = async (timestamps) => {
+export const getBlocksFromTimestamps = async (timestamps, network) => {
+  const endpoints = {
+    mainnet:
+      "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
+    "arbitrum-one":
+      "https://api.thegraph.com/subgraphs/name/dolomite-exchange/arbitrum-one-blocks",
+  };
+
   if (!timestamps?.length) {
     return [];
   }
   const blocks = [];
   for (const timestamp of timestamps) {
     const json = await request(
-      "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
+      endpoints[network],
       gql`
         query blocks($timestampFrom: Int!, $timestampTo: Int!) {
           blocks(
@@ -27,9 +33,9 @@ export const getBlocksFromTimestamps = async (timestamps) => {
           }
         }
       `,
-      { timestampFrom: timestamp, timestampTo: timestamp + 600 }
+      { timestampFrom: timestamp, timestampTo: timestamp + 100 }
     );
-    blocks.push(+json.blocks[0].number);
+    blocks.push(+json.blocks[0]?.number ? +json.blocks[0]?.number : 0);
   }
 
   return blocks;
@@ -157,3 +163,87 @@ export const pageview = (url) => {
 export const event = ({ action, params }) => {
   window.gtag("event", action, params);
 };
+
+export const getSubgraph = (network) => {
+  return `https://api.thegraph.com/subgraphs/name/web3index/${network}`;
+};
+
+const getRevenueByBlock = async (id, blockNumber, network) => {
+  return await request(
+    getSubgraph(network),
+    gql`
+      query ($id: String!, $block: Block_height) {
+        protocol(id: $id, block: $block) {
+          revenueUSD
+        }
+      }
+    `,
+    {
+      id,
+      block: { number: blockNumber },
+    }
+  );
+};
+
+export const getSnapshots = async (id, network) => {
+  const utcCurrentTime = dayjs();
+  const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
+  const utcTwoDaysBack = utcCurrentTime.subtract(2, "day").unix();
+  const utcOneWeekBack = utcCurrentTime.subtract(1, "week").unix();
+  const utcTwoWeeksBack = utcCurrentTime.subtract(2, "week").unix();
+  const utcThirtyDaysBack = utcCurrentTime.subtract(30, "day").unix();
+  const utcSixtyDaysBack = utcCurrentTime.subtract(60, "day").unix();
+  const utcNinetyDaysBack = utcCurrentTime.subtract(90, "day").unix();
+
+  const timestamps = [
+    utcOneDayBack,
+    utcTwoDaysBack,
+    utcOneWeekBack,
+    utcTwoWeeksBack,
+    utcThirtyDaysBack,
+    utcSixtyDaysBack,
+    utcNinetyDaysBack,
+  ];
+
+  const [
+    oneDayBlock,
+    twoDayBlock,
+    oneWeekBlock,
+    twoWeekBlock,
+    thirtyDayBlock,
+    sixtyDayBlock,
+    ninetyDayBlock,
+  ] = await getBlocksFromTimestamps(timestamps, network);
+
+  const oneDayResult = await getRevenueByBlock(id, oneDayBlock, network);
+  const twoDayResult = await getRevenueByBlock(id, twoDayBlock, network);
+  const oneWeekResult = await getRevenueByBlock(id, oneWeekBlock, network);
+  const twoWeekResult = await getRevenueByBlock(id, twoWeekBlock, network);
+  const thirtyDayResult = await getRevenueByBlock(id, thirtyDayBlock, network);
+  const sixtyDayResult = await getRevenueByBlock(id, sixtyDayBlock, network);
+  const ninetyDayResult = await getRevenueByBlock(id, ninetyDayBlock, network);
+
+  return [
+    oneDayResult.protocol?.revenueUSD ? +oneDayResult.protocol.revenueUSD : 0,
+    twoDayResult.protocol?.revenueUSD ? +twoDayResult.protocol.revenueUSD : 0,
+    oneWeekResult.protocol?.revenueUSD ? +oneWeekResult.protocol.revenueUSD : 0,
+    twoWeekResult.protocol?.revenueUSD ? +twoWeekResult.protocol.revenueUSD : 0,
+    thirtyDayResult.protocol?.revenueUSD
+      ? +thirtyDayResult.protocol.revenueUSD
+      : 0,
+    sixtyDayResult.protocol?.revenueUSD
+      ? +sixtyDayResult.protocol.revenueUSD
+      : 0,
+    ninetyDayResult.protocol?.revenueUSD
+      ? +ninetyDayResult.protocol.revenueUSD
+      : 0,
+  ];
+};
+
+export function sumArrays(...arrays) {
+  const n = arrays.reduce((max, xs) => Math.max(max, xs.length), 0);
+  const result = Array.from({ length: n });
+  return result.map((_, i) =>
+    arrays.map((xs) => xs[i] || 0).reduce((sum, x) => sum + x, 0)
+  );
+}
