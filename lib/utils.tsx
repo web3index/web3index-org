@@ -165,6 +165,11 @@ export const event = ({ action, params }) => {
 };
 
 export const getSubgraph = (network) => {
+  // if network is mainnet use decentralized network
+  if (network === "mainnet") {
+    return `https://gateway.thegraph.com/api/643e75af14ebedf13430c47ee045f07a/subgraphs/id/5WHJhK3TW4zAc3d3KaNXwmPjRAyRqibTqzFhiRrWVWWg`;
+  }
+
   return `https://api.thegraph.com/subgraphs/name/web3index/${network}`;
 };
 
