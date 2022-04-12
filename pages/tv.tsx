@@ -3,7 +3,6 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import Layout from "../layouts/tv";
 import OldTV from "../components/OldTV";
-import { useRef } from "react";
 
 const TV = () => {
   const { isLoading, data } = useQuery(
@@ -19,8 +18,6 @@ const TV = () => {
       refetchInterval: 5000,
     }
   );
-
-  const playerRef = useRef(null);
 
   const videoJsOptions = {
     // lookup the options in the docs for more options
