@@ -95,7 +95,22 @@
     "genesisDate": "2020-07-28",
     "paymentType": "dilution"
   },
-
+  "sia": {
+    "blockchain": "Sia",
+    "category": "Network Protocol",
+    "color": "#20ee82",
+    "everestID": "0xfbe90bab805db288d4ca587c349c6a524f43a599",
+    "twitter": "Sia__Foundation",
+    "github": "SiaFoundation",
+    "image": "https://web3index.org/logos/sia.svg",
+    "name": "Sia",
+    "stack": "Middleware",
+    "subcategory": "Storage",
+    "symbol": "SC",
+    "coingeckoID": "siacoin",
+    "genesisDate": "2015-06-06",
+    "usage": "https://siastats.info/navigator-api/web3index/revenue"
+  },
   "storj": {
     "blockchain": "Ethereum",
     "category": "Network Protocol",
