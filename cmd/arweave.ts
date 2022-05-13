@@ -1,62 +1,11 @@
-import { GraphQLClient } from "graphql-request";
-import { gql } from "graphql-request";
-import redstone from "redstone-api";
 import prisma from "../lib/prisma";
 
-const endpoint = "https://arweave.net/graphql";
-const gqlclient = new GraphQLClient(endpoint, { timeout: 600000 });
-
-const queryGetTranasctions = gql`
-  query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
-    transactions(
-      first: 100
-      sort: HEIGHT_ASC
-      block: { min: $minblock, max: $maxblock }
-      after: $cursor
-    ) {
-      pageInfo {
-        hasNextPage
-      }
-      edges {
-        cursor
-        node {
-          id
-          block {
-            id
-            timestamp
-            height
-          }
-          fee {
-            winston
-            ar
-          }
-        }
-      }
-    }
-  }
-`;
-
-const queryGetLastBlock = gql`
-  query queryGetLastBlock {
-    block {
-      height
-    }
-  }
-`;
-
-const queryGetBlock = gql`
-  query GetBlock($blockid: Int!) {
-    blocks(height: { min: $blockid, max: $blockid }) {
-      edges {
-        node {
-          id
-          height
-          timestamp
-        }
-      }
-    }
-  }
-`;
+const params = new URLSearchParams({
+  interval: "daily",
+  daily_granularity: "project",
+});
+const endpoint = "https://api.tokenterminal.com/v1/projects/arweave/metrics";
+const axios = require("axios");
 
 const coin = {
   name: "arweave",
@@ -64,9 +13,9 @@ const coin = {
 };
 
 const today = new Date();
-today.setHours(0, 0, 0, 0);
+today.setUTCHours(0, 0, 0, 0);
 
-// Update Arweave daily revenue data
+// Update arweave daily revenue data
 // a cron job should hit this endpoint every half hour or so (can use github actions for cron)
 const arweaveImport = async () => {
   // Use the updatedAt field in the Day model and compare it with the
@@ -90,155 +39,68 @@ const arweaveImport = async () => {
     });
   }
 
-  const lastId = project.lastImportedId;
-  const parsedId = parseInt(lastId, 10);
-  let retry = 0;
-  if (isNaN(parsedId)) {
-    throw new Error("unable to parse int.");
+  const response = await axios
+    .get(endpoint, {
+      params: params,
+      headers: { Authorization: "Bearer " + process.env.TOKENTERMINAL_API_KEY },
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  const days = project.days;
+  let lastDate: any;
+
+  if (isNaN(days)) {
+    lastDate = new Date(
+      response.data[response.data.length - 1].datetime.split("+")[0]
+    );
+  } else {
+    lastDate = new Date(days[-1].date);
   }
 
-  // Get last block id
-  let lastBlockId;
-  try {
-    lastBlockId = await getLastBlockId();
-  } catch (e) {
-    throw new Error("unable to get last block id from blockchain.");
-  }
+  const fromDate = lastDate;
+  fromDate.setUTCHours(0, 0, 0, 0);
 
-  console.log("last block id: " + lastBlockId);
+  console.log("Project: " + project.name + ", from date: " + fromDate);
 
-  // Get block height for last imported id
-  let previousBlockHeight;
-  try {
-    previousBlockHeight = await getBlockHeight(parsedId);
-  } catch (e) {
-    throw new Error("unable to get block height from blockchain.");
-  }
-  console.log("Last imported block: " + previousBlockHeight);
+  const toDate = new Date();
+  toDate.setUTCHours(0, 0, 0, 0);
 
-  let variables = {
-    minblock: parsedId,
-    maxblock: parsedId + 30,
-    cursor: "",
-  };
-  let cursor;
-  const dayData = {
-    date: 0,
-    fees: 0,
-    blockHeight: "",
-  };
-  let ARinUSDT = 0;
-  let exit = false;
+  const difference = dateDiffInDays(fromDate, toDate);
 
-  // This is the main loop where the import takes place
-  while (!exit) {
-    let data;
-    console.log(JSON.stringify(variables));
+  for (let index = difference; index >= 0; index--) {
+    const element = response.data.filter((obj) => {
+      const objDate = new Date(obj.datetime.split("+")[0]);
+      objDate.setUTCHours(0, 0, 0, 0);
+      return objDate.getTime() === fromDate.getTime();
+    })[0];
 
-    retry = 0;
-    while (retry < 10) {
-      try {
-        data = await gqlclient.request(queryGetTranasctions, variables);
-        retry = 10;
-      } catch (e) {
-        retry++;
-        console.log(
-          "Error executing gql query GetTransactions. Retry - " + retry
-        );
-        if (retry == 10) {
-          throw new Error("Error executing gql query GetTransactions.");
-        }
-      }
-    }
-
-    for (let index = 0; index < data.transactions.edges.length; index++) {
-      const element = data.transactions.edges[index];
-
-      // If block is null store data in DB and exit
-      if (element.node.block == null) {
-        exit = true;
-        break;
-      }
-
-      // Is it the first element?
-      if (dayData.date == 0) {
-        const parsedUnixTimestamp = parseInt(element.node.block.timestamp, 10);
-        if (isNaN(parsedUnixTimestamp)) {
-          throw new Error("unable to parse int.");
-        }
-        dayData.date = getMidnightUnixTimestamp(parsedUnixTimestamp);
-        console.log("Date was empty. Start parsing from date: " + dayData.date);
-      }
-
-      const blockUnixTimestamp = parseInt(element.node.block.timestamp, 10);
-      if (isNaN(blockUnixTimestamp)) {
-        throw new Error("unable to parse int.");
-      }
-
-      // if new block update AR/USDT price
-      if (dayData.blockHeight != element.node.block.height) {
-        //console.log("Get AR historical data...");
-        ARinUSDT = await getHistoricalData(coin.symbol, blockUnixTimestamp);
-        console.log("Value: " + ARinUSDT);
-        console.log("Block ID: " + element.node.block.id);
-      }
-
-      dayData.blockHeight = element.node.block.height;
-
-      // New day. Store information in DB
-      if (!isSameDate(dayData.date, blockUnixTimestamp)) {
-        console.log("New day: store info in DB.");
-        console.log(JSON.stringify(dayData) + " - " + blockUnixTimestamp);
-
-        await storeDBData(dayData, project.id);
-
-        // Initialize dayData as it's a new day
-        dayData.fees = 0;
-        dayData.date = getMidnightUnixTimestamp(blockUnixTimestamp);
-      }
-
-      const transactionFee = parseFloat(element.node.fee.ar);
-      if (isNaN(transactionFee)) {
-        throw new Error("unable to parse int.");
-      }
-      dayData.fees += transactionFee * ARinUSDT;
-      cursor = data.transactions.edges[index].cursor;
-    }
-
-    // If there is an additional page and the last block has been validated by the blockchain continue with the loop
-    console.log("hasNextPage", data.transactions.pageInfo.hasNextPage);
-    console.log("exit", exit);
-    if (data.transactions.pageInfo.hasNextPage && !exit) {
-      const project = await getProject(coin.name);
-      await storeDBData(dayData, project.id);
-      variables = {
-        minblock: +project.lastImportedId,
-        maxblock: +project.lastImportedId + 30,
-        cursor: cursor,
-      };
-      console.log(JSON.stringify(dayData));
-    } else {
-      console.log("Exiting loop...");
-      console.log("New day: store info in DB.");
-      console.log(JSON.stringify(dayData));
-      await storeDBData(dayData, project.id);
-      exit = true;
+    if (element === undefined) {
+      console.log("In continue");
+      fromDate.setDate(fromDate.getDate() + 1);
       continue;
     }
-  }
 
+    const fee = {
+      date: fromDate.getTime() / 1000,
+      fees: element.revenue,
+    };
+
+    console.log(
+      "Store day " +
+        fromDate +
+        " - " +
+        fromDate.getTime() / 1000 +
+        "to DB - " +
+        fee.fees
+    );
+    await storeDBData(fee, project.id);
+    fromDate.setDate(fromDate.getDate() + 1);
+  }
   console.log("exit scrape function.");
 
   return;
-};
-
-const getHistoricalData = async (symbol: string, date: number) => {
-  const dt = new Date(date * 1000);
-  const price = await redstone.getHistoricalPrice(symbol, {
-    date: dt.toISOString(),
-  });
-
-  return price.value;
 };
 
 const getProject = async (name: string) => {
@@ -249,11 +111,11 @@ const getProject = async (name: string) => {
   });
 
   if (project == null) {
-    console.log("Project arweave doesn't exist. Create it");
+    console.log("Project " + name + " doesn't exist. Create it");
     await prisma.project.create({
       data: {
         name: name,
-        lastImportedId: "422250",
+        lastImportedId: "0",
       },
     });
 
@@ -265,35 +127,6 @@ const getProject = async (name: string) => {
   }
 
   return project;
-};
-
-const getBlockHeight = async (blockId: number) => {
-  const variables = {
-    blockid: blockId,
-  };
-  let data;
-  try {
-    data = await gqlclient.request(queryGetBlock, variables);
-  } catch (e) {
-    throw new Error("Error getting block height from blockchain: " + e);
-  }
-
-  return data.blocks.edges[0].node.height;
-};
-
-const getLastBlockId = async () => {
-  let data;
-  try {
-    data = await gqlclient.request(queryGetLastBlock);
-  } catch (e) {
-    throw new Error(
-      "Error getting last block id from blockchain: " +
-        JSON.stringify(e) +
-        JSON.stringify(data)
-    );
-  }
-
-  return data.block.height;
 };
 
 const storeDBData = async (
@@ -313,7 +146,7 @@ const storeDBData = async (
         id: day.id,
       },
       data: {
-        revenue: dayData.fees + day.revenue,
+        revenue: dayData.fees,
       },
     });
   } else {
@@ -327,29 +160,24 @@ const storeDBData = async (
   }
 
   // update lastBlockID
-  await prisma.project.update({
+  await prisma.project.updateMany({
     where: {
       name: coin.name,
     },
     data: {
-      lastImportedId: dayData.blockHeight.toString(),
+      lastImportedId: dayData.date.toString(),
     },
   });
 
   return;
 };
 
-const getMidnightUnixTimestamp = (unixTimestamp: number) => {
-  const date = new Date(unixTimestamp * 1000);
-  date.setUTCHours(0, 0, 0, 0);
+const dateDiffInDays = (a: Date, b: Date) => {
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  const utc1 = Date.UTC(a.getUTCFullYear(), a.getUTCMonth(), a.getUTCDate());
+  const utc2 = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate());
 
-  return date.getTime() / 1000;
-};
-
-const isSameDate = (firstDate: number, secondDate: number) => {
-  return (
-    getMidnightUnixTimestamp(firstDate) == getMidnightUnixTimestamp(secondDate)
-  );
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 };
 
 arweaveImport()
