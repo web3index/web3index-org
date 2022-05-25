@@ -146,14 +146,14 @@ const storeDBData = async (
         id: day.id,
       },
       data: {
-        revenue: dayData.fees,
+        revenue: dayData?.fees ? dayData.fees : 0,
       },
     });
   } else {
     await prisma.day.create({
       data: {
         date: dayData.date,
-        revenue: dayData.fees,
+        revenue: dayData?.fees ? dayData.fees : 0,
         projectId: projectId,
       },
     });
