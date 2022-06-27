@@ -10,7 +10,7 @@
     "lint-fix": "yarn prettier-fix && yarn eslint-fix",
     "eslint-fix": "eslint . --ext js,jsx,ts,tsx --fix --max-warnings=0",
     "prettier-fix": "prettier --write '**/*.{ts,js,css,html,md,tsx,mdx,graphql,gql}'",
-    "vercel-build": "prisma migrate deploy && next build",
+    "vercel-build": "next build",
     "prisma:generate": "prisma generate",
     "postinstall": "prisma generate"
   },
