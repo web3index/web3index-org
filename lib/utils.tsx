@@ -10,6 +10,8 @@ export const getBlocksFromTimestamps = async (timestamps, network) => {
       "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
     "arbitrum-one":
       "https://api.thegraph.com/subgraphs/name/dolomite-exchange/arbitrum-one-blocks",
+    polygon:
+      "https://api.thegraph.com/subgraphs/name/kybernetwork/polygon-blocks",
   };
 
   if (!timestamps?.length) {
