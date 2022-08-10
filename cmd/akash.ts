@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma";
 
-const endpoint = "https://akashlytics.com/web3-index/revenue";
+const endpoint = "https://api.cloudmos.io/web3-index/revenue";
 const conversionFactor = 1;
 const axios = require("axios");
 
