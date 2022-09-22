@@ -2,7 +2,7 @@
   "livepeer": {
     "blockchain": "Ethereum",
     "category": "Network Protocol",
-    "color": "#00eb88",
+    "color": "#4cc38a",
     "description": "Livepeer is a protocol for decentralized video broadcasting.",
     "everestID": "0x49f6e21a4e3f20580624669acd83dac39a339042",
     "image": "https://web3index.org/logos/livepeer.svg",
