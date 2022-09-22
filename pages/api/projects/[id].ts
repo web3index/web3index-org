@@ -49,7 +49,7 @@ const getUsageFromDB = async (name) => {
     where: {
       projectId: project.id,
     },
-    take: 1000,
+    take: 2000,
   });
 
   const revenue = {

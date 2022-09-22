@@ -1,6 +1,4 @@
 import Layout from "../layouts";
-import { useMemo } from "react";
-import Box from "../components/Box";
 import Listing from "../components/Listing";
 import Section from "../components/Section";
 import Container from "../components/Container";
