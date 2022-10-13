@@ -106,12 +106,12 @@ const Post = ({ projects }) => {
               The Web3 Index Quarterly Call
             </Box>
             <Box css={{ fontSize: "$4", opacity: 0.7, mb: 40 }}>
-              07.20.2022 @ 11am ET
+              10.26.2022 @ 10am ET
             </Box>
             <Button
               as="a"
               target="_blank"
-              href="https://us02web.zoom.us/webinar/register/WN_h0KuumiaTxyz0FIzOYinXA"
+              href="https://us02web.zoom.us/webinar/register/WN_EudlO47HSlC8IOOZUv0VBA"
               css={{
                 justifyContent: "center",
                 display: "inline-flex",
