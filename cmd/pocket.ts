@@ -232,10 +232,12 @@ const getPOKTNetworkData = async (date: Date) => {
     if (!response) {
       throw new Error("No data returned by the poktscan API.");
     }
-
+    
+    console.log(response)
+    
     const [data] = response;
-
-    const blocks = data.blocks as BlockData[];
+    
+    const blocks = data?.blocks as BlockData[];
 
     const latestBlock: BlockData = filterLastBlock(blocks);
     const lastFourBlocks: BlockData[] = filterLastFourBlocks(blocks);
