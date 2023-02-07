@@ -228,7 +228,7 @@ const getPOKTNetworkData = async (date: Date) => {
       poktNetworkDataEndpoint,
       payload
     );
-
+    console.log(payload);
     if (!response || !response.length) {
       throw new Error("No data returned by the poktscan API.");
     }
