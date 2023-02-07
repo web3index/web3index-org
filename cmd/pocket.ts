@@ -234,7 +234,7 @@ const getPOKTNetworkData = async (date: Date) => {
     }
     
     const [data] = response;
-    
+    console.log(data);
     const blocks = data.blocks as BlockData[];
 
     const latestBlock: BlockData = filterLastBlock(blocks);
