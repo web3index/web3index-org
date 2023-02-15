@@ -25,7 +25,7 @@ jobs:
       - name: yarn install
         run: yarn install
       - name: install typescript
-        run: npm install -g typescript@4.5.5
+        run: npm install -g typescript@4.9.5
       - name: change directory
         run: cd ./cmd
       - name: compile
