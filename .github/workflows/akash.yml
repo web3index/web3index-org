@@ -22,8 +22,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "yarn"
-          cache-dependency-path: ./node-app/yarn.lock
       - name: yarn install
         run: yarn install
       - name: install typescript
