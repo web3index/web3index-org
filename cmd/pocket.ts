@@ -235,7 +235,7 @@ const getPOKTNetworkData = async (date: Date) => {
     
     const [data] = response;
     console.log(data);
-    const blocks = data.blocks as BlockData[];
+    const blocks = data?.blocks as BlockData[];
 
     const latestBlock: BlockData = filterLastBlock(blocks);
     const lastFourBlocks: BlockData[] = filterLastFourBlocks(blocks);
@@ -245,7 +245,14 @@ const getPOKTNetworkData = async (date: Date) => {
       (sum, block) => sum + block.total_relays_completed,
       0
     );
-    console.log(latestBlock);
+    if(!blocks.length) {
+      return {
+        totalAppStakes: 0,
+        totalPOKTsupply: 0,
+        totalRelays1d: 0,
+        totalRelays1hr: 0,
+      }
+    }
     return {
       totalAppStakes: latestBlock.apps_staked_tokens,
       totalPOKTsupply: latestBlock.total_supply,
