@@ -18,14 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: install node v16
-        uses: actions/setup-node@v3
+      - name: install node v12
+        uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 12
       - name: yarn install
         run: yarn install
       - name: install typescript
-        run: npm install -g typescript@4.9.5
+        run: npm install -g typescript@4.5.5
       - name: change directory
         run: cd ./cmd
       - name: compile
