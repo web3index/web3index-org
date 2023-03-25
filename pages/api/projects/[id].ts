@@ -126,7 +126,6 @@ const getUsageFromSubgraph = async (id, networks) => {
   const snapshotData = await Promise.all(snapshotPromises);
 
   let totalRevenue = 0;
-
   dayData.map((d) => {
     totalRevenue += +d.protocol.revenueUSD;
   });
@@ -154,7 +153,8 @@ const getUsageFromSubgraph = async (id, networks) => {
     dayIndexSet.add((day.date / oneDay).toFixed(0));
     days.push({
       date: day.date,
-      revenue: +day.revenueUSD,
+      // ignore revenue from day the graph migrated to arbitrum
+      revenue: id == "thegraph" && day.date == 1670889600 ? 0 : +day.revenueUSD,
     });
   });
 
@@ -174,8 +174,8 @@ const getUsageFromSubgraph = async (id, networks) => {
   }
 
   days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
-
   const revenue = {
+    // ignore revenue from day the graph migrated to arbitrum
     now: totalRevenue,
     oneDayAgo,
     twoDaysAgo,

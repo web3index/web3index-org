@@ -272,7 +272,7 @@ const Project = ({ slug, index, projects, project }) => {
                   <Box>
                     <Metric label="Category" value={project.category} />
                     <Metric label="Subcategory" value={project.subcategory} />
-                    <Metric label="Blockchain" value={project.blockchain} />
+                    <Metric label="Chain" value={project.blockchain} />
                     <Metric label="Genesis Date" value={project.genesisDate} />
                   </Box>
                   <Box>
@@ -343,7 +343,9 @@ const Project = ({ slug, index, projects, project }) => {
                           : "Total Fees"
                       }
                       value={`$${Math.round(
-                        project.usage[paymentType].now
+                        project.name == "The Graph"
+                          ? project.usage[paymentType].now - 71840.14 // remove fees from day the graph migrated to arbitrum
+                          : project.usage[paymentType].now
                       ).toLocaleString()}`}
                     />
                     <Metric

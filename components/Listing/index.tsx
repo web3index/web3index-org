@@ -120,7 +120,7 @@ const Listing = ({ data, ...props }) => {
         accessor: "slug",
       },
       {
-        Header: "Blockchain",
+        Header: "Chain",
         width: 140,
         columns: [
           {

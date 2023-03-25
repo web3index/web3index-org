@@ -24,7 +24,7 @@
     "stack": "Middleware",
     "subcategory": "Bandwidth, Indexing",
     "symbol": "GRT",
-    "subgraphs": ["polygon"],
+    "subgraphs": ["polygon", "arbitrum-one"],
     "coingeckoID": "the-graph",
     "genesisDate": "2020-12-17"
   },
