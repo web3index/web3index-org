@@ -4,7 +4,7 @@ const params = new URLSearchParams({
   interval: "daily",
   daily_granularity: "project",
 });
-const endpoint = "https://api.tokenterminal.com/v1/projects/arweave/metrics";
+const endpoint = "https://api.tokenterminal.com/v2/projects/arweave/metrics";
 const axios = require("axios");
 
 const coin = {
