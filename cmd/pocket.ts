@@ -166,6 +166,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
       `${cmcAPIEndpoint}?symbol=POKT&time_start=${dateFromISO}&time_end=${dateToISO}`,
       {
         headers: {
+          "Content-Type": "application/json",
           "X-CMC_PRO_API_KEY": cmcAPIKey,
         },
       }
@@ -256,6 +257,7 @@ const getPOKTNetworkData = async (date: Date) => {
       query,
       variables,
       headers: {
+        "Content-Type": "application/json",
         Authorization: poktscanAPIKey,
       },
     });
