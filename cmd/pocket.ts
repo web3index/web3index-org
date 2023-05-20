@@ -1,8 +1,11 @@
 import prisma from "../lib/prisma";
 
-// POKT Price API
 const axios = require("axios");
-const coingeckoAPIEndpoint =
+const cmcAPIKey = process.env.CMC_API_KEY;
+const poktscanAPIKey = process.env.POKTSCAN_API_KEY;
+
+// POKT Pricing & Network Data Endpoints
+const cmcAPIEndpoint =
   "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/historical";
 const poktscanAPIEndpoint = "https://api.poktscan.com/poktscan/api/graphql";
 
@@ -44,13 +47,10 @@ const pocketImport = async () => {
 
   const days = dateRangeToList(fromDate, toDate);
 
-  const pocketPrices = await getPOKTDayPrices(
-    formatDate(fromDate),
-    formatDate(toDate)
-  );
+  const pocketPrices = await getPOKTDayPrices(fromDate, toDate);
 
   for (const day of days) {
-    const dayISO = formatDate(day); // YYYY-MM-DD
+    const dayISO = formatDate(day); // YYYY-MM-DDTHH:mm:ss.SSSZ
     const dateUnixTimestamp = day.getTime() / 1000;
 
     const { totalBurned } = await getPOKTNetworkData(day);
@@ -112,8 +112,8 @@ const getProject = async (name: string) => {
 
 const storeDBData = async (
   dayData: {
-    date: any;
-    fees: any;
+    date: number;
+    fees: number;
   },
   projectId: number
 ) => {
@@ -125,14 +125,12 @@ const storeDBData = async (
   });
 
   if (day != null) {
-    const accruedRevenue = day.revenue + dayData.fees;
-
     await prisma.day.update({
       where: {
         id: day.id,
       },
       data: {
-        revenue: accruedRevenue,
+        revenue: dayData.fees,
       },
     });
   } else {
@@ -158,11 +156,19 @@ const storeDBData = async (
   return;
 };
 
-const getPOKTDayPrices = async (dateFrom: string, dateTo: string) => {
+const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
   const dayPrices: DayPrice[] = [];
   try {
+    const dateFromISO = formatDate(dateFrom);
+    const dateToISO = formatDate(dateTo);
+
     const { data: response }: { data: Response } = await axios.get(
-      `${coingeckoAPIEndpoint}?symbol=POKT&time_start=${dateFrom}&time_end=${dateTo}`
+      `${cmcAPIEndpoint}?symbol=POKT&time_start=${dateFromISO}&time_end=${dateToISO}`,
+      {
+        headers: {
+          "X-CMC_PRO_API_KEY": cmcAPIKey,
+        },
+      }
     );
 
     if (!response) {
@@ -249,6 +255,9 @@ const getPOKTNetworkData = async (date: Date) => {
     const response: PoktScanResponse = axios.post(poktscanAPIEndpoint, {
       query,
       variables,
+      headers: {
+        Authorization: poktscanAPIKey,
+      },
     });
 
     if (!response || !response.data) {
