@@ -24,39 +24,6 @@ const StyledImage = styled("img", {
   mr: "$3",
 });
 
-const feeTooltip = (
-  <Box
-    css={{
-      " > div": {
-        mb: "$3",
-      },
-    }}
-  >
-    <Box>Fees are generally categorized as explicit or implicit.</Box>
-
-    <Box>
-      An example of an explicit fee would be direct payment for work rendered by
-      a protocol. Examples of this would be a payment to query indexed data on
-      The Graph, or a payment to store data on Arweave.
-    </Box>
-
-    <Box>
-      In certain protocols, user/developer stake represents an allotment of
-      usage on the network. If this usage triggers inflation, then the cost to
-      stake for demand side participants is quantified as being equivalent to
-      the dilution incurred as a result of its usage and is categorized as an
-      implicit fee.
-    </Box>
-
-    <Box>
-      Please note a user/developer stake in isolation does not count toward
-      explicit fees unless the staked balance reduces as protocol services are
-      rendered. In this case the spent/burned amount of the staked balance would
-      constitute an explicit fee.
-    </Box>
-  </Box>
-);
-
 const Listing = ({ data, ...props }) => {
   const columns = useMemo(
     () => [
@@ -131,38 +98,15 @@ const Listing = ({ data, ...props }) => {
       },
       {
         Header: "30d Fees",
-        tooltip: feeTooltip,
         columns: [
           {
-            Header: "Explicit",
             minWidth: 50,
             width: 50,
             css: { fontSize: "11px", color: "$gray400" },
             accessor: "usage.revenue.thirtyDayTotal",
             Cell: ({ row }) => {
               if (!row.values.usage.revenue.thirtyDayTotal) {
-                return (
-                  <Box>
-                    <Tooltip delayDuration={0}>
-                      <TooltipTrigger asChild>
-                        <Box css={{ display: "flex", alignItems: "center" }}>
-                          <Box>$0</Box>
-                          <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
-                        </Box>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <TooltipArrow />
-                        <Box>
-                          The Pocket DAO is planning a shift from developers
-                          paying via dilution, to developers paying via the
-                          burning of their stake in proportion to their usage.
-                          Once the DAO makes this change, burned staked tokens
-                          will count towards explicit fees on the index.
-                        </Box>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Box>
-                );
+                return <Box>$0</Box>;
               }
               return (
                 <Box>
@@ -174,82 +118,20 @@ const Listing = ({ data, ...props }) => {
               );
             },
           },
-          {
-            Header: "Implicit",
-            accessor: "usage.dilution.thirtyDayTotal",
-            css: { fontSize: "11px", color: "$gray400" },
-            Cell: ({ row }) => {
-              if (!row.values.usage.dilution.thirtyDayTotal) {
-                return <Box>$0</Box>;
-              }
-              return (
-                <Box>
-                  <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <Box css={{ display: "flex", alignItems: "center" }}>
-                        <Box>
-                          $
-                          {Math.round(
-                            row.values.usage.dilution.thirtyDayTotal
-                          ).toLocaleString()}
-                        </Box>
-                        <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
-                      </Box>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <TooltipArrow />
-                      <Box>
-                        Pocket has a unique payment mechanism. Developers stake
-                        POKT upfront to lock in a guaranteed amount of bandwidth
-                        and pay through dilution as the protocol mints new POKT
-                        and rewards node operators based directly on the amount
-                        of usage of the network. The Web3 Index tracks
-                        developers&apos; dilutionary payment activity as
-                        implicit costs incurred by developers.
-                      </Box>
-                    </TooltipContent>
-                  </Tooltip>
-                </Box>
-              );
-            },
-          },
         ],
       },
 
       {
         Header: "90d Fees",
-        tooltip: feeTooltip,
         columns: [
           {
-            Header: "Explicit",
             minWidth: 50,
             width: 50,
             accessor: "usage.revenue.ninetyDayTotal",
             css: { fontSize: "11px", color: "$gray400" },
             Cell: ({ row }) => {
               if (!row.values.usage.revenue.ninetyDayTotal) {
-                return (
-                  <Box>
-                    <Tooltip delayDuration={0}>
-                      <TooltipTrigger asChild>
-                        <Box css={{ display: "flex", alignItems: "center" }}>
-                          <Box>$0</Box>
-                          <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
-                        </Box>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <TooltipArrow />
-                        <Box>
-                          The Pocket DAO is planning a shift from developers
-                          paying via dilution, to developers paying via the
-                          burning of their stake in proportion to their usage.
-                          Once the DAO makes this change, burned staked tokens
-                          will count towards explicit fees on the index.
-                        </Box>
-                      </TooltipContent>
-                    </Tooltip>
-                  </Box>
-                );
+                return <Box>$0</Box>;
               }
               return (
                 <Box>
@@ -257,47 +139,6 @@ const Listing = ({ data, ...props }) => {
                   {Math.round(
                     row.values.usage.revenue.ninetyDayTotal
                   ).toLocaleString()}
-                </Box>
-              );
-            },
-          },
-          {
-            Header: "Implicit",
-            width: 40,
-            minWidth: 40,
-            accessor: "usage.dilution.ninetyDayTotal",
-            css: { fontSize: "11px", color: "$gray400" },
-            Cell: ({ row }) => {
-              if (!row.values.usage.dilution.ninetyDayTotal) {
-                return <Box>$0</Box>;
-              }
-              return (
-                <Box>
-                  <Tooltip delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <Box css={{ display: "flex", alignItems: "center" }}>
-                        <Box>
-                          $
-                          {Math.round(
-                            row.values.usage.dilution.ninetyDayTotal
-                          ).toLocaleString()}
-                        </Box>
-                        <Box as={InfoCircledIcon} css={{ ml: "$2" }} />
-                      </Box>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <TooltipArrow />
-                      <Box>
-                        Pocket has a unique payment mechanism. Developers stake
-                        POKT upfront to lock in a guaranteed amount of bandwidth
-                        and pay through dilution as the protocol mints new POKT
-                        and rewards node operators based directly on the amount
-                        of usage of the network. The Web3 Index tracks
-                        developers&apos; dilutionary payment activity as
-                        implicit costs incurred by developers.
-                      </Box>
-                    </TooltipContent>
-                  </Tooltip>
                 </Box>
               );
             },
@@ -363,12 +204,6 @@ const Listing = ({ data, ...props }) => {
         columns,
         data,
         initialState: {
-          sortBy: [
-            {
-              id: "usage.revenue.thirtyDayTotal",
-              desc: true,
-            },
-          ],
           hiddenColumns: [
             "revenue",
             "image",
