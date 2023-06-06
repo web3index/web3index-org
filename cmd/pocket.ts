@@ -161,10 +161,6 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
   try {
     const dateFromISO = formatDate(dateFrom);
     const dateToISO = formatDate(dateTo);
-
-    console.log("process.env.CMC_API_KEY", process.env.CMC_API_KEY);
-    console.log("cmcAPIKey", cmcAPIKey);
-
     const { data: response }: { data: Response } = await axios.get(
       `${cmcAPIEndpoint}?symbol=POKT&time_start=${dateFromISO}&time_end=${dateToISO}`,
       {
@@ -256,8 +252,6 @@ const getPOKTNetworkData = async (date: Date) => {
   };
 
   try {
-    console.log("process.env.POKTSCAN_API_KEY", process.env.POKTSCAN_API_KEY);
-    console.log("poktscanAPIKey", poktscanAPIKey);
     const response: PoktScanResponse = axios.post(poktscanAPIEndpoint, {
       query,
       variables,

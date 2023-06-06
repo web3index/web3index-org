@@ -36,4 +36,5 @@ jobs:
         run: node ./cmd/pocket.js
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          POCKET_INFLUX_TOKEN: ${{ secrets.POCKET_INFLUX_TOKEN }}
+          POKTSCAN_API_KEY: ${{ secrets.POKTSCAN_API_KEY }}
+          CMC_API_KEY: ${{ secrets.CMC_API_KEY }}
