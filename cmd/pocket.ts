@@ -161,43 +161,75 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
   try {
     const dateFromISO = formatDate(dateFrom);
     const dateToISO = formatDate(dateTo);
-    const { data: response }: { data: Response } = await axios.get(
-      `${cmcAPIEndpoint}?symbol=POKT&time_start=${dateFromISO}&time_end=${dateToISO}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-CMC_PRO_API_KEY": cmcAPIKey,
-        },
-      }
-    );
 
-    if (!response) {
-      throw new Error("No data returned by the price API.");
+    const monthDiff = (d1, d2) => {
+      let months;
+      months = (d2.getFullYear() - d1.getFullYear()) * 12;
+      months -= d1.getMonth();
+      months += d2.getMonth();
+      return months <= 0 ? 0 : months;
+    };
+
+    const totalMonths = monthDiff(dateFrom, dateTo);
+
+    const addMonths = (date, months) => {
+      const d1 = new Date(date.toString());
+      const d2 = d1.getDate();
+      d1.setMonth(date.getMonth() + +months);
+      if (date.getDate() != d2) {
+        d1.setDate(0);
+      }
+      return formatDate(d1);
+    };
+
+    const dateFromISOArr = [dateFromISO];
+
+    for (let i = 0; i < totalMonths; i++) {
+      const newMonth = addMonths(dateFromISOArr[i], 1);
+      dateFromISOArr.push(newMonth);
     }
 
-    const uniqueDates = new Set<string>();
-    const dateQuotes: { [date: string]: number[] } = {};
+    // Can only request one month of items at a time from cmc
+    for (const d1 of dateFromISOArr) {
+      const d2 = addMonths(d1, 1);
+      const { data: response }: { data: Response } = await axios.get(
+        `${cmcAPIEndpoint}?symbol=POKT&time_start=${d1}&time_end=${d2}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-CMC_PRO_API_KEY": cmcAPIKey,
+          },
+        }
+      );
 
-    response.data.quotes.forEach((quote) => {
-      const date = quote.timestamp.slice(0, 10);
-      uniqueDates.add(date);
-      if (!dateQuotes[date]) {
-        dateQuotes[date] = [];
+      if (!response) {
+        throw new Error("No data returned by the price API.");
       }
-      dateQuotes[date].push(quote.quote.USD.price);
-    });
 
-    const averagePrices: { [date: string]: number } = {};
+      const uniqueDates = new Set<string>();
+      const dateQuotes: { [date: string]: number[] } = {};
 
-    Array.from(uniqueDates).forEach((date) => {
-      const prices = dateQuotes[date];
-      const sum = prices.reduce((acc, price) => acc + price, 0);
-      const average = sum / prices.length;
-      averagePrices[date] = average;
-    });
+      response.data.quotes.forEach((quote) => {
+        const date = quote.timestamp.slice(0, 10);
+        uniqueDates.add(date);
+        if (!dateQuotes[date]) {
+          dateQuotes[date] = [];
+        }
+        dateQuotes[date].push(quote.quote.USD.price);
+      });
 
-    for (const [date, price] of Object.entries(averagePrices)) {
-      dayPrices.push({ date, price });
+      const averagePrices: { [date: string]: number } = {};
+
+      Array.from(uniqueDates).forEach((date) => {
+        const prices = dateQuotes[date];
+        const sum = prices.reduce((acc, price) => acc + price, 0);
+        const average = sum / prices.length;
+        averagePrices[date] = average;
+      });
+
+      for (const [date, price] of Object.entries(averagePrices)) {
+        dayPrices.push({ date, price });
+      }
     }
 
     return dayPrices;
