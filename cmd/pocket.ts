@@ -190,6 +190,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
     // Can only request one month of items at a time from cmc
     for (const d1 of dateFromISOArr) {
       const d2 = addMonth(d1, 1);
+      console.log("time_start, time_end", d1, d2);
       const { data: response }: { data: Response } = await axios.get(
         `${cmcAPIEndpoint}?symbol=POKT&time_start=${d1}&time_end=${d2}`,
         {
