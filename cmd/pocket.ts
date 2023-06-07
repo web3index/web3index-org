@@ -55,6 +55,8 @@ const pocketImport = async () => {
 
     const { totalBurned } = await getPOKTNetworkData(day);
 
+    console.log(day, totalBurned);
+
     const currentDayPrice = pocketPrices.find(
       (x) => x.date === dayISO.slice(0, 10)
     );
@@ -159,29 +161,28 @@ const storeDBData = async (
   return;
 };
 
+const monthDiff = (d1, d2) => {
+  let months;
+  months = (d2.getFullYear() - d1.getFullYear()) * 12;
+  months -= d1.getMonth();
+  months += d2.getMonth();
+  return months <= 0 ? 0 : months;
+};
+
+const addMonth = (date, months) => {
+  const d1 = new Date(date.toString());
+  const d2 = d1.getDate();
+  d1.setMonth(new Date(date.toString()).getMonth() + +months);
+  if (new Date(date.toString()).getDate() != d2) {
+    d1.setDate(0);
+  }
+  return d1.toISOString();
+};
+
 const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
   const dayPrices: DayPrice[] = [];
   try {
-    const monthDiff = (d1, d2) => {
-      let months;
-      months = (d2.getFullYear() - d1.getFullYear()) * 12;
-      months -= d1.getMonth();
-      months += d2.getMonth();
-      return months <= 0 ? 0 : months;
-    };
-
     const totalMonths = monthDiff(dateFrom, dateTo);
-
-    const addMonth = (date, months) => {
-      const d1 = new Date(date.toString());
-      const d2 = d1.getDate();
-      d1.setMonth(new Date(date.toString()).getMonth() + +months);
-      if (new Date(date.toString()).getDate() != d2) {
-        d1.setDate(0);
-      }
-      return d1.toISOString();
-    };
-
     const dateFromISO = formatDate(dateFrom);
     const dateFromISOArr = [dateFromISO];
 
@@ -244,7 +245,11 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
 
 const getPOKTNetworkData = async (date: Date) => {
   try {
-    const ISODate = formatDate(date);
+    const ISODateFrom = formatDate(date);
+    const ISODateTo = new Date(
+      new Date(date.toString()).setDate(new Date().getDate() + 1)
+    ).toISOString();
+
     const data = JSON.stringify({
       query: `query ($pagination: ListInput!) {
         ListPoktTransaction(pagination: $pagination) {
@@ -278,7 +283,13 @@ const getPOKTNetworkData = async (date: Date) => {
                 operator: "GTE",
                 type: "DATE",
                 property: "block_time",
-                value: ISODate,
+                value: ISODateFrom,
+              },
+              {
+                operator: "LT",
+                type: "DATE",
+                property: "block_time",
+                value: ISODateTo,
               },
             ],
           },
