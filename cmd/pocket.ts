@@ -55,9 +55,11 @@ const pocketImport = async () => {
 
     const { totalBurned } = await getPOKTNetworkData(day);
 
+    console.log("test1");
     const { price: currentDayPrice } = pocketPrices.find(
       (x) => x.date === dayISO
     );
+    console.log("test2");
 
     revenue = totalBurned * currentDayPrice;
 
