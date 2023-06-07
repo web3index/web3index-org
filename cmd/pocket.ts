@@ -251,47 +251,61 @@ const query = `
 `;
 
 const getPOKTNetworkData = async (date: Date) => {
-  const ISODate = formatDate(date);
-
-  // TODO: Make use of hourly data instead of days
-  const variables = {
-    pagination: {
-      limit: 10,
-      filter: {
-        operator: "AND",
-        properties: [
-          {
-            operator: "EQ",
-            type: "STRING",
-            property: "type",
-            value: "dao_tranfer",
-          },
-          {
-            operator: "EQ",
-            type: "STRING",
-            property: "action",
-            value: "dao_burn",
-          },
-          {
-            operator: "GTE",
-            type: "DATE",
-            property: "block_time",
-            value: ISODate,
-          },
-        ],
-      },
-    },
-  };
-
   try {
-    const response: PoktScanResponse = await axios.post(poktscanAPIEndpoint, {
-      query,
-      variables,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${poktscanAPIKey}`,
+    const ISODate = formatDate(date);
+    const data = JSON.stringify({
+      query: `query ($pagination: ListInput!) {
+        ListPoktTransaction(pagination: $pagination) {
+          items {
+            amount
+            block_time
+            result_code
+          }
+        }
+      }`,
+      // TODO: Make use of hourly data instead of days
+      variables: {
+        pagination: {
+          limit: 10,
+          filter: {
+            operator: "AND",
+            properties: [
+              {
+                operator: "EQ",
+                type: "STRING",
+                property: "type",
+                value: "dao_tranfer",
+              },
+              {
+                operator: "EQ",
+                type: "STRING",
+                property: "action",
+                value: "dao_burn",
+              },
+              {
+                operator: "GTE",
+                type: "DATE",
+                property: "block_time",
+                value: ISODate,
+              },
+            ],
+          },
+        },
       },
     });
+
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: poktscanAPIEndpoint,
+      headers: {
+        Authorization: poktscanAPIKey,
+        "Content-Type": "application/json",
+      },
+      data,
+    };
+
+    const response: PoktScanResponse = await axios.request(config);
 
     console.log("response", response);
     if (!response || !response.data) {
