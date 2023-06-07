@@ -55,12 +55,12 @@ const pocketImport = async () => {
 
     const { totalBurned } = await getPOKTNetworkData(day);
 
-    console.log("pocketPrices", pocketPrices);
-    console.log("dayISO", dayISO);
     const currentDayPrice = pocketPrices.find(
       (x) => x.date === dayISO.slice(0, 10)
     );
-    console.log("currentDayPrice", currentDayPrice);
+
+    console.log("totalBurned", totalBurned);
+    console.log("currentDayPrice.price", currentDayPrice.price);
 
     revenue = totalBurned * currentDayPrice.price;
 
@@ -230,7 +230,6 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
           const average = sum / prices.length;
           averagePrices[date] = average;
         });
-        console.log("averagePrices", averagePrices);
         for (const [date, price] of Object.entries(averagePrices)) {
           dayPrices.push({ date, price });
         }
