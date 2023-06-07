@@ -214,7 +214,6 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
           if (!dateQuotes[date]) {
             dateQuotes[date] = [];
           }
-          console.log(quote?.quote);
           if (quote?.quote?.USD?.price) {
             dateQuotes[date].push(quote?.quote?.USD?.price);
           }
@@ -228,7 +227,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
           const average = sum / prices.length;
           averagePrices[date] = average;
         });
-
+        console.log("averagePrices", averagePrices);
         for (const [date, price] of Object.entries(averagePrices)) {
           dayPrices.push({ date, price });
         }
