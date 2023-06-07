@@ -313,7 +313,7 @@ const getPOKTNetworkData = async (date: Date) => {
     }
 
     // This is the total burned for a single day
-    const totalBurned = response.data.ListPoktTransaction.items
+    const totalBurned = response.data.data.ListPoktTransaction.items
       .filter((burnTx) => burnTx.result_code === 0)
       .reduce((sum, burnTx) => sum + burnTx.amount, 0);
 
@@ -394,7 +394,9 @@ type PoktScanTransactionList = {
 
 type PoktScanResponse = {
   data: {
-    ListPoktTransaction: PoktScanTransactionList;
+    data: {
+      ListPoktTransaction: PoktScanTransactionList;
+    };
   };
 };
 
