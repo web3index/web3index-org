@@ -182,12 +182,10 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
     const dateFromISO = formatDate(dateFrom);
     const dateFromISOArr = [dateFromISO];
 
-    console.log(dateFromISO);
     for (let i = 0; i < totalMonths; i++) {
       const newMonth = addMonth(dateFromISOArr[i], 1);
       dateFromISOArr.push(newMonth);
     }
-    console.log(dateFromISOArr);
 
     // Can only request one month of items at a time from cmc
     for (const d1 of dateFromISOArr) {
@@ -286,6 +284,8 @@ const getPOKTNetworkData = async (date: Date) => {
   };
 
   try {
+    console.log("ISODate", ISODate);
+    console.log("variables", variables);
     const response: PoktScanResponse = axios.post(poktscanAPIEndpoint, {
       query,
       variables,
