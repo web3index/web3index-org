@@ -214,8 +214,9 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
           if (!dateQuotes[date]) {
             dateQuotes[date] = [];
           }
-          if (quote?.quote?.USD.price) {
-            dateQuotes[date].push(quote?.quote?.USD.price);
+          console.log(quote?.quote);
+          if (quote?.quote?.USD?.price) {
+            dateQuotes[date].push(quote?.quote?.USD?.price);
           }
         });
 
