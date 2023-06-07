@@ -247,7 +247,7 @@ const getPOKTNetworkData = async (date: Date) => {
   try {
     const ISODateFrom = formatDate(date);
     const ISODateTo = new Date(
-      new Date(date.toString()).setDate(new Date().getDate() + 1)
+      new Date(date.toString()).setDate(date.getDate() + 1)
     ).toISOString();
 
     console.log("ISODateFrom", ISODateFrom);
