@@ -160,7 +160,7 @@ const Listing = ({ data, ...props }) => {
                   : "revenue";
               if (row.values.untracked) return "--";
               const color =
-                row.values.usage[paymentType].thirtyDayPercentChange > 0
+                row.values.usage[paymentType].thirtyDayPercentChange >= 0
                   ? defaultTheme.colors.green
                   : defaultTheme.colors.red;
 

@@ -83,7 +83,7 @@ const LineGraph = ({ color, days, dimensions }: props) => {
       const formattedData = days.map((day) => {
         return {
           time: new Date(day.date * 1000).toLocaleDateString("fr-CA"),
-          value: day.revenue,
+          value: days.length < 60 ? 0 : day.revenue,
         };
       });
       lineSeries.setData(formattedData);

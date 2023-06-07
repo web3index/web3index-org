@@ -13,7 +13,7 @@ const Project = ({ project }) => {
       : "revenue";
 
   const color =
-    project.usage[paymentType].thirtyDayPercentChange > 0
+    project.usage[paymentType].thirtyDayPercentChange >= 0
       ? defaultTheme.colors.green
       : defaultTheme.colors.red;
 
