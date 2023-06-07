@@ -284,7 +284,7 @@ const getPOKTNetworkData = async (date: Date) => {
   };
 
   try {
-    const response: PoktScanResponse = axios.post(poktscanAPIEndpoint, {
+    const response: PoktScanResponse = await axios.post(poktscanAPIEndpoint, {
       query,
       variables,
       headers: {
