@@ -96,7 +96,7 @@ const getProject = async (name: string) => {
     await prisma.project.create({
       data: {
         name: name,
-        lastImportedId: "1625112000", // July 1st 2021
+        lastImportedId: "1684195200", // May 16th, 2023
       },
     });
 
@@ -307,6 +307,7 @@ const getPOKTNetworkData = async (date: Date) => {
       totalBurned,
     };
   } catch (e) {
+    console.log("failing here?", e);
     throw new Error(e);
   }
 };
