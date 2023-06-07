@@ -53,7 +53,8 @@
     "subcategory": "Bandwidth, Networking",
     "symbol": "HNT",
     "coingeckoID": "helium",
-    "genesisDate": "2018-06-01"
+    "genesisDate": "2018-06-01",
+    "usage": "https://helium-web3index.herokuapp.com/"
   },
   "filecoin": {
     "blockchain": "Filecoin",
