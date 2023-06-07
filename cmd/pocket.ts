@@ -284,8 +284,6 @@ const getPOKTNetworkData = async (date: Date) => {
   };
 
   try {
-    console.log("ISODate", ISODate);
-    console.log("variables", variables);
     const response: PoktScanResponse = axios.post(poktscanAPIEndpoint, {
       query,
       variables,
@@ -295,6 +293,7 @@ const getPOKTNetworkData = async (date: Date) => {
       },
     });
 
+    console.log(response);
     if (!response || !response.data) {
       throw new Error("No data returned by the PoktScan API.");
     }
