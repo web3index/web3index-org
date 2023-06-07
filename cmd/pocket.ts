@@ -57,7 +57,9 @@ const pocketImport = async () => {
 
     console.log("pocketPrices", pocketPrices);
     console.log("dayISO", dayISO);
-    const currentDayPrice = pocketPrices.find((x) => x.date === dayISO);
+    const currentDayPrice = pocketPrices.find(
+      (x) => x.date === dayISO.slice(0, 10)
+    );
     console.log("currentDayPrice", currentDayPrice);
 
     revenue = totalBurned * currentDayPrice.price;
