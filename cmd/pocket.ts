@@ -250,7 +250,9 @@ const getPOKTNetworkData = async (date: Date) => {
       new Date(date.toString()).setDate(new Date().getDate() + 1)
     ).toISOString();
 
-    console.log(ISODateFrom, ISODateTo);
+    console.log("ISODateFrom", ISODateFrom);
+    console.log("ISODateTo", ISODateTo);
+
     const data = JSON.stringify({
       query: `query ($pagination: ListInput!) {
         ListPoktTransaction(pagination: $pagination) {
