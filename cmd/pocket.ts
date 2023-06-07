@@ -289,11 +289,11 @@ const getPOKTNetworkData = async (date: Date) => {
       variables,
       headers: {
         "Content-Type": "application/json",
-        Authorization: poktscanAPIKey,
+        Authorization: `Bearer ${poktscanAPIKey}`,
       },
     });
 
-    console.log(response);
+    console.log("response", response);
     if (!response || !response.data) {
       throw new Error("No data returned by the PoktScan API.");
     }
