@@ -309,7 +309,7 @@ const getPOKTNetworkData = async (date: Date) => {
       .reduce((sum, burnTx) => sum + burnTx.amount, 0);
 
     return {
-      totalBurned,
+      totalBurned: totalBurned / 1000000, // uPOKT to POKT
     };
   } catch (e) {
     throw new Error(e);
