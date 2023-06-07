@@ -159,9 +159,6 @@ const storeDBData = async (
 const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
   const dayPrices: DayPrice[] = [];
   try {
-    const dateFromISO = formatDate(dateFrom);
-    const dateToISO = formatDate(dateTo);
-
     const monthDiff = (d1, d2) => {
       let months;
       months = (d2.getFullYear() - d1.getFullYear()) * 12;
@@ -172,26 +169,27 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
 
     const totalMonths = monthDiff(dateFrom, dateTo);
 
-    const addMonths = (date, months) => {
+    const addMonth = (date, months) => {
       const d1 = new Date(date.toString());
       const d2 = d1.getDate();
-      d1.setMonth(date.getMonth() + +months);
-      if (date.getDate() != d2) {
+      d1.setMonth(new Date(date.toString()).getMonth() + +months);
+      if (new Date(date.toString()).getDate() != d2) {
         d1.setDate(0);
       }
-      return formatDate(d1);
+      return d1.toISOString();
     };
 
+    const dateFromISO = formatDate(dateFrom);
     const dateFromISOArr = [dateFromISO];
 
     for (let i = 0; i < totalMonths; i++) {
-      const newMonth = addMonths(dateFromISOArr[i], 1);
+      const newMonth = addMonth(dateFromISOArr[i], 1);
       dateFromISOArr.push(newMonth);
     }
 
     // Can only request one month of items at a time from cmc
     for (const d1 of dateFromISOArr) {
-      const d2 = addMonths(d1, 1);
+      const d2 = addMonth(d1, 1);
       const { data: response }: { data: Response } = await axios.get(
         `${cmcAPIEndpoint}?symbol=POKT&time_start=${d1}&time_end=${d2}`,
         {
