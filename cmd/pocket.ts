@@ -214,6 +214,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
           if (!dateQuotes[date]) {
             dateQuotes[date] = [];
           }
+          console.log("quote", quote);
           dateQuotes[date].push(quote.quote.USD.price);
         });
 
@@ -237,18 +238,6 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
     throw new Error(e);
   }
 };
-
-const query = `
-  query ($pagination: ListInput!) {
-    ListPoktTransaction(pagination: $pagination) {
-      items {
-        amount
-        block_time
-        result_code
-      }
-    }
-  }
-`;
 
 const getPOKTNetworkData = async (date: Date) => {
   try {
@@ -307,7 +296,6 @@ const getPOKTNetworkData = async (date: Date) => {
 
     const response: PoktScanResponse = await axios.request(config);
 
-    console.log("response", response);
     if (!response || !response.data) {
       throw new Error("No data returned by the PoktScan API.");
     }
@@ -321,7 +309,6 @@ const getPOKTNetworkData = async (date: Date) => {
       totalBurned,
     };
   } catch (e) {
-    console.log("failing here?", e);
     throw new Error(e);
   }
 };
