@@ -43,7 +43,7 @@
     "hide": true
   },
   "helium": {
-    "blockchain": "Helium",
+    "blockchain": "Solana",
     "category": "Network Protocol",
     "color": "#474DFF",
     "everestID": "0x9741865c596110bed4794704de7096873a4adc7f",
