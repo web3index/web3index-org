@@ -128,5 +128,17 @@
     "coingeckoID": "storj",
     "genesisDate": "2014-08-01",
     "usage": "https://stats.storjshare.io/payout.json"
+  },
+  "Origin DeFi Governance": {
+    "blockchain": "Ethereum",
+    "category": "Network Protocol",
+    "color": "#00000b",
+    "description": "The governance and value accrual token for Origin Dollar (OUSD) and Origin Ether (OETH).", 
+    "image": "https://github.com/OriginProtocol/origin-website/blob/master/static/img/coins/ogv.svg",
+    "name": "Origin DeFi Governance",
+    "symbol": "OGV", 
+    "coingeckoID": "origin-defi-governance",
+    "genesisDate": "2022-03-23",
+    "usage": "https://api.originprotocol.com/api/v2/protocol-fees"
   }
 }
