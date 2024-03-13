@@ -17,11 +17,11 @@ jobs:
     name: run-pocket-import
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: install node v12
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: install node v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 20
       - name: yarn install
         run: yarn install
       - name: install typescript
