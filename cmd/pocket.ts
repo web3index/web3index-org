@@ -239,6 +239,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
 
     return dayPrices;
   } catch (e) {
+    console.log('test')
     throw new Error(e);
   }
 };
