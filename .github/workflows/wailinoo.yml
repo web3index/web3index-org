@@ -1,0 +1,38 @@
+name: wailinoo update
+
+# Controls when the action will run.
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: run-wailinoo-import
+  cancel-in-progress: false
+
+jobs:
+  run-wailinoo-import:
+    name: run-wailinoo-import
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install node v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: yarn install
+        run: yarn install
+      - name: install typescript
+        run: npm install -g typescript@4.5.5
+      - name: change directory
+        run: cd ./cmd
+      - name: compile
+        run: tsc ./cmd/wailinoo.ts --esModuleInterop
+      - name: list files
+        run: ls ./cmd
+      - name: run
+        run: node ./cmd/wailinoo.js
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

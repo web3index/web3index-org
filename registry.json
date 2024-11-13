@@ -128,5 +128,19 @@
     "coingeckoID": "storj",
     "genesisDate": "2014-08-01",
     "usage": "https://stats.storjshare.io/payout.json"
+  },
+  "wailinoo": {
+    "blockchain": "Ethereum",
+    "category": "Work Protocol",
+    "color": "#FF5733",
+    "description": "WAILINOO is a protocol for decentralized storage.",
+    "everestID": "0x1234567890abcdef1234567890abcdef12345678",
+    "image": "https://example.com/logos/wailinoo.svg",
+    "name": "WAILINOO",
+    "stack": "Middleware",
+    "subcategory": "Storage",
+    "symbol": "WLO",
+    "coingeckoID": "wailinoo",
+    "genesisDate": "2022-01-01"
   }
 }
