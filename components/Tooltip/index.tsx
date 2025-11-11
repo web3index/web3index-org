@@ -1,5 +1,6 @@
 import { styled, keyframes } from "@stitches/react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import type { PropsWithChildren } from "react";
 
 const slideUpAndFade = keyframes({
   "0%": { opacity: 0, transform: "translateY(2px)" },
@@ -54,7 +55,12 @@ const StyledTooltipTrigger = styled(TooltipPrimitive.Trigger, {
 });
 
 // Exports
-export const Tooltip = TooltipPrimitive.Root;
+export const Tooltip = ({
+  children,
+  ...props
+}: PropsWithChildren<TooltipPrimitive.TooltipProps>) => (
+  <TooltipPrimitive.Root {...props}>{children}</TooltipPrimitive.Root>
+);
 export const TooltipTrigger = StyledTooltipTrigger;
 export const TooltipContent = StyledTooltipContent;
 export const TooltipArrow = StyledTooltipArrow;

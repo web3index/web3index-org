@@ -26,28 +26,28 @@ export const getProjects = async () => {
       const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
         data.usage.revenue.now,
         data.usage.revenue.oneWeekAgo,
-        data.usage.revenue.twoWeeksAgo
+        data.usage.revenue.twoWeeksAgo,
       );
 
       const [thirtyDayTotal, thirtyDayPercentChange] =
         getTwoPeriodPercentChange(
           data.usage.revenue.now,
           data.usage.revenue.thirtyDaysAgo,
-          data.usage.revenue.sixtyDaysAgo
+          data.usage.revenue.sixtyDaysAgo,
         );
 
       const [oneWeekDilutionTotal, oneWeekDilutionPercentChange] =
         getTwoPeriodPercentChange(
           data.usage?.dilution?.now,
           data.usage?.dilution?.oneWeekAgo,
-          data.usage?.dilution?.twoWeeksAgo
+          data.usage?.dilution?.twoWeeksAgo,
         );
 
       const [thirtyDayDilutionTotal, thirtyDayDilutionPercentChange] =
         getTwoPeriodPercentChange(
           data.usage?.dilution?.now,
           data.usage?.dilution?.thirtyDaysAgo,
-          data.usage?.dilution?.sixtyDaysAgo
+          data.usage?.dilution?.sixtyDaysAgo,
         );
 
       projects.push({
@@ -95,13 +95,13 @@ export const getProjects = async () => {
   const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
     totalParticipantRevenueNow,
     totalParticipantRevenueOneWeekAgo,
-    totalParticipantRevenueTwoWeeksAgo
+    totalParticipantRevenueTwoWeeksAgo,
   );
 
   const [thirtyDayTotal, thirtyDayPercentChange] = getTwoPeriodPercentChange(
     totalParticipantRevenueNow,
     totalParticipantRevenueThirtyDaysAgo,
-    totalParticipantRevenueSixtyDaysAgo
+    totalParticipantRevenueSixtyDaysAgo,
   );
 
   return {
@@ -119,7 +119,9 @@ export const getProjects = async () => {
   };
 };
 
-export default async (_req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProjects();
   res.json(project);
 };
+
+export default handler;

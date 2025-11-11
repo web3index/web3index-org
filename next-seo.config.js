@@ -1,4 +1,4 @@
-export default {
+const SEO = {
   title: "The Web3 Index",
   description:
     "The Web3 Index tracks key demand-side metrics for protocols across the web3 stack.",
@@ -31,3 +31,5 @@ export default {
     },
   ],
 };
+
+export default SEO;

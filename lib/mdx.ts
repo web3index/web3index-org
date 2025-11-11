@@ -1,6 +1,6 @@
 import matter from "gray-matter";
-import renderToString from "next-mdx-remote/render-to-string";
-import MDXComponents from "../components/MDXComponents";
+import { serialize } from "next-mdx-remote/serialize";
+import type { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 const { readFileSync, readdirSync } = require("fs");
 
@@ -14,7 +14,7 @@ export async function getSlugs(directory: string) {
 export async function getFile(directory: string, slug: string) {
   const file = await readFileSync(
     process.cwd() + `/${directory}/${slug}.mdx`,
-    "utf8"
+    "utf8",
   );
 
   return file;
@@ -36,13 +36,14 @@ export const getFileContent = (file: string) => {
   return content;
 };
 
-export async function getContent(file: string, mdxOptions = {}) {
-  const content = await renderToString(getFileContent(file), {
-    components: MDXComponents,
+export async function getContent(
+  file: string,
+  mdxOptions = {},
+): Promise<MDXRemoteSerializeResult> {
+  return serialize(getFileContent(file), {
     mdxOptions,
+    parseFrontmatter: false,
   });
-
-  return content;
 }
 
 export const getFaq = async () => {
@@ -61,7 +62,7 @@ export const getFaq = async () => {
       };
 
       return faq;
-    })
+    }),
   );
 
   return faq;
@@ -80,7 +81,7 @@ export async function getPosts() {
       };
 
       return post;
-    })
+    }),
   );
 
   return posts;

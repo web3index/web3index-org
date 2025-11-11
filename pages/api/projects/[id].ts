@@ -61,13 +61,13 @@ const getUsageFromDB = async (name) => {
     thirtyDaysAgo: await getRevenueFromDB(
       project.id,
       utcThirtyDaysBack,
-      prisma
+      prisma,
     ), // total revenue as of thirty days ago
     sixtyDaysAgo: await getRevenueFromDB(project.id, utcSixtyDaysBack, prisma), // total revenue as of sixty days ago
     ninetyDaysAgo: await getRevenueFromDB(
       project.id,
       utcNinetyDaysBack,
-      prisma
+      prisma,
     ), // total revenue as of ninety days ago
   };
   const tmp = {
@@ -116,7 +116,7 @@ const getUsageFromSubgraph = async (id, networks) => {
           }
         }
       `,
-      { id }
+      { id },
     );
     dayDataPromises.push(data);
     snapshotPromises.push(getSnapshots(id, n));
@@ -228,7 +228,9 @@ export const getProject = async (id) => {
   };
 };
 
-export default async (_req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProject(_req.query.id);
   res.json(project);
 };
+
+export default handler;

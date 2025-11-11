@@ -3,6 +3,16 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
+type BlocksResponse = {
+  blocks: { id: string; number: string; timestamp: string }[];
+};
+
+type ProtocolRevenueResponse = {
+  protocol: {
+    revenueUSD: string;
+    days?: { date: number; revenueUSD: string }[];
+  } | null;
+};
 
 export const getBlocksFromTimestamps = async (timestamps, network) => {
   const endpoints = {
@@ -19,25 +29,37 @@ export const getBlocksFromTimestamps = async (timestamps, network) => {
   }
   const blocks = [];
   for (const timestamp of timestamps) {
-    const json = await request(
-      endpoints[network],
-      gql`
-        query blocks($timestampFrom: Int!, $timestampTo: Int!) {
-          blocks(
-            first: 1
-            orderBy: timestamp
-            orderDirection: asc
-            where: { timestamp_gt: $timestampFrom, timestamp_lt: $timestampTo }
-          ) {
-            id
-            number
-            timestamp
+    try {
+      const json = await request<BlocksResponse>(
+        endpoints[network],
+        gql`
+          query blocks($timestampFrom: Int!, $timestampTo: Int!) {
+            blocks(
+              first: 1
+              orderBy: timestamp
+              orderDirection: asc
+              where: {
+                timestamp_gt: $timestampFrom
+                timestamp_lt: $timestampTo
+              }
+            ) {
+              id
+              number
+              timestamp
+            }
           }
-        }
-      `,
-      { timestampFrom: timestamp, timestampTo: timestamp + 100 }
-    );
-    blocks.push(+json.blocks[0]?.number ? +json.blocks[0]?.number : 0);
+        `,
+        { timestampFrom: timestamp, timestampTo: timestamp + 100 },
+      );
+      blocks.push(+json.blocks[0]?.number ? +json.blocks[0]?.number : 0);
+    } catch (error) {
+      console.warn("Failed to fetch block data from The Graph", {
+        network,
+        timestamp,
+        error,
+      });
+      blocks.push(0);
+    }
   }
 
   return blocks;
@@ -52,7 +74,7 @@ export const getBlocksFromTimestamps = async (timestamps, network) => {
 export const getTwoPeriodPercentChange = (
   valueNow: number,
   valueAsOfPeriodOne: number,
-  valueAsOfPeriodTwo: number
+  valueAsOfPeriodTwo: number,
 ) => {
   // get volume info for both periods
   const currentChange = valueNow - valueAsOfPeriodOne;
@@ -127,7 +149,7 @@ export const formatDataForWeekly = (days) => {
 
   const weeklyData = [];
   const weeklySizedChunks = [...days].sort((a, b) =>
-    parseInt(a.date) > parseInt(b.date) ? 1 : -1
+    parseInt(a.date) > parseInt(b.date) ? 1 : -1,
   );
   let startIndexWeekly = -1;
   let currentWeek = -1;
@@ -171,7 +193,7 @@ export const getSubgraph = (network) => {
 };
 
 const getRevenueByBlock = async (id, blockNumber, network) => {
-  return await request(
+  return await request<ProtocolRevenueResponse>(
     getSubgraph(network),
     gql`
       query ($id: String!, $block: Block_height) {
@@ -183,7 +205,7 @@ const getRevenueByBlock = async (id, blockNumber, network) => {
     {
       id,
       block: { number: blockNumber },
-    }
+    },
   );
 };
 
@@ -207,6 +229,15 @@ export const getSnapshots = async (id, network) => {
     utcNinetyDaysBack,
   ];
 
+  const blockResults = await getBlocksFromTimestamps(timestamps, network);
+
+  if (blockResults.length < 7 || blockResults.every((block) => block === 0)) {
+    console.warn("Falling back to zeroed snapshots; unable to fetch blocks", {
+      network,
+    });
+    return Array(7).fill(0);
+  }
+
   const [
     oneDayBlock,
     twoDayBlock,
@@ -215,37 +246,60 @@ export const getSnapshots = async (id, network) => {
     thirtyDayBlock,
     sixtyDayBlock,
     ninetyDayBlock,
-  ] = await getBlocksFromTimestamps(timestamps, network);
+  ] = blockResults;
 
-  const oneDayResult = await getRevenueByBlock(id, oneDayBlock, network);
-  const twoDayResult = await getRevenueByBlock(id, twoDayBlock, network);
-  const oneWeekResult = await getRevenueByBlock(id, oneWeekBlock, network);
-  const twoWeekResult = await getRevenueByBlock(id, twoWeekBlock, network);
-  const thirtyDayResult = await getRevenueByBlock(id, thirtyDayBlock, network);
-  const sixtyDayResult = await getRevenueByBlock(id, sixtyDayBlock, network);
-  const ninetyDayResult = await getRevenueByBlock(id, ninetyDayBlock, network);
+  try {
+    const [
+      oneDayResult,
+      twoDayResult,
+      oneWeekResult,
+      twoWeekResult,
+      thirtyDayResult,
+      sixtyDayResult,
+      ninetyDayResult,
+    ] = await Promise.all([
+      getRevenueByBlock(id, oneDayBlock, network),
+      getRevenueByBlock(id, twoDayBlock, network),
+      getRevenueByBlock(id, oneWeekBlock, network),
+      getRevenueByBlock(id, twoWeekBlock, network),
+      getRevenueByBlock(id, thirtyDayBlock, network),
+      getRevenueByBlock(id, sixtyDayBlock, network),
+      getRevenueByBlock(id, ninetyDayBlock, network),
+    ]);
 
-  return [
-    oneDayResult.protocol?.revenueUSD ? +oneDayResult.protocol.revenueUSD : 0,
-    twoDayResult.protocol?.revenueUSD ? +twoDayResult.protocol.revenueUSD : 0,
-    oneWeekResult.protocol?.revenueUSD ? +oneWeekResult.protocol.revenueUSD : 0,
-    twoWeekResult.protocol?.revenueUSD ? +twoWeekResult.protocol.revenueUSD : 0,
-    thirtyDayResult.protocol?.revenueUSD
-      ? +thirtyDayResult.protocol.revenueUSD
-      : 0,
-    sixtyDayResult.protocol?.revenueUSD
-      ? +sixtyDayResult.protocol.revenueUSD
-      : 0,
-    ninetyDayResult.protocol?.revenueUSD
-      ? +ninetyDayResult.protocol.revenueUSD
-      : 0,
-  ];
+    return [
+      oneDayResult.protocol?.revenueUSD ? +oneDayResult.protocol.revenueUSD : 0,
+      twoDayResult.protocol?.revenueUSD ? +twoDayResult.protocol.revenueUSD : 0,
+      oneWeekResult.protocol?.revenueUSD
+        ? +oneWeekResult.protocol.revenueUSD
+        : 0,
+      twoWeekResult.protocol?.revenueUSD
+        ? +twoWeekResult.protocol.revenueUSD
+        : 0,
+      thirtyDayResult.protocol?.revenueUSD
+        ? +thirtyDayResult.protocol.revenueUSD
+        : 0,
+      sixtyDayResult.protocol?.revenueUSD
+        ? +sixtyDayResult.protocol.revenueUSD
+        : 0,
+      ninetyDayResult.protocol?.revenueUSD
+        ? +ninetyDayResult.protocol.revenueUSD
+        : 0,
+    ];
+  } catch (error) {
+    console.warn("Falling back to zeroed snapshots; unable to fetch revenue", {
+      id,
+      network,
+      error,
+    });
+    return Array(7).fill(0);
+  }
 };
 
 export function sumArrays(...arrays) {
   const n = arrays.reduce((max, xs) => Math.max(max, xs.length), 0);
   const result = Array.from({ length: n });
   return result.map((_, i) =>
-    arrays.map((xs) => xs[i] || 0).reduce((sum, x) => sum + x, 0)
+    arrays.map((xs) => xs[i] || 0).reduce((sum, x) => sum + x, 0),
   );
 }

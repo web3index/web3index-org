@@ -4,7 +4,7 @@ import limestone from "limestone-api";
 import prisma from "../../lib/prisma";
 
 const endpoint = "https://arweave.net/graphql";
-const gqlclient = new GraphQLClient(endpoint, { timeout: 300000 });
+const gqlclient = new GraphQLClient(endpoint);
 
 const queryGetTranasctions = gql`
   query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
@@ -259,7 +259,7 @@ const getLastBlockId = async () => {
     throw new Error(
       "Error getting last block id from blockchain: " +
         JSON.stringify(e) +
-        JSON.stringify(data)
+        JSON.stringify(data),
     );
   }
 
@@ -268,7 +268,7 @@ const getLastBlockId = async () => {
 
 const storeDBData = async (
   dayData: { date: any; fees: any; blockHeight?: string },
-  projectId: number
+  projectId: number,
 ) => {
   const day = await prisma.day.findFirst({
     where: {

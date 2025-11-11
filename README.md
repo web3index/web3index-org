@@ -1,6 +1,6 @@
 # The Web3 Index
 
-The Web3 Index reports on the fees being paid into web3 network protocols in an effort to showcase real usage across the web3 stack. Stay up to date on the latest web3 trends whether you’re a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising web3 infrastructure, or simply a crypto-enthusiast passionate about the web3 movement.
+The Web3 Index reports on the fees being paid into web3 network protocols in an effort to showcase real usage across the web3 stack. Stay up to date on the latest web3 trends whether you're a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising web3 infrastructure, or simply a crypto-enthusiast passionate about the web3 movement.
 
 Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total value locked (TVL)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network fees and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
 
@@ -60,6 +60,12 @@ Once this endpoint is available add your protocol to The Web3 Index [registry](.
 Note: your API codebase must be open sourced in order to be considered for the index.
 
 ## Running App Locally
+
+Make sure you're using the required Node runtime (for example with [nvm](https://github.com/nvm-sh/nvm)):
+
+```bash
+nvm use 22
+```
 
 First, install the project dependencies:
 
