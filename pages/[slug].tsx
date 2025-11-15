@@ -9,7 +9,6 @@ import Container from "../components/Container";
 import LineAndBarGraph from "../components/LineAndBarGraph";
 import { ResponsiveContainer } from "recharts";
 import { useEffect, useRef, useState } from "react";
-import { request, gql } from "graphql-request";
 import { styled } from "../stitches.config";
 import Button from "../components/Button";
 import RevenueChange from "../components/RevenueChange";
@@ -31,6 +30,8 @@ import seo from "../next-seo.config";
 import { useRouter } from "next/router";
 import { getProject } from "./api/projects/[id]";
 import { getProjects } from "./api/projects";
+import { request, gql } from "graphql-request";
+import { getEverestSubgraph } from "../lib/utils";
 import Alert from "../components/Alert";
 import type { GetStaticPaths, GetStaticProps } from "next";
 
@@ -541,32 +542,46 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
 
   const index = projects.findIndex((p) => p.slug === slug);
-  const {
-    project: { description, website, github, twitter },
-  } = await request<EverestProjectQuery>(
-    "https://api.thegraph.com/subgraphs/name/graphprotocol/everest",
-    gql`
-      query project($id: String!) {
-        project(id: $id) {
-          website
-          github
-          twitter
-          description
+  let remoteProject: EverestProjectQuery["project"] | null = null;
+  try {
+    const response = await request<EverestProjectQuery>(
+      getEverestSubgraph(),
+      gql`
+        query project($id: String!) {
+          project(id: $id) {
+            website
+            github
+            twitter
+            description
+          }
         }
-      }
-    `,
-    { id: project.everestID },
-  );
+      `,
+      { id: project.everestID },
+    );
+    remoteProject = response.project;
+  } catch (error) {
+    console.warn(
+      "Everest project metadata unavailable; continuing without it",
+      { slug, everestID: project.everestID, error },
+    );
+  }
+
   return {
     props: {
       index,
       slug,
       project: {
         ...project,
-        description: project.description ? project.description : description,
-        website,
-        github,
-        twitter,
+        description: project.description
+          ? project.description
+          : remoteProject?.description,
+        website: remoteProject?.website
+          ? remoteProject?.website
+          : project.website,
+        github: remoteProject?.github ? remoteProject?.github : project.github,
+        twitter: remoteProject?.twitter
+          ? remoteProject?.twitter
+          : project.twitter,
       },
       projects,
     },

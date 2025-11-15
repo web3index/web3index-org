@@ -15,23 +15,16 @@ type ProtocolRevenueResponse = {
 };
 
 export const getBlocksFromTimestamps = async (timestamps, network) => {
-  const endpoints = {
-    mainnet:
-      "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
-    "arbitrum-one":
-      "https://api.thegraph.com/subgraphs/name/dolomite-exchange/arbitrum-one-blocks",
-    polygon:
-      "https://api.thegraph.com/subgraphs/name/kybernetwork/polygon-blocks",
-  };
-
   if (!timestamps?.length) {
     return [];
   }
+
+  const endpoint = getBlockSubgraph(network);
   const blocks = [];
   for (const timestamp of timestamps) {
     try {
       const json = await request<BlocksResponse>(
-        endpoints[network],
+        endpoint,
         gql`
           query blocks($timestampFrom: Int!, $timestampTo: Int!) {
             blocks(
@@ -178,18 +171,67 @@ declare global {
 
 // log the pageview with their URL
 export const pageview = (url) => {
-  window.gtag("config", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
+  if (typeof window === "undefined" || typeof window.gtag !== "function")
+    return;
+  const trackingId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+  if (!trackingId) return;
+  window.gtag("config", trackingId, {
     page_path: url,
   });
 };
 
 // log specific events happening.
 export const event = ({ action, params }) => {
+  if (typeof window === "undefined" || typeof window.gtag !== "function")
+    return;
   window.gtag("event", action, params);
 };
 
-export const getSubgraph = (network) => {
-  return `https://api.thegraph.com/subgraphs/name/web3index/${network}`;
+const getEnvValue = (key: string) => {
+  const value = process.env[key as keyof NodeJS.ProcessEnv];
+  if (typeof value !== "string") {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : undefined;
+};
+
+const buildSubgraphUrl = (network: string, prefix: string) => {
+  const networkSuffix = network.replace(/[^a-zA-Z0-9]/g, "_").toUpperCase();
+  const endpointEnvKey = `${prefix}_ENDPOINT_${networkSuffix}`;
+  const overrideEndpoint = getEnvValue(endpointEnvKey);
+  if (overrideEndpoint) {
+    return overrideEndpoint;
+  }
+
+  const apiKey = getEnvValue("GRAPH_API_KEY");
+  if (!apiKey) {
+    throw new Error(
+      `GRAPH_API_KEY env var is required unless an override endpoint ` +
+        `is provided for ${network}`,
+    );
+  }
+  const subgraphIdEnvKey = `${prefix}_${networkSuffix}_ID`;
+  const scopedSubgraphId = getEnvValue(subgraphIdEnvKey);
+  if (scopedSubgraphId) {
+    return `https://gateway.thegraph.com/api/${apiKey}/subgraphs/id/${scopedSubgraphId}`;
+  }
+
+  throw new Error(
+    `Set ${subgraphIdEnvKey} env var (or override endpoint) for ${network}`,
+  );
+};
+
+export const getSubgraph = (network: string) => {
+  return buildSubgraphUrl(network, "GRAPH_WEB3INDEX");
+};
+
+export const getEverestSubgraph = () => {
+  return buildSubgraphUrl("mainnet", "GRAPH_EVEREST");
+};
+
+const getBlockSubgraph = (network: string) => {
+  return buildSubgraphUrl(network, "GRAPH_BLOCKS");
 };
 
 const getRevenueByBlock = async (id, blockNumber, network) => {

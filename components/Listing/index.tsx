@@ -23,6 +23,12 @@ import registry from "../../registry.json";
 const StyledImage = styled("img", {
   mr: "$3",
 });
+const StyledLink = styled(Link, {
+  display: "block",
+  color: "$hiContrast",
+  textDecoration: "none",
+  verticalAlign: "inherit",
+});
 
 const Listing = ({ data, ...props }) => {
   const columns = useMemo(
@@ -52,8 +58,7 @@ const Listing = ({ data, ...props }) => {
                   css={{
                     display: "flex",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <StyledImage width={32} height={32} src={row.values.image} />
                   {row.values.name}
                   <Box
@@ -64,8 +69,7 @@ const Listing = ({ data, ...props }) => {
                       "@bp1": {
                         display: "block",
                       },
-                    }}
-                  >
+                    }}>
                     ({row.values.symbol})
                   </Box>
                 </Box>
@@ -112,7 +116,7 @@ const Listing = ({ data, ...props }) => {
                 <Box>
                   $
                   {Math.round(
-                    row.values.usage.revenue.thirtyDayTotal
+                    row.values.usage.revenue.thirtyDayTotal,
                   ).toLocaleString()}
                 </Box>
               );
@@ -137,7 +141,7 @@ const Listing = ({ data, ...props }) => {
                 <Box>
                   $
                   {Math.round(
-                    row.values.usage.revenue.ninetyDayTotal
+                    row.values.usage.revenue.ninetyDayTotal,
                   ).toLocaleString()}
                 </Box>
               );
@@ -165,9 +169,10 @@ const Listing = ({ data, ...props }) => {
                   : defaultTheme.colors.red;
 
               // Get last two periods excluding current day
-              const lastTwoPeriods = row.values.usage.days
-                .slice(-61)
-                .slice(0, 60);
+              const usageDays = Array.isArray(row.values.usage.days)
+                ? row.values.usage.days
+                : [];
+              const lastTwoPeriods = usageDays.slice(-61).slice(0, 60);
 
               return (
                 <Box css={{ display: "flex" }}>
@@ -176,7 +181,7 @@ const Listing = ({ data, ...props }) => {
                     percentChange={Intl.NumberFormat("en-US", {
                       maximumFractionDigits: 2,
                     }).format(
-                      row.values.usage[paymentType].thirtyDayPercentChange
+                      row.values.usage[paymentType].thirtyDayPercentChange,
                     )}
                     css={{ ml: "$2" }}
                   />
@@ -195,7 +200,7 @@ const Listing = ({ data, ...props }) => {
         accessor: "untracked",
       },
     ],
-    []
+    [],
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -215,7 +220,7 @@ const Listing = ({ data, ...props }) => {
         },
       },
       useGroupBy,
-      useSortBy
+      useSortBy,
     );
 
   // We don't want to render all 2000 rows for this example, so cap
@@ -243,95 +248,100 @@ const Listing = ({ data, ...props }) => {
             zIndex: 10000,
           },
         }}
-        {...getTableProps()}
-      >
+        {...getTableProps()}>
         <Thead>
-          {headerGroups.map((headerGroup, i) => (
-            <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, i) => (
-                <Th
-                  key={i}
-                  className={column?.className}
-                  css={{
-                    backgroundColor: "$loContrast",
-                    minWidth: column.minWidth,
-                    width: column.width,
-                    verticalAlign: "middle",
-                    py: 0,
-                    px: 0,
-                    fontSize: 12,
-
-                    // display: column.hideOnMobile ? "none" : "initial",
-                    "@bp1": {
-                      width: column.width ? column.width : "auto",
-                      position: "relative !important",
-                    },
-                  }}
-                  {...column.getHeaderProps(
-                    column.getSortByToggleProps({ title: undefined })
-                  )}
-                >
-                  <Box
-                    css={{
-                      display: "flex",
-                      alignItems: "center",
-                      pt: "$2",
-                      pb: "$2",
-                      px: i === 1 ? "$3" : "$4",
-
-                      "@bp1": {
-                        px: "$4",
-                        pr: 0,
-                      },
-                      ...column.css,
-                    }}
-                  >
-                    <Box css={{ fontWeight: 600 }}>
-                      {column.render("Header")}
-                    </Box>
-                    {/* Add a sort direction indicator */}
-                    <Box css={{ minWidth: 20 }}>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <ChevronDownIcon />
-                        ) : (
-                          <ChevronUpIcon />
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    {column.tooltip && (
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <InfoCircledIcon />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <TooltipArrow />
-                          {column.tooltip}
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Th>
-              ))}
-            </Tr>
-          ))}
+          {headerGroups.map((headerGroup, i) => {
+            const headerGroupProps = headerGroup.getHeaderGroupProps();
+            const { key, ...restHeaderGroupProps } = headerGroupProps;
+            return (
+              <Tr key={key ?? i} {...restHeaderGroupProps}>
+                {headerGroup.headers.map((column, i) => {
+                  const headerProps = column.getHeaderProps(
+                    column.getSortByToggleProps({ title: undefined }),
+                  );
+                  const { key: headerKey, ...restHeaderProps } = headerProps;
+                  return (
+                    <Th
+                      key={headerKey ?? i}
+                      className={column?.className}
+                      css={{
+                        backgroundColor: "$loContrast",
+                        minWidth: column.minWidth,
+                        width: column.width,
+                        verticalAlign: "middle",
+                        py: 0,
+                        px: 0,
+                        fontSize: 12,
+                        "@bp1": {
+                          width: column.width ? column.width : "auto",
+                          position: "relative !important",
+                        },
+                      }}
+                      {...restHeaderProps}>
+                      <Box
+                        css={{
+                          display: "flex",
+                          alignItems: "center",
+                          pt: "$2",
+                          pb: "$2",
+                          px: i === 1 ? "$3" : "$4",
+                          "@bp1": {
+                            px: "$4",
+                            pr: 0,
+                          },
+                          ...column.css,
+                        }}>
+                        <Box css={{ fontWeight: 600 }}>
+                          {column.render("Header")}
+                        </Box>
+                        {/* Add a sort direction indicator */}
+                        <Box css={{ minWidth: 20 }}>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <ChevronDownIcon />
+                            ) : (
+                              <ChevronUpIcon />
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </Box>
+                        {column.tooltip && (
+                          <Tooltip delayDuration={0}>
+                            <TooltipTrigger>
+                              <InfoCircledIcon />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <TooltipArrow />
+                              {column.tooltip}
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                      </Box>
+                    </Th>
+                  );
+                })}
+              </Tr>
+            );
+          })}
         </Thead>
         <Tbody {...getTableBodyProps()}>
           {firstPageRows.map((row, rowIndex) => {
             prepareRow(row);
+            const rowProps = row.getRowProps();
+            const { key: rowKey, ...restRowProps } = rowProps;
             return (
               <Tr
-                key={rowIndex}
-                {...row.getRowProps()}
+                key={rowKey ?? rowIndex}
+                {...restRowProps}
                 css={{
                   "&:last-child": {
                     Td: { borderBottom: 0 },
                   },
-                }}
-              >
+                }}>
                 {row.cells.map((cell, i) => {
+                  const cellProps = cell.getCellProps();
+                  const { key: cellKey, ...restCellProps } = cellProps;
                   return (
                     <Td
                       className={cell.column?.className}
@@ -349,24 +359,11 @@ const Listing = ({ data, ...props }) => {
                           position: "relative !important",
                         },
                       }}
-                      key={i}
-                      {...cell.getCellProps()}
-                    >
-                      <Link href={`/${row.values.slug}`} passHref>
-                        <Box
-                          as="a"
-                          css={{
-                            display: "block",
-                            color: "$hiContrast",
-                            textDecoration: "none",
-                            verticalAlign: "inherit",
-                          }}
-                          key={rowIndex}
-                          {...row.getRowProps()}
-                        >
-                          {cell.render("Cell")}
-                        </Box>
-                      </Link>
+                      key={cellKey ?? i}
+                      {...restCellProps}>
+                      <StyledLink href={`/${row.values.slug}`}>
+                        {cell.render("Cell")}
+                      </StyledLink>
                     </Td>
                   );
                 })}

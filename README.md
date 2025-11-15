@@ -32,7 +32,7 @@ Step 2: Add your protocol to The Web3 Index [registry](./registry.json) using th
 
 If a protocol's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide fee data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
 
-```
+```json
 {
   // Revenue should be denominated in USD at time of payout
   "revenue": {
@@ -61,27 +61,60 @@ Note: your API codebase must be open sourced in order to be considered for the i
 
 ## Running App Locally
 
-Make sure you're using the required Node runtime (for example with [nvm](https://github.com/nvm-sh/nvm)):
+Install dependencies (using the pinned Node/Yarn toolchain):
 
 ```bash
-nvm use 22
+nvm use
+npm install -g corepack
+corepack enable
+corepack prepare yarn@1.22.22 --activate
+yarn install
 ```
 
-First, install the project dependencies:
+Copy `.env.example` to `.env` and fill all required values (database URL, API keys, subgraph env variables).
+
+### Provision a local Postgres database
+
+If you don't already have Postgres running, the quickest option is to spin up a disposable Docker container:
 
 ```bash
-yarn
+docker run --name web3index-postgres \
+  -e POSTGRES_USER=web3index \
+  -e POSTGRES_PASSWORD=web3index \
+  -e POSTGRES_DB=web3index \
+  -p 5432:5432 \
+  -d postgres:15
 ```
 
-Next, rename `.env.example` to `.env` and replace `DATABASE_URL` with your own Postgres database url.
-
-After that, run the Prisma ORM database schema migration tool:
+Then point Prisma to it via `.env`:
 
 ```bash
-npx prisma migrate dev --name init
+DATABASE_URL="postgresql://web3index:web3index@localhost:5432/web3index?schema=public"
 ```
 
-Finally, run the development server:
+You can stop/remove the container when you're done:
+
+```bash
+docker stop web3index-postgres
+docker rm web3index-postgres
+```
+
+### Prisma CLI on OpenSSL 3 hosts
+
+Prisma's migration/schema engines expect OpenSSL 1.1 by default. On newer distros (Ubuntu ≥22.04, Debian ≥12, etc.) only OpenSSL 3 is available, so we ship `yarn` scripts that download and point Prisma to the OpenSSL-3 compatible binaries for you:
+
+```bash
+# Install client w/ OpenSSL 3 engine
+yarn prisma:generate:ossl3
+# Run migrations with OpenSSL 3 engine
+yarn prisma:migrate:dev:ossl3 --name init
+```
+
+If you're deploying migrations, use `yarn prisma:migrate:ossl3` instead.
+
+(You only need to re-run the `prisma:generate:ossl3` script after deleting `node_modules` or upgrading Prisma.)
+
+Then run the development server (use `yarn dev:ossl3` on hosts that require the OpenSSL 3 engine):
 
 ```bash
 yarn dev

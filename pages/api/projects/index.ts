@@ -50,8 +50,10 @@ export const getProjects = async () => {
           data.usage?.dilution?.sixtyDaysAgo,
         );
 
-      projects.push({
+      const isUntracked = Boolean(data.untracked);
+      const projectData = {
         ...data,
+        untracked: isUntracked,
         slug: project,
         usage: {
           ...data.usage,
@@ -59,11 +61,9 @@ export const getProjects = async () => {
             ...data.usage.dilution,
             oneWeekTotal: oneWeekDilutionTotal,
             oneWeekPercentChange: oneWeekDilutionPercentChange,
-            thirtyDayTotal: registry[project].untracked
-              ? 0
-              : thirtyDayDilutionTotal,
+            thirtyDayTotal: isUntracked ? 0 : thirtyDayDilutionTotal,
             thirtyDayPercentChange: thirtyDayDilutionPercentChange,
-            ninetyDayTotal: registry[project].untracked
+            ninetyDayTotal: isUntracked
               ? 0
               : data.usage.dilution?.now - data.usage.dilution?.ninetyDaysAgo,
           },
@@ -71,15 +71,16 @@ export const getProjects = async () => {
             ...data.usage.revenue,
             oneWeekTotal,
             oneWeekPercentChange,
-            thirtyDayTotal: registry[project].untracked ? 0 : thirtyDayTotal,
+            thirtyDayTotal: isUntracked ? 0 : thirtyDayTotal,
             thirtyDayPercentChange,
-            ninetyDayTotal: registry[project].untracked
+            ninetyDayTotal: isUntracked
               ? 0
               : data.usage.revenue.now - data.usage.revenue.ninetyDaysAgo,
           },
         },
-      });
-      if (!registry[project].untracked) {
+      };
+      projects.push(projectData);
+      if (!projectData.untracked) {
         totalParticipantRevenueNow += data.usage.revenue.now;
         totalParticipantRevenueOneWeekAgo += data.usage.revenue.oneWeekAgo;
         totalParticipantRevenueTwoWeeksAgo += data.usage.revenue.twoWeeksAgo;

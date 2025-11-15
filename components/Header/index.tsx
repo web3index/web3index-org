@@ -1,9 +1,18 @@
+import { ComponentProps } from "react";
 import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
 import Button from "../Button";
 
-const Header = ({ revenue, ...props }) => {
+type RevenueSummary = {
+  thirtyDayTotal: number;
+  thirtyDayPercentChange: number;
+};
+type HeaderProps = ComponentProps<typeof Box> & {
+  revenue: RevenueSummary;
+};
+
+const Header = ({ revenue, ...props }: HeaderProps) => {
   return (
     <Box {...props}>
       <Box

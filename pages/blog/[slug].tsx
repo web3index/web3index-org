@@ -83,16 +83,12 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
           backgroundColor: "$blur",
           backdropFilter: "saturate(180%) blur(5px)",
         }}>
-        <Link href="/" passHref>
-          <StyledButton as="a" css={{ mr: "$2" }}>
-            <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
-          </StyledButton>
-        </Link>
-        <Link href="/blog" passHref>
-          <StyledButton as="a">
-            <ReaderIcon /> <Box css={{ ml: "$2" }}>Blog</Box>
-          </StyledButton>
-        </Link>
+        <StyledButton as={Link} href="/" css={{ mr: "$2" }}>
+          <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
+        </StyledButton>
+        <StyledButton as={Link} href="/blog">
+          <ReaderIcon /> <Box css={{ ml: "$2" }}>Blog</Box>
+        </StyledButton>
       </Box>
       <Section>
         <Container size="2">

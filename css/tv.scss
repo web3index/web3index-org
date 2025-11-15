@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .tv {
   #screen {
     width: 100%;
@@ -67,14 +69,14 @@
     top: 0;
     z-index: 9999;
     background: linear-gradient(
-        transparentize(#121010, 1) 50%,
-        transparentize(darken(#121010, 10), 0.75) 50%
+        color.adjust(#121010, $alpha: -1) 50%,
+        color.adjust(color.adjust(#121010, $lightness: -10%), $alpha: -0.75) 50%
       ),
       linear-gradient(
         90deg,
-        transparentize(#ff0000, 0.94),
-        transparentize(#00ff00, 0.98),
-        transparentize(#0000ff, 0.94)
+        color.adjust(#ff0000, $alpha: -0.94),
+        color.adjust(#00ff00, $alpha: -0.98),
+        color.adjust(#0000ff, $alpha: -0.94)
       );
     background-size: 100% 2px, 3px 100%;
     pointer-events: none;
