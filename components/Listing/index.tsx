@@ -17,6 +17,7 @@ import {
   InfoCircledIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 import registry from "../../registry.json";
 
@@ -29,6 +30,31 @@ const StyledLink = styled(Link, {
   textDecoration: "none",
   verticalAlign: "inherit",
 });
+const WarningDot = styled("span", {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 16,
+  height: 16,
+  borderRadius: "50%",
+  backgroundColor: "rgba(245, 165, 36, 0.2)",
+  color: "#f5a524",
+  ml: "$2",
+});
+const WarningPlaceholder = () => {
+  return (
+    <Box
+      css={{
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        color: "$gray500",
+        fontSize: "11px",
+      }}>
+      --
+    </Box>
+  );
+};
 
 const Listing = ({ data, ...props }) => {
   const columns = useMemo(
@@ -53,6 +79,7 @@ const Listing = ({ data, ...props }) => {
             accessor: "name",
             className: "sticky",
             Cell: ({ row }) => {
+              const warning = row.original?.usage?.warning;
               return (
                 <Box
                   css={{
@@ -72,6 +99,19 @@ const Listing = ({ data, ...props }) => {
                     }}>
                     ({row.values.symbol})
                   </Box>
+                  {warning ? (
+                    <Tooltip delayDuration={0}>
+                      <TooltipTrigger asChild>
+                        <WarningDot>
+                          <ExclamationTriangleIcon width={13} height={13} />
+                        </WarningDot>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {warning}
+                        <TooltipArrow />
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : null}
                 </Box>
               );
             },
@@ -109,6 +149,10 @@ const Listing = ({ data, ...props }) => {
             css: { fontSize: "11px", color: "$gray400" },
             accessor: "usage.revenue.thirtyDayTotal",
             Cell: ({ row }) => {
+              const warning = row.original?.usage?.warning;
+              if (warning) {
+                return <WarningPlaceholder />;
+              }
               if (!row.values.usage.revenue.thirtyDayTotal) {
                 return <Box>$0</Box>;
               }
@@ -134,6 +178,10 @@ const Listing = ({ data, ...props }) => {
             accessor: "usage.revenue.ninetyDayTotal",
             css: { fontSize: "11px", color: "$gray400" },
             Cell: ({ row }) => {
+              const warning = row.original?.usage?.warning;
+              if (warning) {
+                return <WarningPlaceholder />;
+              }
               if (!row.values.usage.revenue.ninetyDayTotal) {
                 return <Box>$0</Box>;
               }
@@ -163,6 +211,9 @@ const Listing = ({ data, ...props }) => {
                   ? "dilution"
                   : "revenue";
               if (row.values.untracked) return "--";
+              if (row.original?.usage?.warning) {
+                return <WarningPlaceholder />;
+              }
               const color =
                 row.values.usage[paymentType].thirtyDayPercentChange >= 0
                   ? defaultTheme.colors.green

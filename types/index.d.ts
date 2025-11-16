@@ -39,6 +39,7 @@ export interface Usage {
   dilution: Revenue;
   days: Days;
   [k: string]: unknown;
+  warning?: string;
 }
 export interface Revenue {
   now: Now;

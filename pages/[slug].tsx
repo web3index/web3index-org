@@ -466,6 +466,11 @@ const Project = ({ slug, index, projects, project }) => {
                   pt: 0,
                 },
               }}>
+              {project.usage.warning ? (
+                <Box css={{ mb: "$4" }}>
+                  <Alert>{project.usage.warning}</Alert>
+                </Box>
+              ) : null}
               {project.untracked ? (
                 <Box css={{ mb: "$4" }}>
                   <Alert>

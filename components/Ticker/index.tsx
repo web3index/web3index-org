@@ -11,6 +11,7 @@ const Project = ({ project }) => {
     registry[project.name.toLowerCase()]?.paymentType === "dilution"
       ? "dilution"
       : "revenue";
+  const warning = project.usage?.warning;
 
   const color =
     project.usage[paymentType].thirtyDayPercentChange >= 0
@@ -43,13 +44,26 @@ const Project = ({ project }) => {
         <Box css={{ color: "$gray400" }}>{project.name}</Box>
       </Box>
       <Box css={{ display: "flex", alignItems: "center" }}>
-        <LineGraph color={color} days={lastTwoPeriods} />
-        <RevenueChange
-          percentChange={Intl.NumberFormat("en-US", {
-            maximumFractionDigits: 2,
-          }).format(project.usage[paymentType].thirtyDayPercentChange)}
-          css={{ ml: "$2" }}
-        />
+        {warning ? (
+          <Box
+            css={{
+              color: "$gray500",
+              fontSize: "11px",
+              ml: "$2",
+            }}>
+            --
+          </Box>
+        ) : (
+          <>
+            <LineGraph color={color} days={lastTwoPeriods} />
+            <RevenueChange
+              percentChange={Intl.NumberFormat("en-US", {
+                maximumFractionDigits: 2,
+              }).format(project.usage[paymentType].thirtyDayPercentChange)}
+              css={{ ml: "$2" }}
+            />
+          </>
+        )}
       </Box>
     </Box>
   );

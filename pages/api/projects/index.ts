@@ -2,9 +2,18 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Ajv from "ajv";
 import schema from "../../../schema.json";
 import registry from "../../../registry.json";
-import { getProject } from "./[id]";
+import { getProject, getEmptyUsageResponse } from "./[id]";
 import { getTwoPeriodPercentChange } from "../../../lib/utils";
 import { Project } from "../../../types";
+
+const buildFallbackProject = (project: string, warning: string): Project => {
+  const base = registry[project] ?? {};
+  return {
+    ...base,
+    untracked: Boolean(base.untracked),
+    usage: getEmptyUsageResponse(project, warning),
+  } as Project;
+};
 
 export const getProjects = async () => {
   const ajv = new Ajv();
@@ -19,10 +28,40 @@ export const getProjects = async () => {
   let totalParticipantRevenueNinetyDaysAgo = 0;
 
   for (const project in registry) {
-    const data: Project = await getProject(project);
-    const valid = validate(data);
+    let data: Project;
+    try {
+      data = await getProject(project);
+    } catch (error) {
+      console.warn("Failed to load project data; using empty usage response", {
+        project,
+        error,
+      });
+      data = buildFallbackProject(
+        project,
+        "Could not fetch usage data for this project.",
+      );
+    }
 
-    if (valid && !registry[project].hide) {
+    if (!validate(data)) {
+      console.warn("Project failed schema validation; using empty usage data", {
+        project,
+        errors: validate.errors,
+      });
+      const fallbackProject = buildFallbackProject(
+        project,
+        "Could not fetch usage data for this project. Incorrect data format received.",
+      );
+      if (!validate(fallbackProject)) {
+        console.warn("Fallback project data failed validation", {
+          project,
+          errors: validate.errors,
+        });
+        continue;
+      }
+      data = fallbackProject;
+    }
+
+    if (!registry[project].hide) {
       const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
         data.usage.revenue.now,
         data.usage.revenue.oneWeekAgo,
