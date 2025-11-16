@@ -34,6 +34,7 @@ import { request, gql } from "graphql-request";
 import { getEverestSubgraph } from "../lib/utils";
 import Alert from "../components/Alert";
 import type { GetStaticPaths, GetStaticProps } from "next";
+import ThemeAwareLogo from "../components/ThemeAwareLogo";
 
 type EverestProjectQuery = {
   project: {
@@ -71,39 +72,14 @@ const SocialButton = ({ icon, children, ...props }) => {
     </SocialButton>
   );
 };
-
-const Everest = ({ ...props }) => {
-  return (
-    <Box
-      as="svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}>
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M11.9446 23.9418L0.0372314 12.0343L6.56058 5.51074L18.4682 17.4183L11.9446 23.9418Z"
-        fill="currentColor"
-      />
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M0.0371094 12.0343L11.9445 0.126709L23.8523 12.0343H0.0371094Z"
-        fill="currentColor"
-      />
-      <path
-        opacity="0.5"
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M0.0372314 12.0343L6.56058 5.51074L13 11.9999L0.0372314 12.0343Z"
-        fill="currentColor"
-      />
-    </Box>
-  );
-};
+const MessariIcon = (props) => (
+  <ThemeAwareLogo
+    lightSrc="/logos/messari_black.svg"
+    darkSrc="/logos/messari_white.svg"
+    alt="Messari"
+    {...props}
+  />
+);
 
 const Metric = ({ label, value }) => {
   return (
@@ -460,16 +436,16 @@ const Project = ({ slug, index, projects, project }) => {
                   Website
                 </SocialButton>
                 <SocialButton
-                  href={`https://everest.link/project/${project.everestID}`}
+                  href={`https://messari.io/project/${registry[slug].coingeckoID}`}
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
                   icon={
-                    <Everest
+                    <MessariIcon
                       css={{ width: 14, height: 14, color: "$hiContrast" }}
                     />
                   }>
-                  Everest
+                  Messari
                 </SocialButton>
               </Box>
             </Box>
