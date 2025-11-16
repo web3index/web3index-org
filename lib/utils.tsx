@@ -16,7 +16,8 @@ type ProtocolRevenueResponse = {
   } | null;
 };
 
-export const getBlocksFromTimestamps = async (timestamps, network) => {
+/** Resolves block numbers near the provided timestamps using the block subgraph. */
+const getBlocksFromTimestamps = async (timestamps, network) => {
   if (!timestamps?.length) {
     return [];
   }
@@ -62,9 +63,9 @@ export const getBlocksFromTimestamps = async (timestamps, network) => {
 
 /**
  * gets the amount difference plus the % change in change itself (second order change)
- * @param {*} valueNow
- * @param {*} valueAsOfPeriodOne
- * @param {*} valueAsOfPeriodTwo
+ * @param valueNow - current value
+ * @param valueAsOfPeriodOne - value as of period one
+ * @param valueAsOfPeriodTwo - value as of period two
  */
 export const getTwoPeriodPercentChange = (
   valueNow: number,
@@ -83,16 +84,22 @@ export const getTwoPeriodPercentChange = (
   return [currentChange, adjustedPercentChange];
 };
 
-export const toK = (num) => {
+/** Formats a numeric value using Numeral’s abbreviated notation (e.g., 1.2k). */
+const toK = (num) => {
   return Numeral(num).format("0.[00]a");
 };
 
-export const priceFormatter = new Intl.NumberFormat("en-US", {
+const priceFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   minimumFractionDigits: 2,
 });
 
+/**
+ * Formats a numeric value into a human-readable string for USD or raw units.
+ * @param number - Value to format; accepts numeric strings.
+ * @param unit - Set to "usd" for currency formatting; pass anything else for raw.
+ */
 export const formattedNum = (number, unit = "usd") => {
   if (isNaN(number) || number === "" || number === undefined) {
     return unit === "usd" ? "$0" : 0;
@@ -137,6 +144,10 @@ export const formattedNum = (number, unit = "usd") => {
 
 // format weekly data for weekly sized chunks
 
+/**
+ * Groups daily revenue data into weekly buckets for graphing.
+ * @param days - Array of { date, revenue } objects sorted arbitrarily.
+ */
 export const formatDataForWeekly = (days) => {
   // format dayjs with the libraries that we need
   dayjs.extend(utc);
@@ -171,7 +182,7 @@ declare global {
   }
 }
 
-// log the pageview with their URL
+/** Sends a pageview event to GA if the global gtag is available. */
 export const pageview = (url) => {
   if (typeof window === "undefined" || typeof window.gtag !== "function")
     return;
@@ -182,7 +193,7 @@ export const pageview = (url) => {
   });
 };
 
-// log specific events happening.
+/** Emits a custom GA event if gtag is available in the browser. */
 export const event = ({ action, params }) => {
   if (typeof window === "undefined" || typeof window.gtag !== "function")
     return;
@@ -198,6 +209,7 @@ const getEnvValue = (key: string) => {
   return trimmed.length ? trimmed : undefined;
 };
 
+/** Builds a subgraph URL using either overrides or a scoped GRAPH_API_KEY. */
 const buildSubgraphUrl = (network: string, prefix: string) => {
   const networkSuffix = network.replace(/[^a-zA-Z0-9]/g, "_").toUpperCase();
   const endpointEnvKey = `${prefix}_ENDPOINT_${networkSuffix}`;
@@ -224,10 +236,12 @@ const buildSubgraphUrl = (network: string, prefix: string) => {
   );
 };
 
+/** Returns the Web3 Index subgraph endpoint for a network. */
 export const getSubgraph = (network: string) => {
   return buildSubgraphUrl(network, "GRAPH_WEB3INDEX");
 };
 
+/** Returns the Everest metadata subgraph endpoint. */
 export const getEverestSubgraph = () => {
   return buildSubgraphUrl("mainnet", "GRAPH_EVEREST");
 };
@@ -236,6 +250,7 @@ const getBlockSubgraph = (network: string) => {
   return buildSubgraphUrl(network, "GRAPH_BLOCKS");
 };
 
+/** Reads cumulative revenue at a specific block height from a network subgraph. */
 const getRevenueByBlock = async (id, blockNumber, network) => {
   return await request<ProtocolRevenueResponse>(
     getSubgraph(network),
@@ -253,6 +268,11 @@ const getRevenueByBlock = async (id, blockNumber, network) => {
   );
 };
 
+/**
+ * Fetches historical cumulative revenue snapshots (1d/2d/1w/etc.) for a protocol.
+ *
+ * Falls back to zero arrays if block lookups or revenue queries fail.
+ */
 export const getSnapshots = async (id, network) => {
   const utcCurrentTime = dayjs();
   const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
@@ -340,6 +360,7 @@ export const getSnapshots = async (id, network) => {
   }
 };
 
+/** Adds arrays element-wise (treats missing entries as zero). */
 export function sumArrays(...arrays) {
   const n = arrays.reduce((max, xs) => Math.max(max, xs.length), 0);
   const result = Array.from({ length: n });

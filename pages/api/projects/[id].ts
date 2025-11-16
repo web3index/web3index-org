@@ -48,6 +48,7 @@ export const buildFallbackProject = (
   } as Project;
 };
 
+/** Fetches historical usage from the Prisma database for legacy protocols. */
 const getUsageFromDB = async (name) => {
   const project = await prisma.project.findFirst({
     where: {
@@ -109,6 +110,7 @@ const getUsageFromDB = async (name) => {
   };
 };
 
+/** Aggregates total revenue up to a given timestamp for a project. */
 const getRevenueFromDB = async (projectId, date, prisma) => {
   const rev = await prisma.day.aggregate({
     where: {
@@ -129,6 +131,10 @@ const getRevenueFromDB = async (projectId, date, prisma) => {
   return rev._sum.revenue;
 };
 
+/**
+ * Fetches usage data from the Web3 Index subgraphs across multiple networks.
+ * Returns a merged time series and revenue snapshots.
+ */
 const getUsageFromSubgraph = async (id, networks) => {
   const dayDataPromises = [];
   const snapshotPromises = [];
@@ -258,16 +264,9 @@ const getUsageFromSubgraph = async (id, networks) => {
   };
 };
 
-export const getMarketDataFromCoingecko = async (id) => {
-  const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
-  const data = await res.json();
-  return {
-    price: data.market_data.current_price.usd,
-    marketCap: data.market_data.market_cap.usd,
-    circulatingSupply: data.market_data.circulating_supply,
-  };
-};
-
+/**
+ * Loads a project definition plus its usage data (subgraph/custom endpoint/DB).
+ */
 export const getProject = async (id) => {
   try {
     let usage;
@@ -327,6 +326,7 @@ export const getProject = async (id) => {
   }
 };
 
+/** Next.js API route handler that returns a single project payload. */
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProject(_req.query.id);
   res.json(project);

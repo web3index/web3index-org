@@ -167,6 +167,7 @@ export const getProjects = async () => {
   };
 };
 
+/** API route handler that returns the full projects collection. */
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProjects();
   res.json(project);

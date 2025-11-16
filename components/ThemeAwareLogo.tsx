@@ -17,6 +17,9 @@ type ThemeAwareLogoProps = Omit<
   height?: number | string;
 };
 
+/**
+ * Renders a brand logo that automatically swaps between light/dark SVGs based on theme.
+ */
 const ThemeAwareLogo = ({
   lightSrc,
   darkSrc,
