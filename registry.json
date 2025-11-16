@@ -112,7 +112,7 @@
     "symbol": "SC",
     "coingeckoID": "siacoin",
     "genesisDate": "2015-06-06",
-    "usage": "https://siastats.info/navigator-api/web3index/revenue"
+    "usage": "https://api.siascan.com/integrations/web3index/revenue"
   },
   "storj": {
     "blockchain": "Ethereum",
