@@ -1,5 +1,4 @@
 import prisma from "../lib/prisma";
-import type { Day, Project } from "@prisma/client";
 
 const params = new URLSearchParams({
   interval: "daily",
@@ -49,15 +48,15 @@ const filecoinImport = async () => {
       console.log(error);
     });
 
-  const days = project.days ?? [];
-  let lastDate: Date;
+  const days = project.days;
+  let lastDate: any;
 
-  if (!days.length) {
+  if (isNaN(days)) {
     lastDate = new Date(
-      response.data[response.data.length - 1].datetime.split("+")[0],
+      response.data[response.data.length - 1].datetime.split("+")[0]
     );
   } else {
-    lastDate = new Date(days[days.length - 1].date * 1000);
+    lastDate = new Date(days[-1].date);
   }
 
   const fromDate = lastDate;
@@ -94,7 +93,7 @@ const filecoinImport = async () => {
         " - " +
         fromDate.getTime() / 1000 +
         "to DB - " +
-        fee.fees,
+        fee.fees
     );
     await storeDBData(fee, project.id);
     fromDate.setDate(fromDate.getDate() + 1);
@@ -104,38 +103,27 @@ const filecoinImport = async () => {
   return;
 };
 
-type ProjectWithDays = Project & { days: Pick<Day, "date">[] };
-
-const getProject = async (name: string): Promise<ProjectWithDays> => {
-  const includeDays = {
-    days: {
-      select: { date: true },
-      orderBy: { date: "asc" },
-    },
-  } as const;
-
+const getProject = async (name: string) => {
   let project = await prisma.project.findFirst({
-    where: { name },
-    include: includeDays,
+    where: {
+      name: name,
+    },
   });
 
-  if (!project) {
+  if (project == null) {
     console.log("Project " + name + " doesn't exist. Create it");
     await prisma.project.create({
       data: {
-        name,
+        name: name,
         lastImportedId: "0",
       },
     });
 
     project = await prisma.project.findUnique({
-      where: { name },
-      include: includeDays,
+      where: {
+        name: name,
+      },
     });
-  }
-
-  if (!project) {
-    throw new Error(`Unable to create or fetch project with name ${name}`);
   }
 
   return project;
@@ -143,7 +131,7 @@ const getProject = async (name: string): Promise<ProjectWithDays> => {
 
 const storeDBData = async (
   dayData: { date: any; fees: any; blockHeight?: string },
-  projectId: number,
+  projectId: number
 ) => {
   const day = await prisma.day.findFirst({
     where: {

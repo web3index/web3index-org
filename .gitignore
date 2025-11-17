@@ -1,6 +1,5 @@
 # next.js build output
 .next
-tsconfig.tsbuildinfo
 # dotenv environment variables file 
 .env
 .env.build
@@ -13,6 +12,3 @@ yarn-error.log*
 
 .DS_Store
 .vercel
-
-.vscode
-*.code-workspace

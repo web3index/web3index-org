@@ -200,12 +200,6 @@
               }
             }
           }
-        },
-        "warning": {
-          "$id": "#root/usage/warning",
-          "title": "Warning",
-          "type": "string",
-          "default": ""
         }
       }
     }

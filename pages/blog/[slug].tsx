@@ -11,19 +11,9 @@ import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import seo from "../../next-seo.config";
 import { getContent, getFile, getFileData, getSlugs } from "../../lib/mdx";
-import { MDXRemote } from "next-mdx-remote";
+import hydrate from "next-mdx-remote/hydrate";
 import MDXComponents from "../../components/MDXComponents";
 import { getProjects } from "../api/projects";
-import type { MDXRemoteSerializeResult } from "next-mdx-remote";
-
-type ProjectsResponse = Awaited<ReturnType<typeof getProjects>>;
-
-type PostProps = {
-  slug: string;
-  content: MDXRemoteSerializeResult;
-  data: Record<string, any>;
-  projects: ProjectsResponse["projects"];
-};
 
 const StyledButton = styled(Button, {
   border: "1px solid",
@@ -38,13 +28,17 @@ const StyledButton = styled(Button, {
   py: "10px",
 });
 
-const Post = ({ slug, content, data, projects }: PostProps) => {
+const Post = ({ slug, content, data, projects }) => {
   const router = useRouter();
   const { isFallback } = router;
 
   if (isFallback) {
     return <Layout data={{ projects }}>Loading</Layout>;
   }
+
+  const mdx = hydrate(content, {
+    components: MDXComponents,
+  });
 
   const nextSeo = {
     ...seo,
@@ -82,13 +76,18 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
           px: "$4",
           backgroundColor: "$blur",
           backdropFilter: "saturate(180%) blur(5px)",
-        }}>
-        <StyledButton as={Link} href="/" css={{ mr: "$2" }}>
-          <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
-        </StyledButton>
-        <StyledButton as={Link} href="/blog">
-          <ReaderIcon /> <Box css={{ ml: "$2" }}>Blog</Box>
-        </StyledButton>
+        }}
+      >
+        <Link href="/" passHref>
+          <StyledButton as="a" css={{ mr: "$2" }}>
+            <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
+          </StyledButton>
+        </Link>
+        <Link href="/blog" passHref>
+          <StyledButton as="a">
+            <ReaderIcon /> <Box css={{ ml: "$2" }}>Blog</Box>
+          </StyledButton>
+        </Link>
       </Box>
       <Section>
         <Container size="2">
@@ -106,7 +105,8 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
                 pb: "$5",
                 mb: "$5",
               },
-            }}>
+            }}
+          >
             <Box
               as="h1"
               css={{
@@ -116,7 +116,8 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
                 "@bp2": {
                   fontSize: "$6",
                 },
-              }}>
+              }}
+            >
               {data.title}
             </Box>
             <Box css={{ fontSize: "$2", opacity: 0.7, mb: 40 }}>
@@ -132,7 +133,8 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
                 justifyContent: "center",
                 display: "flex",
                 alignItems: "center",
-              }}>
+              }}
+            >
               {data?.avatar && (
                 <Box
                   as="img"
@@ -154,7 +156,8 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     href={`https://twitter.com/${data.twitter}`}
-                    css={{ color: "$blue", textDecoration: "none" }}>
+                    css={{ color: "$blue", textDecoration: "none" }}
+                  >
                     @{data.twitter}
                   </Box>
                 )}
@@ -174,8 +177,9 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
                 img: {
                   width: "100%",
                 },
-              }}>
-              <MDXRemote {...content} components={MDXComponents} />
+              }}
+            >
+              {mdx}
             </Box>
           </Markdown>
         </Container>

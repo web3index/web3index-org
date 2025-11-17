@@ -31,7 +31,8 @@ const ProjectHeader = ({ next, prev, color, ...props }) => {
         display: "flex",
         alignItems: "flex-end",
       }}
-      {...props}>
+      {...props}
+    >
       <Section css={{ width: "100%", top: "24px", position: "relative" }}>
         <Container size="4">
           <Box
@@ -39,64 +40,71 @@ const ProjectHeader = ({ next, prev, color, ...props }) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-            }}>
-            <StyledButton as={Link} href="/">
-              <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
-            </StyledButton>
+            }}
+          >
+            <Link href="/" passHref>
+              <StyledButton as="a">
+                <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
+              </StyledButton>
+            </Link>
             <Box css={{ display: "flex", alignItems: "center" }}>
-              <StyledButton
-                as={Link}
-                href={`/${prev}`}
-                css={{
-                  padding: 0,
-                  width: 49,
-                  height: 49,
-                  mr: "$2",
-                  "@bp1": {
-                    py: "$3",
-                    px: "$4",
-                    width: "initial",
-                    height: "initial",
-                  },
-                }}>
-                <ArrowLeftIcon />{" "}
-                <Box
+              <Link href={`/${prev}`} passHref>
+                <StyledButton
                   css={{
-                    ml: "$2",
-                    display: "none",
-                    "@bp1": {
-                      display: "flex",
-                    },
-                  }}>
-                  Previous
-                </Box>
-              </StyledButton>
-              <StyledButton
-                as={Link}
-                href={`/${next}`}
-                css={{
-                  padding: 0,
-                  width: 49,
-                  height: 49,
-                  "@bp1": {
-                    py: "$3",
-                    px: "$4",
-                    width: "initial",
-                    height: "initial",
-                  },
-                }}>
-                <Box
-                  css={{
+                    padding: 0,
+                    width: 49,
+                    height: 49,
                     mr: "$2",
-                    display: "none",
                     "@bp1": {
-                      display: "flex",
+                      py: "$3",
+                      px: "$4",
+                      width: "initial",
+                      height: "initial",
                     },
-                  }}>
-                  Next
-                </Box>
-                <ArrowRightIcon />
-              </StyledButton>
+                  }}
+                >
+                  <ArrowLeftIcon />{" "}
+                  <Box
+                    css={{
+                      ml: "$2",
+                      display: "none",
+                      "@bp1": {
+                        display: "flex",
+                      },
+                    }}
+                  >
+                    Previous
+                  </Box>
+                </StyledButton>
+              </Link>
+              <Link href={`/${next}`} passHref>
+                <StyledButton
+                  css={{
+                    padding: 0,
+                    width: 49,
+                    height: 49,
+                    "@bp1": {
+                      py: "$3",
+                      px: "$4",
+                      width: "initial",
+                      height: "initial",
+                    },
+                  }}
+                >
+                  <Box
+                    css={{
+                      mr: "$2",
+                      display: "none",
+                      "@bp1": {
+                        display: "flex",
+                      },
+                    }}
+                  >
+                    Next
+                  </Box>
+                  <ArrowRightIcon />
+                </StyledButton>
+              </Link>
             </Box>
           </Box>
         </Container>

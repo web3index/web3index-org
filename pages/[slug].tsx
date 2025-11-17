@@ -9,6 +9,7 @@ import Container from "../components/Container";
 import LineAndBarGraph from "../components/LineAndBarGraph";
 import { ResponsiveContainer } from "recharts";
 import { useEffect, useRef, useState } from "react";
+import { request, gql } from "graphql-request";
 import { styled } from "../stitches.config";
 import Button from "../components/Button";
 import RevenueChange from "../components/RevenueChange";
@@ -30,20 +31,7 @@ import seo from "../next-seo.config";
 import { useRouter } from "next/router";
 import { getProject } from "./api/projects/[id]";
 import { getProjects } from "./api/projects";
-import { request, gql } from "graphql-request";
-import { getEverestSubgraph } from "../lib/utils";
 import Alert from "../components/Alert";
-import type { GetStaticPaths, GetStaticProps } from "next";
-import ThemeAwareLogo from "../components/ThemeAwareLogo";
-
-type EverestProjectQuery = {
-  project: {
-    description?: string | null;
-    website?: string | null;
-    github?: string | null;
-    twitter?: string | null;
-  } | null;
-};
 
 const SocialButton = ({ icon, children, ...props }) => {
   const SocialButton = styled(Button, {
@@ -72,14 +60,40 @@ const SocialButton = ({ icon, children, ...props }) => {
     </SocialButton>
   );
 };
-const MessariIcon = (props) => (
-  <ThemeAwareLogo
-    lightSrc="/logos/messari_black.svg"
-    darkSrc="/logos/messari_white.svg"
-    alt="Messari"
-    {...props}
-  />
-);
+
+const Everest = ({ ...props }) => {
+  return (
+    <Box
+      as="svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11.9446 23.9418L0.0372314 12.0343L6.56058 5.51074L18.4682 17.4183L11.9446 23.9418Z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0.0371094 12.0343L11.9445 0.126709L23.8523 12.0343H0.0371094Z"
+        fill="currentColor"
+      />
+      <path
+        opacity="0.5"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M0.0372314 12.0343L6.56058 5.51074L13 11.9999L0.0372314 12.0343Z"
+        fill="currentColor"
+      />
+    </Box>
+  );
+};
 
 const Metric = ({ label, value }) => {
   return (
@@ -91,13 +105,13 @@ const Metric = ({ label, value }) => {
         borderBottom: "1px solid $colors$border",
         py: "$3",
         justifyContent: "space-between",
-        minHeight: 50,
         "&:last-child": {
           borderBottom: 0,
         },
-      }}>
-      <Box css={{ mr: "$3", whiteSpace: "nowrap" }}>{label}</Box>
-      <Box css={{ textAlign: "right", whiteSpace: "nowrap" }}>{value}</Box>
+      }}
+    >
+      <Box css={{ mr: "$3" }}>{label}</Box>
+      <Box>{value}</Box>
     </Box>
   );
 };
@@ -174,6 +188,7 @@ const Project = ({ slug, index, projects, project }) => {
         description={project.description}
       />
       <ProjectHeader
+        rank={index}
         first={projects[0].slug}
         next={
           index === projects.length - 1
@@ -198,16 +213,15 @@ const Project = ({ slug, index, projects, project }) => {
                 gap: 100,
                 gridTemplateColumns: "38% calc(62% - 100px)",
               },
-            }}>
+            }}
+          >
             <Box css={{ mt: "$5" }}>
               {!project.untracked && (
                 <Box css={{ fontSize: "$5", mb: "$3" }}>
                   {/* <span role="img" aria-label="#1">
                   {trophies[index]}
                 </span>{" "} */}
-                  {project.usage.warning
-                    ? "--"
-                    : `#${project.rank ?? index + 1}`}
+                  #{index + 1}
                 </Box>
               )}
               <Box
@@ -215,7 +229,8 @@ const Project = ({ slug, index, projects, project }) => {
                   mb: "$3",
                   display: "flex",
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <Box
                   css={{
                     mr: "$3",
@@ -233,7 +248,8 @@ const Project = ({ slug, index, projects, project }) => {
                     m: 0,
                     fontSize: 56,
                     fontWeight: 800,
-                  }}>
+                  }}
+                >
                   {project.name}
                 </Box>
               </Box>
@@ -251,7 +267,8 @@ const Project = ({ slug, index, projects, project }) => {
                       gap: 30,
                       gridTemplateColumns: "repeat(2, 1fr)",
                     },
-                  }}>
+                  }}
+                >
                   <Box>
                     <Metric label="Category" value={project.category} />
                     <Metric label="Subcategory" value={project.subcategory} />
@@ -267,15 +284,13 @@ const Project = ({ slug, index, projects, project }) => {
                         <Box>
                           <Tooltip delayDuration={0}>
                             <Box
-                              css={{ display: "flex", alignItems: "center" }}>
+                              css={{ display: "flex", alignItems: "center" }}
+                            >
                               <Box css={{ mr: "$1" }}>
-                                {isNaN(
-                                  project.usage[paymentType].thirtyDayTotal,
-                                )
-                                  ? "N/A"
-                                  : `$${Math.round(
-                                      project.usage[paymentType].thirtyDayTotal,
-                                    ).toLocaleString()}`}
+                                $
+                                {Math.round(
+                                  project.usage[paymentType].thirtyDayTotal
+                                ).toLocaleString()}
                               </Box>
                               <TooltipTrigger>
                                 <InfoCircledIcon />
@@ -299,15 +314,13 @@ const Project = ({ slug, index, projects, project }) => {
                         <Box>
                           <Tooltip delayDuration={0}>
                             <Box
-                              css={{ display: "flex", alignItems: "center" }}>
+                              css={{ display: "flex", alignItems: "center" }}
+                            >
                               <Box css={{ mr: "$1" }}>
-                                {isNaN(
-                                  project.usage[paymentType].ninetyDayTotal,
-                                )
-                                  ? "N/A"
-                                  : `$${Math.round(
-                                      project.usage[paymentType].ninetyDayTotal,
-                                    ).toLocaleString()}`}
+                                $
+                                {Math.round(
+                                  project.usage[paymentType].ninetyDayTotal
+                                ).toLocaleString()}
                               </Box>
                               <TooltipTrigger>
                                 <InfoCircledIcon />
@@ -329,15 +342,11 @@ const Project = ({ slug, index, projects, project }) => {
                           ? "Total Dilution"
                           : "Total Fees"
                       }
-                      value={
-                        isNaN(project.usage[paymentType].now)
-                          ? "N/A"
-                          : `$${Math.round(
-                              project.name == "The Graph"
-                                ? project.usage[paymentType].now - 71840.14 // remove fees from day the graph migrated to arbitrum
-                                : project.usage[paymentType].now,
-                            ).toLocaleString()}`
-                      }
+                      value={`$${Math.round(
+                        project.name == "The Graph"
+                          ? project.usage[paymentType].now - 71840.14 // remove fees from day the graph migrated to arbitrum
+                          : project.usage[paymentType].now
+                      ).toLocaleString()}`}
                     />
                     <Metric
                       label="30d Trend"
@@ -345,23 +354,17 @@ const Project = ({ slug, index, projects, project }) => {
                         <Box>
                           <Tooltip delayDuration={0}>
                             <Box
-                              css={{ display: "flex", alignItems: "center" }}>
+                              css={{ display: "flex", alignItems: "center" }}
+                            >
                               <Box css={{ mr: "$1" }}>
-                                {isNaN(
-                                  project.usage[paymentType]
-                                    .thirtyDayPercentChange,
-                                ) ? (
-                                  "N/A"
-                                ) : (
-                                  <RevenueChange
-                                    percentChange={Intl.NumberFormat("en-US", {
-                                      maximumFractionDigits: 2,
-                                    }).format(
-                                      project.usage[paymentType]
-                                        .thirtyDayPercentChange,
-                                    )}
-                                  />
-                                )}
+                                <RevenueChange
+                                  percentChange={Intl.NumberFormat("en-US", {
+                                    maximumFractionDigits: 2,
+                                  }).format(
+                                    project.usage[paymentType]
+                                      .thirtyDayPercentChange
+                                  )}
+                                />
                               </Box>
                               <TooltipTrigger>
                                 <InfoCircledIcon />
@@ -406,7 +409,8 @@ const Project = ({ slug, index, projects, project }) => {
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
-                  icon={<TwitterLogoIcon />}>
+                  icon={<TwitterLogoIcon />}
+                >
                   Twitter
                 </SocialButton>
                 <SocialButton
@@ -418,7 +422,8 @@ const Project = ({ slug, index, projects, project }) => {
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
-                  icon={<GitHubLogoIcon />}>
+                  icon={<GitHubLogoIcon />}
+                >
                   Github
                 </SocialButton>
                 <SocialButton
@@ -426,26 +431,28 @@ const Project = ({ slug, index, projects, project }) => {
                     registry[slug].website
                       ? registry[slug].website
                       : project.website.includes("https")
-                        ? project.website
-                        : `https://${project.website}`
+                      ? project.website
+                      : `https://${project.website}`
                   }
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
-                  icon={<Link1Icon />}>
+                  icon={<Link1Icon />}
+                >
                   Website
                 </SocialButton>
                 <SocialButton
-                  href={`https://messari.io/project/${registry[slug].coingeckoID}`}
+                  href={`https://everest.link/project/${project.everestID}`}
                   as="a"
                   target="_blank"
                   rel="noopener noreferrer"
                   icon={
-                    <MessariIcon
+                    <Everest
                       css={{ width: 14, height: 14, color: "$hiContrast" }}
                     />
-                  }>
-                  Messari
+                  }
+                >
+                  Everest
                 </SocialButton>
               </Box>
             </Box>
@@ -460,12 +467,8 @@ const Project = ({ slug, index, projects, project }) => {
                   borderTop: 0,
                   pt: 0,
                 },
-              }}>
-              {project.usage.warning ? (
-                <Box css={{ mb: "$4" }}>
-                  <Alert>{project.usage.warning}</Alert>
-                </Box>
-              ) : null}
+              }}
+            >
               {project.untracked ? (
                 <Box css={{ mb: "$4" }}>
                   <Alert>
@@ -501,7 +504,7 @@ const Project = ({ slug, index, projects, project }) => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
   const ajv = new Ajv();
   const validate = ajv.compile(schema);
   const paths = [];
@@ -522,63 +525,47 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths,
     fallback: true,
   };
-};
+}
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = params?.slug?.toString();
-  if (!slug) return { notFound: true };
-
+export async function getStaticProps({ params }) {
   const { projects } = await getProjects();
-  const project = projects.find((project) => project.slug === slug);
+  const project = projects.filter((project) => project.slug === params.slug)[0];
+  projects.sort((a, b) => {
+    return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
+  });
 
-  if (!project) return { notFound: true };
-
-  const index = projects.findIndex((p) => p.slug === slug);
-  let remoteProject: EverestProjectQuery["project"] | null = null;
-  try {
-    const response = await request<EverestProjectQuery>(
-      getEverestSubgraph(),
-      gql`
-        query project($id: String!) {
-          project(id: $id) {
-            website
-            github
-            twitter
-            description
-          }
+  const index = projects.findIndex((p) => p.slug === params.slug);
+  const {
+    project: { description, website, github, twitter },
+  } = await request(
+    "https://api.thegraph.com/subgraphs/name/graphprotocol/everest",
+    gql`
+      query project($id: String!) {
+        project(id: $id) {
+          website
+          github
+          twitter
+          description
         }
-      `,
-      { id: project.everestID },
-    );
-    remoteProject = response.project;
-  } catch (error) {
-    console.warn(
-      "Everest project metadata unavailable; continuing without it",
-      { slug, everestID: project.everestID, error },
-    );
-  }
-
+      }
+    `,
+    { id: project.everestID }
+  );
   return {
     props: {
       index,
-      slug,
+      slug: params.slug,
       project: {
         ...project,
-        description: project.description
-          ? project.description
-          : remoteProject?.description,
-        website: remoteProject?.website
-          ? remoteProject?.website
-          : project.website,
-        github: remoteProject?.github ? remoteProject?.github : project.github,
-        twitter: remoteProject?.twitter
-          ? remoteProject?.twitter
-          : project.twitter,
+        description: project.description ? project.description : description,
+        website,
+        github,
+        twitter,
       },
       projects,
     },
     revalidate: 30,
   };
-};
+}
 
 export default Project;

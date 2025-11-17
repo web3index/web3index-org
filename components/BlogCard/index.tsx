@@ -2,23 +2,6 @@ import Box from "../Box";
 import Link from "next/link";
 import { ArrowRightIcon } from "@modulz/radix-icons";
 
-import { styled } from "../../stitches.config";
-
-const TitleLink = styled(Link, {
-  display: "block",
-  textDecoration: "none",
-  color: "$hiContrast",
-  "&:hover": {
-    textDecoration: "underline",
-  },
-});
-const ReadMoreLink = styled(Link, {
-  display: "flex",
-  alignItems: "center",
-  color: "$blue",
-  textDecoration: "none",
-});
-
 const BlogCard = ({ title, date, abstract, slug }) => {
   return (
     <Box
@@ -39,29 +22,53 @@ const BlogCard = ({ title, date, abstract, slug }) => {
           pb: "$5",
           mb: "$5",
         },
-      }}>
-      <TitleLink href={`/blog/${slug}`}>
+      }}
+    >
+      <Link href={`/blog/${slug}`} passHref>
         <Box
-          as="h2"
+          as="a"
           css={{
-            mt: 0,
-            fontSize: "$4",
-            mb: "$3",
-            "@bp2": {
-              fontSize: "$5",
+            display: "block",
+            textDecoration: "none",
+            color: "$hiContrast",
+            "&:hover": {
+              textDecoration: "underline",
             },
-          }}>
-          {title}
+          }}
+        >
+          <Box
+            as="h2"
+            css={{
+              mt: 0,
+              fontSize: "$4",
+              mb: "$3",
+              "@bp2": {
+                fontSize: "$5",
+              },
+            }}
+          >
+            {title}
+          </Box>
         </Box>
-      </TitleLink>
+      </Link>
       <Box css={{ fontSize: "$2", opacity: 0.7, mb: "$4" }}>{date}</Box>
       <Box as="p" css={{ mb: "$4", lineHeight: "28px" }}>
         {abstract}
       </Box>
-      <ReadMoreLink href={`/blog/${slug}`}>
-        <Box css={{ mr: "$2" }}>Read More</Box>
-        <ArrowRightIcon />
-      </ReadMoreLink>
+      <Link href={`/blog/${slug}`} passHref>
+        <Box
+          as="a"
+          css={{
+            display: "flex",
+            alignItems: "center",
+            color: "$blue",
+            textDecoration: "none",
+          }}
+        >
+          <Box css={{ mr: "$2" }}>Read More</Box>
+          <ArrowRightIcon />
+        </Box>
+      </Link>
     </Box>
   );
 };
