@@ -16,6 +16,21 @@ const utcThirtyDaysBack = utcCurrentTime.subtract(30, "day").unix();
 const utcSixtyDaysBack = utcCurrentTime.subtract(60, "day").unix();
 const utcNinetyDaysBack = utcCurrentTime.subtract(90, "day").unix();
 
+type ProtocolDay = {
+  date: number;
+  revenueUSD: string;
+};
+type ProtocolDayData = {
+  revenueUSD: number;
+  days: ProtocolDay[];
+};
+type ProtocolQueryResponse = {
+  protocol: {
+    revenueUSD: string;
+    days?: ProtocolDay[];
+  } | null;
+};
+
 const EMPTY = {
   now: 0,
   oneDayAgo: 0,
@@ -26,6 +41,7 @@ const EMPTY = {
   sixtyDaysAgo: 0,
   ninetyDaysAgo: 0,
 };
+const GRAPH_DAY_PAGE_SIZE = 1000;
 
 /** Returns a warning usage payload with null metrics. */
 export const getEmptyUsageResponse = (warning?: string) => ({
@@ -132,6 +148,57 @@ const getRevenueFromDB = async (projectId, date, prisma) => {
   return rev._sum.revenue;
 };
 
+/** Fetches every protocol day entry from The Graph using pagination. */
+const fetchProtocolDayData = async (
+  id: string,
+  network: string,
+): Promise<ProtocolDayData | null> => {
+  const allDays: ProtocolDay[] = [];
+  let skip = 0;
+  let revenueUSD: number | null = null;
+  for (;;) {
+    const response = await request<ProtocolQueryResponse>(
+      getSubgraph(network),
+      gql`
+        query ($id: String!, $first: Int!, $skip: Int!) {
+          protocol(id: $id) {
+            revenueUSD
+            days(
+              first: $first
+              skip: $skip
+              orderBy: date
+              orderDirection: desc
+            ) {
+              date
+              revenueUSD
+            }
+          }
+        }
+      `,
+      { id, first: GRAPH_DAY_PAGE_SIZE, skip },
+    );
+
+    if (!response?.protocol) break;
+
+    if (revenueUSD == null && response.protocol.revenueUSD != null) {
+      revenueUSD = +response.protocol.revenueUSD;
+    }
+
+    const page = response.protocol.days ?? [];
+    allDays.push(...page);
+
+    if (page.length < GRAPH_DAY_PAGE_SIZE) break;
+    skip += GRAPH_DAY_PAGE_SIZE;
+  }
+
+  if (revenueUSD == null) return null;
+
+  return {
+    revenueUSD,
+    days: allDays,
+  };
+};
+
 /**
  * Fetches usage data from the Web3 Index subgraphs across multiple networks.
  * Returns a merged time series and revenue snapshots.
@@ -140,21 +207,7 @@ const getUsageFromSubgraph = async (id, networks) => {
   const dayDataPromises = [];
   const snapshotPromises = [];
   networks.map((n) => {
-    const data = request(
-      getSubgraph(n),
-      gql`
-        query ($id: String!) {
-          protocol(id: $id) {
-            revenueUSD
-            days(first: 1000) {
-              date
-              revenueUSD
-            }
-          }
-        }
-      `,
-      { id },
-    ).catch((error) => {
+    const data = fetchProtocolDayData(id, n).catch((error) => {
       console.warn("Failed to fetch subgraph usage data", {
         id,
         network: n,
@@ -182,7 +235,7 @@ const getUsageFromSubgraph = async (id, networks) => {
   const dayData = [];
   const snapshotData = [];
   dayDataResults.forEach((result, index) => {
-    if (result?.protocol) {
+    if (result) {
       dayData.push(result);
       const snapshotEntry = snapshotResults[index];
       snapshotData.push(
@@ -197,7 +250,7 @@ const getUsageFromSubgraph = async (id, networks) => {
 
   let totalRevenue = 0;
   dayData.map((d) => {
-    totalRevenue += +d.protocol.revenueUSD;
+    totalRevenue += +d.revenueUSD;
   });
 
   const [
@@ -215,7 +268,7 @@ const getUsageFromSubgraph = async (id, networks) => {
 
   let daysRaw = [];
   dayData.map((d) => {
-    daysRaw = [...daysRaw, ...d.protocol.days];
+    daysRaw = [...daysRaw, ...d.days];
   });
 
   let days = [];
