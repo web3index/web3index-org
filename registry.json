@@ -56,7 +56,8 @@
     "genesisDate": "2018-06-01",
     "usage": "https://helium-web3index.herokuapp.com/",
     "usageDisabled": true,
-    "untracked": true
+    "untracked": true,
+    "hide": true
   },
   "filecoin": {
     "blockchain": "Filecoin",
