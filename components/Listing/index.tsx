@@ -78,7 +78,7 @@ const normalizeThirtyDayTotal = (project) =>
     ? project.usage.revenue.thirtyDayTotal
     : -Infinity;
 
-const thirtyDaySortingFn: SortingFn<any> = (rowA, rowB) => {
+const sortingFn: SortingFn<any> = (rowA, rowB) => {
   const result =
     normalizeThirtyDayTotal(rowA.original) -
     normalizeThirtyDayTotal(rowB.original);
@@ -179,7 +179,7 @@ const Listing = ({ data, ...props }) => {
             id: "usage.revenue.thirtyDayTotal",
             header: "",
             accessorFn: (row) => row?.usage?.revenue?.thirtyDayTotal ?? 0,
-            sortingFn: thirtyDaySortingFn,
+            sortingFn: sortingFn,
             meta: {
               css: { fontSize: "11px", color: "$gray400" },
               minWidth: 50,
@@ -206,6 +206,7 @@ const Listing = ({ data, ...props }) => {
             id: "usage.revenue.ninetyDayTotal",
             header: "",
             accessorFn: (row) => row?.usage?.revenue?.ninetyDayTotal ?? 0,
+            sortingFn: sortingFn,
             meta: {
               css: { fontSize: "11px", color: "$gray400" },
               minWidth: 50,
