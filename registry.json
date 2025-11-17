@@ -55,7 +55,8 @@
     "coingeckoID": "helium",
     "genesisDate": "2018-06-01",
     "usage": "https://helium-web3index.herokuapp.com/",
-    "usageDisabled": true
+    "usageDisabled": true,
+    "untracked": true
   },
   "filecoin": {
     "blockchain": "Filecoin",
@@ -112,7 +113,8 @@
     "symbol": "SC",
     "coingeckoID": "siacoin",
     "genesisDate": "2015-06-06",
-    "usage": "https://api.siascan.com/integrations/web3index/revenue"
+    "usage": "https://api.siascan.com/integrations/web3index/revenue",
+    "untracked": true
   },
   "storj": {
     "blockchain": "Ethereum",
@@ -128,6 +130,7 @@
     "symbol": "STORJ",
     "coingeckoID": "storj",
     "genesisDate": "2014-08-01",
-    "usage": "https://stats.storjshare.io/payout.json"
+    "usage": "https://stats.storjshare.io/payout.json",
+    "untracked": true
   }
 }
