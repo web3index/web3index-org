@@ -6,7 +6,6 @@ const { readFileSync, readdirSync } = require("fs");
 
 /**
  * Reads a content directory and returns MDX slugs without extensions.
- *
  * @param directory - Relative folder path inside the repo.
  */
 export async function getSlugs(directory: string) {
