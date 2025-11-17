@@ -1,13 +1,5 @@
-import { useMemo, useState } from "react";
-import {
-  ColumnDef,
-  SortingFn,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { useMemo } from "react";
+import { useTable, useSortBy, useGroupBy } from "react-table";
 import Box from "../Box";
 import Section from "../Section";
 import RevenueChange from "../RevenueChange";
@@ -25,102 +17,45 @@ import {
   InfoCircledIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 import registry from "../../registry.json";
-import { normalizeThirtyDayTotal } from "../../lib/utils";
 
 const StyledImage = styled("img", {
   mr: "$3",
 });
-const StyledLink = styled(Link, {
-  display: "block",
-  color: "$hiContrast",
-  textDecoration: "none",
-  verticalAlign: "inherit",
-});
-const WarningIcon = styled(ExclamationTriangleIcon, {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: 16,
-  height: 16,
-  borderRadius: "50%",
-  backgroundColor: "rgba(245, 165, 36, 0.2)",
-  color: "#f5a524",
-  ml: "$2",
-});
-const WarningPlaceholder = () => {
-  return (
-    <Box
-      css={{
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        color: "$gray500",
-        fontSize: "11px",
-      }}>
-      --
-    </Box>
-  );
-};
-
-type ColumnMeta = {
-  className?: string;
-  hideOnMobile?: boolean;
-  css?: Record<string, any>;
-  tooltip?: string;
-  width?: number;
-  minWidth?: number;
-};
-
-const sortingFn: SortingFn<any> = (rowA, rowB) =>
-  normalizeThirtyDayTotal(rowA.original) -
-  normalizeThirtyDayTotal(rowB.original);
 
 const Listing = ({ data, ...props }) => {
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: "usage.revenue.thirtyDayTotal", desc: true },
-  ]);
-
-  const columns = useMemo<ColumnDef<any>[]>(
+  const columns = useMemo(
     () => [
       {
-        header: "#",
+        Header: "#",
         columns: [
           {
+            Header: "",
             id: "rank",
-            header: "",
-            enableSorting: false,
-            cell: ({ row }) =>
-              row.original?.usage?.warning
-                ? "--"
-                : (row.original?.rank ?? row.index + 1),
-            meta: { className: "sticky", hideOnMobile: true, width: 90 },
+            width: "90px",
+            accessor: (_row: any, i: number) => i + 1,
+            className: "sticky",
+            hideOnMobile: true,
           },
         ],
       },
       {
-        header: "Network",
+        Header: "Network",
         columns: [
           {
-            id: "name",
-            accessorKey: "name",
-            header: "",
-            cell: ({ row }) => {
-              const warning = row.original?.usage?.warning;
+            accessor: "name",
+            className: "sticky",
+            Cell: ({ row }) => {
               return (
                 <Box
                   css={{
                     display: "flex",
                     alignItems: "center",
-                  }}>
-                  <StyledImage
-                    width={32}
-                    height={32}
-                    src={row.original.image}
-                  />
-                  {row.original.name}
+                  }}
+                >
+                  <StyledImage width={32} height={32} src={row.values.image} />
+                  {row.values.name}
                   <Box
                     css={{
                       ml: "$2",
@@ -129,164 +64,110 @@ const Listing = ({ data, ...props }) => {
                       "@bp1": {
                         display: "block",
                       },
-                    }}>
-                    ({row.original.symbol})
+                    }}
+                  >
+                    ({row.values.symbol})
                   </Box>
-                  {warning ? (
-                    <Tooltip delayDuration={0}>
-                      <TooltipTrigger asChild>
-                        <WarningIcon width={13} height={13} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {warning}
-                        <TooltipArrow />
-                      </TooltipContent>
-                    </Tooltip>
-                  ) : null}
                 </Box>
               );
             },
-            meta: { className: "sticky" },
           },
         ],
       },
       {
-        header: "Chain",
+        Header: "Symbol",
+        accessor: "symbol",
+      },
+      {
+        Header: "Image",
+        accessor: "image",
+      },
+      {
+        Header: "Slug",
+        accessor: "slug",
+      },
+      {
+        Header: "Chain",
+        width: 140,
         columns: [
           {
-            id: "blockchain",
-            accessorKey: "blockchain",
-            header: "",
+            accessor: "blockchain",
+            hideOnMobile: true,
           },
         ],
       },
       {
-        header: "30d Fees",
+        Header: "30d Fees",
         columns: [
           {
-            id: "usage.revenue.thirtyDayTotal",
-            header: "",
-            accessorFn: (row) => row?.usage?.revenue?.thirtyDayTotal ?? 0,
-            sortingFn: sortingFn,
-            meta: {
-              css: { fontSize: "11px", color: "$gray400" },
-              minWidth: 50,
-              width: 50,
-            },
-            cell: ({ row }) => {
-              const warning = row.original?.usage?.warning;
-              const total = row.original?.usage?.revenue?.thirtyDayTotal;
-              if (warning) {
-                return <WarningPlaceholder />;
-              }
-              if (!total) {
+            minWidth: 50,
+            width: 50,
+            css: { fontSize: "11px", color: "$gray400" },
+            accessor: "usage.revenue.thirtyDayTotal",
+            Cell: ({ row }) => {
+              if (!row.values.usage.revenue.thirtyDayTotal) {
                 return <Box>$0</Box>;
               }
-              return <Box>${Math.round(total).toLocaleString()}</Box>;
+              return (
+                <Box>
+                  $
+                  {Math.round(
+                    row.values.usage.revenue.thirtyDayTotal
+                  ).toLocaleString()}
+                </Box>
+              );
             },
           },
         ],
       },
+
       {
-        header: "90d Fees",
+        Header: "90d Fees",
         columns: [
           {
-            id: "usage.revenue.ninetyDayTotal",
-            header: "",
-            accessorFn: (row) => row?.usage?.revenue?.ninetyDayTotal ?? 0,
-            sortingFn: sortingFn,
-            meta: {
-              css: { fontSize: "11px", color: "$gray400" },
-              minWidth: 50,
-              width: 50,
-            },
-            cell: ({ row }) => {
-              const warning = row.original?.usage?.warning;
-              const total = row.original?.usage?.revenue?.ninetyDayTotal;
-              if (warning) {
-                return <WarningPlaceholder />;
-              }
-              if (!total) {
+            minWidth: 50,
+            width: 50,
+            accessor: "usage.revenue.ninetyDayTotal",
+            css: { fontSize: "11px", color: "$gray400" },
+            Cell: ({ row }) => {
+              if (!row.values.usage.revenue.ninetyDayTotal) {
                 return <Box>$0</Box>;
               }
-              return <Box>${Math.round(total).toLocaleString()}</Box>;
+              return (
+                <Box>
+                  $
+                  {Math.round(
+                    row.values.usage.revenue.ninetyDayTotal
+                  ).toLocaleString()}
+                </Box>
+              );
             },
           },
         ],
       },
       {
-        header: "Total Fees",
+        Header: "30d Trend",
+        tooltip:
+          "Trend is the increase, or decrease, in the protocol's demand-side fees between two periods. It's calculated by subtracting the previous 30d fees from the current 30d fees, and then dividing that number by the previous 30d fees.",
         columns: [
           {
-            id: "usage.totalFees",
-            header: "",
-            accessorFn: (row) => {
-              const nameKey = row?.name?.toLowerCase?.();
+            accessor: "usage.revenue.thirtyDayPercentChange",
+            Cell: ({ row }) => {
               const paymentType =
-                registry[nameKey]?.paymentType === "dilution"
+                registry[row.values.name.toLowerCase()]?.paymentType ===
+                "dilution"
                   ? "dilution"
                   : "revenue";
-              return row?.usage?.[paymentType]?.now ?? 0;
-            },
-            sortingFn: sortingFn,
-            meta: {
-              css: { fontSize: "11px", color: "$gray400" },
-              minWidth: 65,
-              width: 65,
-            },
-            cell: ({ row }) => {
-              const warning = row.original?.usage?.warning;
-              if (warning) {
-                return <WarningPlaceholder />;
-              }
-              const nameKey = row.original?.name?.toLowerCase();
-              const paymentType =
-                registry[nameKey]?.paymentType === "dilution"
-                  ? "dilution"
-                  : "revenue";
-              const total = row.original?.usage?.[paymentType]?.now ?? 0;
-              if (!total) {
-                return <Box>$0</Box>;
-              }
-              return <Box>${Math.round(total).toLocaleString()}</Box>;
-            },
-          },
-        ],
-      },
-      {
-        header: "30d Trend",
-        meta: {
-          tooltip:
-            "Trend is the increase, or decrease, in the protocol's demand-side fees between two periods. It's calculated by subtracting the previous 30d fees from the current 30d fees, and then dividing that number by the previous 30d fees.",
-        },
-        columns: [
-          {
-            id: "usage.revenue.thirtyDayPercentChange",
-            header: "",
-            enableSorting: false,
-            accessorFn: (row) =>
-              row?.usage?.revenue?.thirtyDayPercentChange ?? 0,
-            cell: ({ row }) => {
-              const nameKey = row.original?.name?.toLowerCase();
-              const paymentType =
-                registry[nameKey]?.paymentType === "dilution"
-                  ? "dilution"
-                  : "revenue";
-              if (row.original?.untracked) return "--";
-              if (row.original?.usage?.warning) {
-                return <WarningPlaceholder />;
-              }
-              const percent =
-                row.original?.usage?.[paymentType]?.thirtyDayPercentChange ?? 0;
+              if (row.values.untracked) return "--";
               const color =
-                percent >= 0
+                row.values.usage[paymentType].thirtyDayPercentChange >= 0
                   ? defaultTheme.colors.green
                   : defaultTheme.colors.red;
 
-              const usageDays = Array.isArray(row.original?.usage?.days)
-                ? row.original.usage.days
-                : [];
-              const lastTwoPeriods = usageDays.slice(-61).slice(0, 60);
+              // Get last two periods excluding current day
+              const lastTwoPeriods = row.values.usage.days
+                .slice(-61)
+                .slice(0, 60);
 
               return (
                 <Box css={{ display: "flex" }}>
@@ -294,7 +175,9 @@ const Listing = ({ data, ...props }) => {
                   <RevenueChange
                     percentChange={Intl.NumberFormat("en-US", {
                       maximumFractionDigits: 2,
-                    }).format(percent)}
+                    }).format(
+                      row.values.usage[paymentType].thirtyDayPercentChange
+                    )}
                     css={{ ml: "$2" }}
                   />
                 </Box>
@@ -303,159 +186,193 @@ const Listing = ({ data, ...props }) => {
           },
         ],
       },
+      {
+        Header: "Usage",
+        accessor: "usage",
+      },
+      {
+        Header: "Untracked",
+        accessor: "untracked",
+      },
     ],
-    [],
+    []
   );
 
-  const table = useReactTable({
-    data: data,
-    columns,
-    state: { sorting },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    enableSortingRemoval: false,
-  });
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        columns,
+        data,
+        initialState: {
+          hiddenColumns: [
+            "revenue",
+            "image",
+            "symbol",
+            "usage",
+            "slug",
+            "untracked",
+          ],
+        },
+      },
+      useGroupBy,
+      useSortBy
+    );
 
-  const firstPageRows = table.getRowModel().rows.slice(0, 20);
+  // We don't want to render all 2000 rows for this example, so cap
+  // it at 20 for this use case
+  const firstPageRows = rows.slice(0, 20);
 
   return (
     <Section {...props}>
       <Table
         css={{
+          // width: "100%",
+          // backgroundColor: "$table",
+          // display: "table",
           tableLayout: "auto",
+          // borderSpacing: "0",
+          // borderCollapse: "collapse",
+          // minWidth: "920px",
+          // "@bp1": {
+          //   minWidth: "1260px",
+          // },
           ".sticky": {
             position: "sticky",
             left: "0",
             top: "0",
             zIndex: 10000,
           },
-        }}>
+        }}
+        {...getTableProps()}
+      >
         <Thead>
-          {table.getHeaderGroups().map((headerGroup, i) => (
-            <Tr key={headerGroup.id ?? i}>
-              {headerGroup.headers.map((header, j) => {
-                const meta = header.column.columnDef.meta as
-                  | ColumnMeta
-                  | undefined;
-                if (header.isPlaceholder) {
-                  return <Th key={`${header.id}-placeholder`} />;
-                }
-                const canSort = header.column.getCanSort();
-                const sorted = header.column.getIsSorted();
-                return (
-                  <Th
-                    key={header.id ?? j}
-                    onClick={
-                      canSort
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                    className={meta?.className}
+          {headerGroups.map((headerGroup, i) => (
+            <Tr key={i} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column, i) => (
+                <Th
+                  key={i}
+                  className={column?.className}
+                  css={{
+                    backgroundColor: "$loContrast",
+                    minWidth: column.minWidth,
+                    width: column.width,
+                    verticalAlign: "middle",
+                    py: 0,
+                    px: 0,
+                    fontSize: 12,
+
+                    // display: column.hideOnMobile ? "none" : "initial",
+                    "@bp1": {
+                      width: column.width ? column.width : "auto",
+                      position: "relative !important",
+                    },
+                  }}
+                  {...column.getHeaderProps(
+                    column.getSortByToggleProps({ title: undefined })
+                  )}
+                >
+                  <Box
                     css={{
-                      backgroundColor: "$loContrast",
-                      minWidth: meta?.minWidth,
-                      width: meta?.width,
-                      verticalAlign: "middle",
-                      py: 0,
-                      px: 0,
-                      fontSize: 12,
-                      cursor: canSort ? "pointer" : "default",
+                      display: "flex",
+                      alignItems: "center",
+                      pt: "$2",
+                      pb: "$2",
+                      px: i === 1 ? "$3" : "$4",
+
                       "@bp1": {
-                        width: meta?.width ? meta.width : "auto",
-                        position: "relative !important",
+                        px: "$4",
+                        pr: 0,
                       },
-                    }}>
-                    <Box
-                      css={{
-                        display: "flex",
-                        alignItems: "center",
-                        pt: "$2",
-                        pb: "$2",
-                        px: j === 1 ? "$3" : "$4",
-                        "@bp1": {
-                          px: "$4",
-                          pr: 0,
-                        },
-                        ...meta?.css,
-                      }}>
-                      <Box css={{ fontWeight: 600 }}>
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                      </Box>
-                      <Box css={{ minWidth: 20 }}>
-                        {sorted ? (
-                          sorted === "desc" ? (
-                            <ChevronDownIcon />
-                          ) : (
-                            <ChevronUpIcon />
-                          )
+                      ...column.css,
+                    }}
+                  >
+                    <Box css={{ fontWeight: 600 }}>
+                      {column.render("Header")}
+                    </Box>
+                    {/* Add a sort direction indicator */}
+                    <Box css={{ minWidth: 20 }}>
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <ChevronDownIcon />
                         ) : (
-                          ""
-                        )}
-                      </Box>
-                      {meta?.tooltip && (
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger>
-                            <InfoCircledIcon />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            {meta.tooltip}
-                          </TooltipContent>
-                        </Tooltip>
+                          <ChevronUpIcon />
+                        )
+                      ) : (
+                        ""
                       )}
                     </Box>
-                  </Th>
-                );
-              })}
+                    {column.tooltip && (
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <InfoCircledIcon />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <TooltipArrow />
+                          {column.tooltip}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </Th>
+              ))}
             </Tr>
           ))}
         </Thead>
-        <Tbody>
-          {firstPageRows.map((row, rowIndex) => (
-            <Tr
-              key={row.id ?? rowIndex}
-              css={{
-                "&:last-child": {
-                  Td: { borderBottom: 0 },
-                },
-              }}>
-              {row.getVisibleCells().map((cell, i) => {
-                const meta = cell.column.columnDef.meta as
-                  | ColumnMeta
-                  | undefined;
-                return (
-                  <Td
-                    key={cell.id ?? i}
-                    className={meta?.className}
-                    css={{
-                      backgroundColor: "$loContrast",
-                      px: i === 1 ? "$3" : "$4",
-                      py: 16,
-                      fontSize: "$2",
-                      borderBottom: "1px solid",
-                      borderColor: "$border",
-                      pr: 0,
-                      width: "auto",
-                      "@bp1": {
+        <Tbody {...getTableBodyProps()}>
+          {firstPageRows.map((row, rowIndex) => {
+            prepareRow(row);
+            return (
+              <Tr
+                key={rowIndex}
+                {...row.getRowProps()}
+                css={{
+                  "&:last-child": {
+                    Td: { borderBottom: 0 },
+                  },
+                }}
+              >
+                {row.cells.map((cell, i) => {
+                  return (
+                    <Td
+                      className={cell.column?.className}
+                      css={{
+                        backgroundColor: "$loContrast",
+                        px: i === 1 ? "$3" : "$4",
+                        py: 16,
+                        fontSize: "$2",
+                        borderBottom: "1px solid",
+                        borderColor: "$border",
                         pr: 0,
-                        position: "relative !important",
-                      },
-                    }}>
-                    <StyledLink href={`/${row.original.slug}`}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </StyledLink>
-                  </Td>
-                );
-              })}
-            </Tr>
-          ))}
+                        width: "auto",
+                        "@bp1": {
+                          pr: 0,
+                          position: "relative !important",
+                        },
+                      }}
+                      key={i}
+                      {...cell.getCellProps()}
+                    >
+                      <Link href={`/${row.values.slug}`} passHref>
+                        <Box
+                          as="a"
+                          css={{
+                            display: "block",
+                            color: "$hiContrast",
+                            textDecoration: "none",
+                            verticalAlign: "inherit",
+                          }}
+                          key={rowIndex}
+                          {...row.getRowProps()}
+                        >
+                          {cell.render("Cell")}
+                        </Box>
+                      </Link>
+                    </Td>
+                  );
+                })}
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
     </Section>

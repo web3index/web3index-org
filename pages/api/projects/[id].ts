@@ -4,7 +4,6 @@ import registry from "../../../registry.json";
 import dayjs from "dayjs";
 import { getSnapshots, getSubgraph, sumArrays } from "../../../lib/utils";
 import prisma from "../../../lib/prisma";
-import { Project } from "../../../types";
 
 const utcCurrentTime = dayjs();
 const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
@@ -26,39 +25,12 @@ const EMPTY = {
   ninetyDaysAgo: 0,
 };
 
-/** Returns a warning usage payload with null metrics. */
-export const getEmptyUsageResponse = (warning?: string) => ({
-  revenue: { ...EMPTY },
-  dilution: { ...EMPTY },
-  days: [],
-  warning,
-});
-
-/** Creates a fallback project payload with warning metadata. */
-export const buildFallbackProject = (
-  project: string,
-  warning: string,
-): Project => {
-  const base = registry[project] ?? {};
-  return {
-    ...base,
-    slug: project,
-    untracked: Boolean(base.untracked),
-    usage: getEmptyUsageResponse(warning),
-  } as Project;
-};
-
-/** Fetches historical usage from the Prisma database for legacy protocols. */
 const getUsageFromDB = async (name) => {
   const project = await prisma.project.findFirst({
     where: {
       name: name,
     },
   });
-
-  if (!project) {
-    throw new Error("Project not found in database");
-  }
 
   const now = await prisma.day.aggregate({
     where: {
@@ -80,13 +52,8 @@ const getUsageFromDB = async (name) => {
     take: 2000,
   });
 
-  if (!days.length) {
-    throw new Error("No revenue day data found in database");
-  }
-
-  const totalRevenue = now._sum.revenue ?? 0;
   const revenue = {
-    now: totalRevenue, // total revenue as of now
+    now: now._sum.revenue, // total revenue as of now
     oneDayAgo: await getRevenueFromDB(project.id, utcOneDayBack, prisma), // total revenue as of 1 day ago
     twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
     oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
@@ -94,23 +61,24 @@ const getUsageFromDB = async (name) => {
     thirtyDaysAgo: await getRevenueFromDB(
       project.id,
       utcThirtyDaysBack,
-      prisma,
+      prisma
     ), // total revenue as of thirty days ago
     sixtyDaysAgo: await getRevenueFromDB(project.id, utcSixtyDaysBack, prisma), // total revenue as of sixty days ago
     ninetyDaysAgo: await getRevenueFromDB(
       project.id,
       utcNinetyDaysBack,
-      prisma,
+      prisma
     ), // total revenue as of ninety days ago
   };
-  return {
+  const tmp = {
     revenue: registry[name].paymentType === "dilution" ? EMPTY : revenue,
     dilution: registry[name].paymentType === "dilution" ? revenue : EMPTY,
     days: days,
   };
+
+  return tmp;
 };
 
-/** Aggregates total revenue up to a given timestamp for a project. */
 const getRevenueFromDB = async (projectId, date, prisma) => {
   const rev = await prisma.day.aggregate({
     where: {
@@ -131,10 +99,6 @@ const getRevenueFromDB = async (projectId, date, prisma) => {
   return rev._sum.revenue;
 };
 
-/**
- * Fetches usage data from the Web3 Index subgraphs across multiple networks.
- * Returns a merged time series and revenue snapshots.
- */
 const getUsageFromSubgraph = async (id, networks) => {
   const dayDataPromises = [];
   const snapshotPromises = [];
@@ -152,47 +116,14 @@ const getUsageFromSubgraph = async (id, networks) => {
           }
         }
       `,
-      { id },
-    ).catch((error) => {
-      console.warn("Failed to fetch subgraph usage data", {
-        id,
-        network: n,
-        error,
-      });
-      return null;
-    });
-    dayDataPromises.push(data);
-    snapshotPromises.push(
-      getSnapshots(id, n).catch((error) => {
-        console.warn("Failed to fetch snapshot data", {
-          id,
-          network: n,
-          error,
-        });
-        return Array(7).fill(0);
-      }),
+      { id }
     );
+    dayDataPromises.push(data);
+    snapshotPromises.push(getSnapshots(id, n));
   });
 
-  const dayDataResults = await Promise.all(dayDataPromises);
-  const snapshotResults = await Promise.all(snapshotPromises);
-
-  // Keep protocol responses in sync with snapshot arrays so we only sum valid networks.
-  const dayData = [];
-  const snapshotData = [];
-  dayDataResults.forEach((result, index) => {
-    if (result?.protocol) {
-      dayData.push(result);
-      const snapshotEntry = snapshotResults[index];
-      snapshotData.push(
-        Array.isArray(snapshotEntry) ? snapshotEntry : Array(7).fill(0),
-      );
-    }
-  });
-
-  if (!dayData.length) {
-    throw new Error("No usage data available from subgraph");
-  }
+  const dayData = await Promise.all(dayDataPromises);
+  const snapshotData = await Promise.all(snapshotPromises);
 
   let totalRevenue = 0;
   dayData.map((d) => {
@@ -227,25 +158,22 @@ const getUsageFromSubgraph = async (id, networks) => {
     });
   });
 
-  if (days.length) {
-    let timestamp = days[0].date;
-    while (timestamp < Math.floor(+new Date() / 1000) - oneDay) {
-      const nextDay = timestamp + oneDay;
-      const currentDayIndex = (nextDay / oneDay).toFixed(0);
+  let timestamp = days[0].date;
+  while (timestamp < Math.floor(+new Date() / 1000) - oneDay) {
+    const nextDay = timestamp + oneDay;
+    const currentDayIndex = (nextDay / oneDay).toFixed(0);
 
-      if (!dayIndexSet.has(currentDayIndex)) {
-        days.push({
-          date: nextDay,
-          revenue: 0,
-          empty: true,
-        });
-      }
-      timestamp = nextDay;
+    if (!dayIndexSet.has(currentDayIndex)) {
+      days.push({
+        date: nextDay,
+        revenue: 0,
+        empty: true,
+      });
     }
-
-    days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
+    timestamp = nextDay;
   }
 
+  days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
   const revenue = {
     // ignore revenue from day the graph migrated to arbitrum
     now: totalRevenue,
@@ -264,72 +192,43 @@ const getUsageFromSubgraph = async (id, networks) => {
   };
 };
 
-/**
- * Loads a project definition plus its usage data (subgraph/custom endpoint/DB).
- */
-export const getProject = async (id) => {
-  try {
-    let usage;
-
-    // if project is part of the web3 index subgraph get it from the subgraph
-    if (registry[id].subgraphs) {
-      usage = await getUsageFromSubgraph(id, registry[id].subgraphs);
-    }
-    // if project is providing its own usage endpoint, fetch it
-    else if (registry[id].usage) {
-      const res = await fetch(registry[id].usage);
-      if (!res.ok) {
-        throw new Error(`Usage endpoint returned status ${res.status}`);
-      }
-      usage = await res.json();
-
-      // make sure days in endpoint provided are sorted ascending
-      usage.days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
-
-      // Remove negative usage.
-      let clamped = false;
-      usage.days = usage.days.map((day) => {
-        const original = +day.revenue;
-        const revenue = Math.max(original, 0);
-        clamped = clamped || revenue !== original;
-        return { ...day, revenue };
-      });
-      if (clamped) {
-        console.warn("Clamped negative revenue values from custom endpoint", {
-          id,
-          endpoint: registry[id].usage,
-        });
-      }
-    }
-    // else get usage from the Web3 Index DB
-    else {
-      usage = await getUsageFromDB(id);
-    }
-
-    return {
-      ...registry[id],
-      slug: id,
-      untracked: Boolean(registry[id]?.untracked),
-      usage,
-    };
-  } catch (error) {
-    const warning =
-      error instanceof Error && error.message
-        ? error.message
-        : "Could not fetch usage data for this project.";
-    console.warn("Falling back to empty usage payload for project", {
-      id,
-      warning,
-      error,
-    });
-    return buildFallbackProject(id, warning);
-  }
+export const getMarketDataFromCoingecko = async (id) => {
+  const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+  const data = await res.json();
+  return {
+    price: data.market_data.current_price.usd,
+    marketCap: data.market_data.market_cap.usd,
+    circulatingSupply: data.market_data.circulating_supply,
+  };
 };
 
-/** Next.js API route handler that returns a single project payload. */
-const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
+export const getProject = async (id) => {
+  let usage;
+
+  // if project is part of the web3 index subgraph get it from the subgraph
+  if (registry[id].subgraphs) {
+    usage = await getUsageFromSubgraph(id, registry[id].subgraphs);
+  }
+  // if project is providing its own usage endpoint, fetch it
+  else if (registry[id].usage) {
+    const res = await fetch(registry[id].usage);
+    usage = await res.json();
+
+    // make sure days in endpoint provided are sorted ascending
+    usage.days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
+  }
+  // else get usage from the Web3 Index DB
+  else {
+    usage = await getUsageFromDB(id);
+  }
+
+  return {
+    ...registry[id],
+    usage,
+  };
+};
+
+export default async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProject(_req.query.id);
   res.json(project);
 };
-
-export default handler;

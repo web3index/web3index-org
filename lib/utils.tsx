@@ -3,59 +3,41 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
-import { Project } from "../types";
 
-type BlocksResponse = {
-  blocks: { id: string; number: string; timestamp: string }[];
-};
+export const getBlocksFromTimestamps = async (timestamps, network) => {
+  const endpoints = {
+    mainnet:
+      "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks",
+    "arbitrum-one":
+      "https://api.thegraph.com/subgraphs/name/dolomite-exchange/arbitrum-one-blocks",
+    polygon:
+      "https://api.thegraph.com/subgraphs/name/kybernetwork/polygon-blocks",
+  };
 
-type ProtocolRevenueResponse = {
-  protocol: {
-    revenueUSD: string;
-    days?: { date: number; revenueUSD: string }[];
-  } | null;
-};
-
-/** Resolves block numbers near the provided timestamps using the block subgraph. */
-const getBlocksFromTimestamps = async (timestamps, network) => {
   if (!timestamps?.length) {
     return [];
   }
-
-  const endpoint = getBlockSubgraph(network);
   const blocks = [];
   for (const timestamp of timestamps) {
-    try {
-      const json = await request<BlocksResponse>(
-        endpoint,
-        gql`
-          query blocks($timestampFrom: Int!, $timestampTo: Int!) {
-            blocks(
-              first: 1
-              orderBy: timestamp
-              orderDirection: asc
-              where: {
-                timestamp_gt: $timestampFrom
-                timestamp_lt: $timestampTo
-              }
-            ) {
-              id
-              number
-              timestamp
-            }
+    const json = await request(
+      endpoints[network],
+      gql`
+        query blocks($timestampFrom: Int!, $timestampTo: Int!) {
+          blocks(
+            first: 1
+            orderBy: timestamp
+            orderDirection: asc
+            where: { timestamp_gt: $timestampFrom, timestamp_lt: $timestampTo }
+          ) {
+            id
+            number
+            timestamp
           }
-        `,
-        { timestampFrom: timestamp, timestampTo: timestamp + 100 },
-      );
-      blocks.push(+json.blocks[0]?.number ? +json.blocks[0]?.number : 0);
-    } catch (error) {
-      console.warn("Failed to fetch block data from The Graph", {
-        network,
-        timestamp,
-        error,
-      });
-      blocks.push(0);
-    }
+        }
+      `,
+      { timestampFrom: timestamp, timestampTo: timestamp + 100 }
+    );
+    blocks.push(+json.blocks[0]?.number ? +json.blocks[0]?.number : 0);
   }
 
   return blocks;
@@ -63,14 +45,14 @@ const getBlocksFromTimestamps = async (timestamps, network) => {
 
 /**
  * gets the amount difference plus the % change in change itself (second order change)
- * @param valueNow - current value
- * @param valueAsOfPeriodOne - value as of period one
- * @param valueAsOfPeriodTwo - value as of period two
+ * @param {*} valueNow
+ * @param {*} valueAsOfPeriodOne
+ * @param {*} valueAsOfPeriodTwo
  */
 export const getTwoPeriodPercentChange = (
   valueNow: number,
   valueAsOfPeriodOne: number,
-  valueAsOfPeriodTwo: number,
+  valueAsOfPeriodTwo: number
 ) => {
   // get volume info for both periods
   const currentChange = valueNow - valueAsOfPeriodOne;
@@ -84,22 +66,16 @@ export const getTwoPeriodPercentChange = (
   return [currentChange, adjustedPercentChange];
 };
 
-/** Formats a numeric value using Numeral’s abbreviated notation (e.g., 1.2k). */
-const toK = (num) => {
+export const toK = (num) => {
   return Numeral(num).format("0.[00]a");
 };
 
-const priceFormatter = new Intl.NumberFormat("en-US", {
+export const priceFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   minimumFractionDigits: 2,
 });
 
-/**
- * Formats a numeric value into a human-readable string for USD or raw units.
- * @param number - Value to format; accepts numeric strings.
- * @param unit - Set to "usd" for currency formatting; pass anything else for raw.
- */
 export const formattedNum = (number, unit = "usd") => {
   if (isNaN(number) || number === "" || number === undefined) {
     return unit === "usd" ? "$0" : 0;
@@ -144,10 +120,6 @@ export const formattedNum = (number, unit = "usd") => {
 
 // format weekly data for weekly sized chunks
 
-/**
- * Groups daily revenue data into weekly buckets for graphing.
- * @param days - Array of { date, revenue } objects sorted arbitrarily.
- */
 export const formatDataForWeekly = (days) => {
   // format dayjs with the libraries that we need
   dayjs.extend(utc);
@@ -155,7 +127,7 @@ export const formatDataForWeekly = (days) => {
 
   const weeklyData = [];
   const weeklySizedChunks = [...days].sort((a, b) =>
-    parseInt(a.date) > parseInt(b.date) ? 1 : -1,
+    parseInt(a.date) > parseInt(b.date) ? 1 : -1
   );
   let startIndexWeekly = -1;
   let currentWeek = -1;
@@ -182,77 +154,24 @@ declare global {
   }
 }
 
-/** Sends a pageview event to GA if the global gtag is available. */
+// log the pageview with their URL
 export const pageview = (url) => {
-  if (typeof window === "undefined" || typeof window.gtag !== "function")
-    return;
-  const trackingId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
-  if (!trackingId) return;
-  window.gtag("config", trackingId, {
+  window.gtag("config", process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
     page_path: url,
   });
 };
 
-/** Emits a custom GA event if gtag is available in the browser. */
+// log specific events happening.
 export const event = ({ action, params }) => {
-  if (typeof window === "undefined" || typeof window.gtag !== "function")
-    return;
   window.gtag("event", action, params);
 };
 
-const getEnvValue = (key: string) => {
-  const value = process.env[key as keyof NodeJS.ProcessEnv];
-  if (typeof value !== "string") {
-    return undefined;
-  }
-  const trimmed = value.trim();
-  return trimmed.length ? trimmed : undefined;
+export const getSubgraph = (network) => {
+  return `https://api.thegraph.com/subgraphs/name/web3index/${network}`;
 };
 
-/** Builds a subgraph URL using either overrides or a scoped GRAPH_API_KEY. */
-const buildSubgraphUrl = (network: string, prefix: string) => {
-  const networkSuffix = network.replace(/[^a-zA-Z0-9]/g, "_").toUpperCase();
-  const endpointEnvKey = `${prefix}_ENDPOINT_${networkSuffix}`;
-  const overrideEndpoint = getEnvValue(endpointEnvKey);
-  if (overrideEndpoint) {
-    return overrideEndpoint;
-  }
-
-  const apiKey = getEnvValue("GRAPH_API_KEY");
-  if (!apiKey) {
-    throw new Error(
-      `GRAPH_API_KEY env var is required unless an override endpoint ` +
-        `is provided for ${network}`,
-    );
-  }
-  const subgraphIdEnvKey = `${prefix}_${networkSuffix}_ID`;
-  const scopedSubgraphId = getEnvValue(subgraphIdEnvKey);
-  if (scopedSubgraphId) {
-    return `https://gateway.thegraph.com/api/${apiKey}/subgraphs/id/${scopedSubgraphId}`;
-  }
-
-  throw new Error(
-    `Set ${subgraphIdEnvKey} env var (or override endpoint) for ${network}`,
-  );
-};
-
-/** Returns the Web3 Index subgraph endpoint for a network. */
-export const getSubgraph = (network: string) => {
-  return buildSubgraphUrl(network, "GRAPH_WEB3INDEX");
-};
-
-/** Returns the Everest metadata subgraph endpoint. */
-export const getEverestSubgraph = () => {
-  return buildSubgraphUrl("mainnet", "GRAPH_EVEREST");
-};
-
-const getBlockSubgraph = (network: string) => {
-  return buildSubgraphUrl(network, "GRAPH_BLOCKS");
-};
-
-/** Reads cumulative revenue at a specific block height from a network subgraph. */
 const getRevenueByBlock = async (id, blockNumber, network) => {
-  return await request<ProtocolRevenueResponse>(
+  return await request(
     getSubgraph(network),
     gql`
       query ($id: String!, $block: Block_height) {
@@ -264,15 +183,10 @@ const getRevenueByBlock = async (id, blockNumber, network) => {
     {
       id,
       block: { number: blockNumber },
-    },
+    }
   );
 };
 
-/**
- * Fetches historical cumulative revenue snapshots (1d/2d/1w/etc.) for a protocol.
- *
- * Falls back to zero arrays if block lookups or revenue queries fail.
- */
 export const getSnapshots = async (id, network) => {
   const utcCurrentTime = dayjs();
   const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
@@ -293,15 +207,6 @@ export const getSnapshots = async (id, network) => {
     utcNinetyDaysBack,
   ];
 
-  const blockResults = await getBlocksFromTimestamps(timestamps, network);
-
-  if (blockResults.length < 7 || blockResults.every((block) => block === 0)) {
-    console.warn("Falling back to zeroed snapshots; unable to fetch blocks", {
-      network,
-    });
-    return Array(7).fill(0);
-  }
-
   const [
     oneDayBlock,
     twoDayBlock,
@@ -310,99 +215,37 @@ export const getSnapshots = async (id, network) => {
     thirtyDayBlock,
     sixtyDayBlock,
     ninetyDayBlock,
-  ] = blockResults;
+  ] = await getBlocksFromTimestamps(timestamps, network);
 
-  try {
-    const [
-      oneDayResult,
-      twoDayResult,
-      oneWeekResult,
-      twoWeekResult,
-      thirtyDayResult,
-      sixtyDayResult,
-      ninetyDayResult,
-    ] = await Promise.all([
-      getRevenueByBlock(id, oneDayBlock, network),
-      getRevenueByBlock(id, twoDayBlock, network),
-      getRevenueByBlock(id, oneWeekBlock, network),
-      getRevenueByBlock(id, twoWeekBlock, network),
-      getRevenueByBlock(id, thirtyDayBlock, network),
-      getRevenueByBlock(id, sixtyDayBlock, network),
-      getRevenueByBlock(id, ninetyDayBlock, network),
-    ]);
+  const oneDayResult = await getRevenueByBlock(id, oneDayBlock, network);
+  const twoDayResult = await getRevenueByBlock(id, twoDayBlock, network);
+  const oneWeekResult = await getRevenueByBlock(id, oneWeekBlock, network);
+  const twoWeekResult = await getRevenueByBlock(id, twoWeekBlock, network);
+  const thirtyDayResult = await getRevenueByBlock(id, thirtyDayBlock, network);
+  const sixtyDayResult = await getRevenueByBlock(id, sixtyDayBlock, network);
+  const ninetyDayResult = await getRevenueByBlock(id, ninetyDayBlock, network);
 
-    return [
-      oneDayResult.protocol?.revenueUSD ? +oneDayResult.protocol.revenueUSD : 0,
-      twoDayResult.protocol?.revenueUSD ? +twoDayResult.protocol.revenueUSD : 0,
-      oneWeekResult.protocol?.revenueUSD
-        ? +oneWeekResult.protocol.revenueUSD
-        : 0,
-      twoWeekResult.protocol?.revenueUSD
-        ? +twoWeekResult.protocol.revenueUSD
-        : 0,
-      thirtyDayResult.protocol?.revenueUSD
-        ? +thirtyDayResult.protocol.revenueUSD
-        : 0,
-      sixtyDayResult.protocol?.revenueUSD
-        ? +sixtyDayResult.protocol.revenueUSD
-        : 0,
-      ninetyDayResult.protocol?.revenueUSD
-        ? +ninetyDayResult.protocol.revenueUSD
-        : 0,
-    ];
-  } catch (error) {
-    console.warn("Falling back to zeroed snapshots; unable to fetch revenue", {
-      id,
-      network,
-      error,
-    });
-    return Array(7).fill(0);
-  }
+  return [
+    oneDayResult.protocol?.revenueUSD ? +oneDayResult.protocol.revenueUSD : 0,
+    twoDayResult.protocol?.revenueUSD ? +twoDayResult.protocol.revenueUSD : 0,
+    oneWeekResult.protocol?.revenueUSD ? +oneWeekResult.protocol.revenueUSD : 0,
+    twoWeekResult.protocol?.revenueUSD ? +twoWeekResult.protocol.revenueUSD : 0,
+    thirtyDayResult.protocol?.revenueUSD
+      ? +thirtyDayResult.protocol.revenueUSD
+      : 0,
+    sixtyDayResult.protocol?.revenueUSD
+      ? +sixtyDayResult.protocol.revenueUSD
+      : 0,
+    ninetyDayResult.protocol?.revenueUSD
+      ? +ninetyDayResult.protocol.revenueUSD
+      : 0,
+  ];
 };
 
-/** Adds arrays element-wise (treats missing entries as zero). */
 export function sumArrays(...arrays) {
   const n = arrays.reduce((max, xs) => Math.max(max, xs.length), 0);
   const result = Array.from({ length: n });
   return result.map((_, i) =>
-    arrays.map((xs) => xs[i] || 0).reduce((sum, x) => sum + x, 0),
+    arrays.map((xs) => xs[i] || 0).reduce((sum, x) => sum + x, 0)
   );
 }
-
-type RankableProject = Pick<Project, "slug" | "usage"> & {
-  rank?: number | null;
-};
-
-/**
- * Normalizes a project's 30-day total so we can sort missing/invalid values
- * alongside real numbers (missing metrics fall to -Infinity).
- */
-export const normalizeThirtyDayTotal = (project?: RankableProject) => {
-  const total = project?.usage?.revenue?.thirtyDayTotal;
-  return Number.isFinite(total) ? (total as number) : -Infinity;
-};
-
-/**
- * Sorts the provided projects array by 30d totals (descending) and writes the
- * resulting rank (1-based) on each project. Projects with warnings are assigned
- * a null rank so the UI can render "--".
- */
-export const sortProjectsByThirtyDayTotal = <T extends RankableProject>(
-  projects: T[],
-) => {
-  const indexed = projects.map((project, index) => ({ project, index }));
-  indexed.sort((a, b) => {
-    const diff =
-      normalizeThirtyDayTotal(b.project) - normalizeThirtyDayTotal(a.project);
-    if (diff !== 0) {
-      return diff;
-    }
-    return a.index - b.index;
-  });
-
-  indexed.forEach(({ project }, rankIndex) => {
-    project.rank = project?.usage?.warning ? null : rankIndex + 1;
-  });
-
-  return indexed.map(({ project }) => project);
-};
