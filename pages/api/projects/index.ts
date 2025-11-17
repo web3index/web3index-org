@@ -6,6 +6,7 @@ import { getProject, buildFallbackProject } from "./[id]";
 import { getTwoPeriodPercentChange } from "../../../lib/utils";
 import { sortProjectsByThirtyDayTotal } from "../../../lib/utils";
 import { Project } from "../../../types";
+import { setProjectCacheHeaders } from "../../../lib/cacheHeaders";
 
 /**
  * Loads every project plus aggregate metrics, falling back to zeroed usage
@@ -170,6 +171,7 @@ export const getProjects = async () => {
 /** API route handler that returns the full projects collection. */
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProjects();
+  setProjectCacheHeaders(res);
   res.json(project);
 };
 
