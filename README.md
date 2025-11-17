@@ -1,6 +1,6 @@
 # The Web3 Index
 
-The Web3 Index reports on the fees being paid into web3 network protocols in an effort to showcase real usage across the web3 stack. Stay up to date on the latest web3 trends whether you’re a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising web3 infrastructure, or simply a crypto-enthusiast passionate about the web3 movement.
+The Web3 Index reports on the fees being paid into web3 network protocols in an effort to showcase real usage across the web3 stack. Stay up to date on the latest web3 trends whether you're a supply-side participant keeping tabs on in-demand networks, a developer interested in building on top of the most promising web3 infrastructure, or simply a crypto-enthusiast passionate about the web3 movement.
 
 Unlike most indexes in defi (a sector of web3) that weight listings based on market capitalization or ["total value locked (TVL)"](https://messari.io/article/how-to-interpret-total-value-locked-tvl-in-defi), The Web3 Index uses a [fundamental index methodology](https://en.wikipedia.org/wiki/Fundamentally_based_indexes). A key belief behind the fundamental index methodology is that underlying valuation figures (i.e. network fees and usage) are more accurate estimators of a network's intrinsic value, rather than the listed market value of the protocol.
 
@@ -32,7 +32,7 @@ Step 2: Add your protocol to The Web3 Index [registry](./registry.json) using th
 
 If a protocol's blockchain is not supported by The Graph _and_ you can't use the Web3 Index's own database for some reason, you can provide fee data via your own publically accessible API endpoint. Its json response should return data in the following format, updated at least twice a day:
 
-```
+```json
 {
   // Revenue should be denominated in USD at time of payout
   "revenue": {
@@ -61,21 +61,60 @@ Note: your API codebase must be open sourced in order to be considered for the i
 
 ## Running App Locally
 
-First, install the project dependencies:
+Install dependencies (using the pinned Node/Yarn toolchain):
 
 ```bash
-yarn
+nvm use
+npm install -g corepack
+corepack enable
+corepack prepare yarn@1.22.22 --activate
+yarn install
 ```
 
-Next, rename `.env.example` to `.env` and replace `DATABASE_URL` with your own Postgres database url.
+Copy `.env.example` to `.env` and fill all required values (database URL, API keys, subgraph env variables).
 
-After that, run the Prisma ORM database schema migration tool:
+### Provision a local Postgres database
+
+If you don't already have Postgres running, the quickest option is to spin up a disposable Docker container:
 
 ```bash
-npx prisma migrate dev --name init
+docker run --name web3index-postgres \
+  -e POSTGRES_USER=web3index \
+  -e POSTGRES_PASSWORD=web3index \
+  -e POSTGRES_DB=web3index \
+  -p 5432:5432 \
+  -d postgres:15
 ```
 
-Finally, run the development server:
+Then point Prisma to it via `.env`:
+
+```bash
+DATABASE_URL="postgresql://web3index:web3index@localhost:5432/web3index?schema=public"
+```
+
+You can stop/remove the container when you're done:
+
+```bash
+docker stop web3index-postgres
+docker rm web3index-postgres
+```
+
+### Prisma CLI on OpenSSL 3 hosts
+
+Prisma's migration/schema engines expect OpenSSL 1.1 by default. On newer distros (Ubuntu ≥22.04, Debian ≥12, etc.) only OpenSSL 3 is available, so we ship `yarn` scripts that download and point Prisma to the OpenSSL-3 compatible binaries for you:
+
+```bash
+# Install client w/ OpenSSL 3 engine
+yarn prisma:generate:ossl3
+# Run migrations with OpenSSL 3 engine
+yarn prisma:migrate:dev:ossl3 --name init
+```
+
+If you're deploying migrations, use `yarn prisma:migrate:ossl3` instead.
+
+(You only need to re-run the `prisma:generate:ossl3` script after deleting `node_modules` or upgrading Prisma.)
+
+Then run the development server (use `yarn dev:ossl3` on hosts that require the OpenSSL 3 engine):
 
 ```bash
 yarn dev

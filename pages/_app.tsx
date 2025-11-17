@@ -7,6 +7,7 @@ import { pageview } from "../lib/utils";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import type { AppProps } from "next/app";
 import "@videojs/themes/dist/fantasy/index.css";
 import "../css/tv.scss";
 import "../css/video.js.css";
@@ -41,7 +42,7 @@ const globalStyles = globalCss({
   },
 });
 
-const App = ({ Component, pageProps }) => {
+const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -67,8 +68,7 @@ const App = ({ Component, pageProps }) => {
         disableTransitionOnChange
         attribute="class"
         defaultTheme="dark"
-        value={{ light: lightThemeClass.className }}
-      >
+        value={{ light: lightThemeClass.className }}>
         <QueryClientProvider client={queryClient}>
           <DefaultSeo {...SEO} />
           <Component {...pageProps} />

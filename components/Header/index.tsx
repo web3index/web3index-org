@@ -1,10 +1,18 @@
+import { ComponentProps } from "react";
 import Box from "../Box";
 import Revenue from "./Revenue";
 import SubmitButton from "../SubmitButton";
 import Button from "../Button";
-import Link from "next/link";
 
-const Header = ({ revenue, ...props }) => {
+type RevenueSummary = {
+  thirtyDayTotal: number;
+  thirtyDayPercentChange: number;
+};
+type HeaderProps = ComponentProps<typeof Box> & {
+  revenue: RevenueSummary;
+};
+
+const Header = ({ revenue, ...props }: HeaderProps) => {
   return (
     <Box {...props}>
       <Box
@@ -31,8 +39,7 @@ const Header = ({ revenue, ...props }) => {
           "@bp4": {
             fontSize: "180px",
           },
-        }}
-      >
+        }}>
         The Web3 Index
       </Box>
       <Box
@@ -44,8 +51,7 @@ const Header = ({ revenue, ...props }) => {
           "@bp2": {
             flexDirection: "row",
           },
-        }}
-      >
+        }}>
         <Revenue
           percentChange={revenue.thirtyDayPercentChange}
           revenue={revenue.thirtyDayTotal}
@@ -83,8 +89,7 @@ const Header = ({ revenue, ...props }) => {
               mb: 0,
               width: "auto",
             },
-          }}
-        >
+          }}>
           Chat on Discord
         </Button>
 

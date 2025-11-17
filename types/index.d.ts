@@ -32,6 +32,7 @@ export interface Project {
   coingeckoID?: CoingeckoID;
   usage: Usage;
   untracked: boolean;
+  rank?: number | null;
   [k: string]: unknown;
 }
 export interface Usage {
@@ -39,6 +40,7 @@ export interface Usage {
   dilution: Revenue;
   days: Days;
   [k: string]: unknown;
+  warning?: string;
 }
 export interface Revenue {
   now: Now;
