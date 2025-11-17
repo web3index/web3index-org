@@ -115,12 +115,13 @@ const Metric = ({ label, value }) => {
         borderBottom: "1px solid $colors$border",
         py: "$3",
         justifyContent: "space-between",
+        minHeight: 50,
         "&:last-child": {
           borderBottom: 0,
         },
       }}>
-      <Box css={{ mr: "$3" }}>{label}</Box>
-      <Box>{value}</Box>
+      <Box css={{ mr: "$3", whiteSpace: "nowrap" }}>{label}</Box>
+      <Box css={{ textAlign: "right", whiteSpace: "nowrap" }}>{value}</Box>
     </Box>
   );
 };
