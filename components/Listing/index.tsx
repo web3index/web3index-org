@@ -234,6 +234,7 @@ const Listing = ({ data, ...props }) => {
                   : "revenue";
               return row?.usage?.[paymentType]?.now ?? 0;
             },
+            sortingFn: sortingFn,
             meta: {
               css: { fontSize: "11px", color: "$gray400" },
               minWidth: 65,
