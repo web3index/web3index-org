@@ -2,6 +2,23 @@ import Box from "../Box";
 import Link from "next/link";
 import { ArrowRightIcon } from "@modulz/radix-icons";
 
+import { styled } from "../../stitches.config";
+
+const TitleLink = styled(Link, {
+  display: "block",
+  textDecoration: "none",
+  color: "$hiContrast",
+  "&:hover": {
+    textDecoration: "underline",
+  },
+});
+const ReadMoreLink = styled(Link, {
+  display: "flex",
+  alignItems: "center",
+  color: "$blue",
+  textDecoration: "none",
+});
+
 const BlogCard = ({ title, date, abstract, slug }) => {
   return (
     <Box
@@ -22,53 +39,29 @@ const BlogCard = ({ title, date, abstract, slug }) => {
           pb: "$5",
           mb: "$5",
         },
-      }}
-    >
-      <Link href={`/blog/${slug}`} passHref>
+      }}>
+      <TitleLink href={`/blog/${slug}`}>
         <Box
-          as="a"
+          as="h2"
           css={{
-            display: "block",
-            textDecoration: "none",
-            color: "$hiContrast",
-            "&:hover": {
-              textDecoration: "underline",
+            mt: 0,
+            fontSize: "$4",
+            mb: "$3",
+            "@bp2": {
+              fontSize: "$5",
             },
-          }}
-        >
-          <Box
-            as="h2"
-            css={{
-              mt: 0,
-              fontSize: "$4",
-              mb: "$3",
-              "@bp2": {
-                fontSize: "$5",
-              },
-            }}
-          >
-            {title}
-          </Box>
+          }}>
+          {title}
         </Box>
-      </Link>
+      </TitleLink>
       <Box css={{ fontSize: "$2", opacity: 0.7, mb: "$4" }}>{date}</Box>
       <Box as="p" css={{ mb: "$4", lineHeight: "28px" }}>
         {abstract}
       </Box>
-      <Link href={`/blog/${slug}`} passHref>
-        <Box
-          as="a"
-          css={{
-            display: "flex",
-            alignItems: "center",
-            color: "$blue",
-            textDecoration: "none",
-          }}
-        >
-          <Box css={{ mr: "$2" }}>Read More</Box>
-          <ArrowRightIcon />
-        </Box>
-      </Link>
+      <ReadMoreLink href={`/blog/${slug}`}>
+        <Box css={{ mr: "$2" }}>Read More</Box>
+        <ArrowRightIcon />
+      </ReadMoreLink>
     </Box>
   );
 };

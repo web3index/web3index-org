@@ -27,8 +27,7 @@ const Item = ({ emoji, question, answer }) => (
       "&:last-child": {
         borderBottom: 0,
       },
-    }}
-  >
+    }}>
     <Box as={Accordion.Header} css={{ margin: 0 }}>
       <Box
         as={Accordion.Button}
@@ -47,16 +46,14 @@ const Item = ({ emoji, question, answer }) => (
           fontSize: "$4",
           cursor: "pointer",
           fontWeight: 600,
-        }}
-      >
+        }}>
         <Box
           css={{
             display: "flex",
             color: "$hiContrast",
             alignItems: "center",
             mr: "auto",
-          }}
-        >
+          }}>
           <Box css={{ mr: "$3" }}>
             <Box role="img" aria-label="What is Web3">
               {emoji}
@@ -69,8 +66,7 @@ const Item = ({ emoji, question, answer }) => (
     </Box>
     <Box
       as={Accordion.Panel}
-      css={{ pb: "$3", mb: 0, fontSize: "$3", lineHeight: "$4" }}
-    >
+      css={{ pb: "$3", mb: 0, fontSize: "$3", lineHeight: "$4" }}>
       {answer}
     </Box>
   </Box>
@@ -85,7 +81,7 @@ const Faq = ({ items, css = {}, ...props }) => {
             <Item
               emoji={item.data.emoji}
               question={item.data.title}
-              answer={<ReactMarkdown source={item.content} />}
+              answer={<ReactMarkdown>{item.content}</ReactMarkdown>}
             />
           </Markdown>
         ))}

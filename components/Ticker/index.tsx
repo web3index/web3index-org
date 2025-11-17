@@ -11,6 +11,7 @@ const Project = ({ project }) => {
     registry[project.name.toLowerCase()]?.paymentType === "dilution"
       ? "dilution"
       : "revenue";
+  const warning = project.usage?.warning;
 
   const color =
     project.usage[paymentType].thirtyDayPercentChange >= 0
@@ -37,20 +38,32 @@ const Project = ({ project }) => {
           height: 26,
           backgroundColor: "$gray100",
         },
-      }}
-    >
+      }}>
       <Box css={{ flex: "1 0 auto" }}>
         <Box css={{ color: "$hiContrast", mb: "$1" }}>{project.symbol}</Box>
         <Box css={{ color: "$gray400" }}>{project.name}</Box>
       </Box>
       <Box css={{ display: "flex", alignItems: "center" }}>
-        <LineGraph color={color} days={lastTwoPeriods} />
-        <RevenueChange
-          percentChange={Intl.NumberFormat("en-US", {
-            maximumFractionDigits: 2,
-          }).format(project.usage[paymentType].thirtyDayPercentChange)}
-          css={{ ml: "$2" }}
-        />
+        {warning ? (
+          <Box
+            css={{
+              color: "$gray500",
+              fontSize: "11px",
+              ml: "$2",
+            }}>
+            --
+          </Box>
+        ) : (
+          <>
+            <LineGraph color={color} days={lastTwoPeriods} />
+            <RevenueChange
+              percentChange={Intl.NumberFormat("en-US", {
+                maximumFractionDigits: 2,
+              }).format(project.usage[paymentType].thirtyDayPercentChange)}
+              css={{ ml: "$2" }}
+            />
+          </>
+        )}
       </Box>
     </Box>
   );
@@ -58,6 +71,7 @@ const Project = ({ project }) => {
 
 const Ticker = ({ projects }) => {
   const { resolvedTheme } = useTheme();
+  const gradientColor = resolvedTheme === "dark" ? "22,22,24" : "255,255,255";
 
   return (
     <Box
@@ -69,18 +83,13 @@ const Ticker = ({ projects }) => {
         py: 10,
         fontSize: "$1",
         height: 55,
-      }}
-    >
+      }}>
       {projects?.length && (
-        <Marquee
-          gradientColor={
-            resolvedTheme === "dark" ? [22, 22, 24] : [255, 255, 255]
-          }
-        >
+        <Marquee gradientColor={gradientColor}>
           {[...projects, ...projects].map(
             (project, i) =>
               !project.untracked &&
-              !project.hide && <Project key={i} project={project} />
+              !project.hide && <Project key={i} project={project} />,
           )}
         </Marquee>
       )}

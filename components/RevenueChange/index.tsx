@@ -7,7 +7,7 @@ const RevenueChange = ({ percentChange, css = {}, ...props }) => {
       ? defaultTheme.colors.green
       : defaultTheme.colors.red;
 
-  console.log(percentChange);
+  // console.log(percentChange);
   return (
     <Box css={{ display: "flex", alignItems: "center", ...css }} {...props}>
       {parseFloat(percentChange) !== 0 && (

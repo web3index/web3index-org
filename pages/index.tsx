@@ -45,14 +45,11 @@ const Home = ({ faq, revenue, projects }) => {
 export async function getStaticProps() {
   const { projects, revenue } = await getProjects();
   const faq = await getFaq();
-  const sortedProjects = projects.sort((a, b) => {
-    return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
-  });
   return {
     props: {
       faq,
       revenue,
-      projects: sortedProjects,
+      projects,
     },
     revalidate: 30,
   };

@@ -4,18 +4,20 @@
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
-    }
+    },
+    "ecmaVersion": 2022,
+    "sourceType": "module"
   },
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "es2022": true
   },
   "extends": [
+    "next/core-web-vitals",
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended"
   ],
   "rules": {
@@ -23,7 +25,7 @@
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-var-requires": "off",
     "jsx-a11y/media-has-caption": "off",
     "jsx-a11y/label-has-associated-control": [

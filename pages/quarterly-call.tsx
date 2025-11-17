@@ -58,18 +58,13 @@ const Post = ({ projects }) => {
           px: "$4",
           backgroundColor: "$blur",
           backdropFilter: "saturate(180%) blur(5px)",
-        }}
-      >
-        <Link href="/" passHref>
-          <StyledButton as="a" css={{ mr: "$2" }}>
-            <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
-          </StyledButton>
-        </Link>
-        <Link href="/blog" passHref>
-          <StyledButton as="a">
-            <ReaderIcon /> <Box css={{ ml: "$2" }}>Blog</Box>
-          </StyledButton>
-        </Link>
+        }}>
+        <StyledButton as={Link} href="/" css={{ mr: "$2" }}>
+          <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
+        </StyledButton>
+        <StyledButton as={Link} href="/blog">
+          <ReaderIcon /> <Box css={{ ml: "$2" }}>Blog</Box>
+        </StyledButton>
       </Box>
       <Section>
         <Container size="2">
@@ -90,8 +85,7 @@ const Post = ({ projects }) => {
                 pb: "$5",
                 mb: "$5",
               },
-            }}
-          >
+            }}>
             <Box
               as="h1"
               css={{
@@ -101,8 +95,7 @@ const Post = ({ projects }) => {
                 "@bp2": {
                   fontSize: "$7",
                 },
-              }}
-            >
+              }}>
               The Web3 Index Quarterly Call
             </Box>
             <Box css={{ fontSize: "$4", opacity: 0.7, mb: 40 }}>
@@ -117,8 +110,7 @@ const Post = ({ projects }) => {
                 display: "inline-flex",
                 alignItems: "center",
                 textDecoration: "none",
-              }}
-            >
+              }}>
               Attend Zoom Call
             </Button>
           </Box>

@@ -2,6 +2,13 @@ import Box from "../Box";
 import RevenueChange from "../RevenueChange";
 
 const Revenue = ({ revenue = 0, percentChange = 0 }) => {
+  const formattedRevenue = Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2,
+  }).format(revenue);
+  const formattedPercent = Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2,
+  }).format(percentChange);
+
   return (
     <Box
       css={{
@@ -21,20 +28,12 @@ const Revenue = ({ revenue = 0, percentChange = 0 }) => {
           mb: 0,
           width: "auto",
         },
-      }}
-    >
+      }}>
       <Box css={{ color: "$gray600", mr: "$2" }}>30d Fees</Box>
-      <Box css={{ fontWeight: 600, mr: "$4" }}>
-        $
-        {Intl.NumberFormat("en-US", {
-          maximumFractionDigits: 2,
-        }).format(revenue)}
-      </Box>
-      <RevenueChange
-        percentChange={Intl.NumberFormat("en-US", {
-          maximumFractionDigits: 2,
-        }).format(percentChange)}
-      />
+      <>
+        <Box css={{ fontWeight: 600, mr: "$4" }}>${formattedRevenue}</Box>
+        <RevenueChange percentChange={formattedPercent} />
+      </>
     </Box>
   );
 };

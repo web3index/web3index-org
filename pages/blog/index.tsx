@@ -52,13 +52,10 @@ const Index = ({ posts, projects }) => {
           px: "$4",
           backgroundColor: "$blur",
           backdropFilter: "saturate(180%) blur(5px)",
-        }}
-      >
-        <Link href="/" passHref>
-          <StyledButton as="a" css={{ mr: "$2" }}>
-            <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
-          </StyledButton>
-        </Link>
+        }}>
+        <StyledButton as={Link} href="/" css={{ mr: "$2" }}>
+          <ListBulletIcon /> <Box css={{ ml: "$2" }}>Index</Box>
+        </StyledButton>
       </Box>
       <Box
         css={{
@@ -67,8 +64,7 @@ const Index = ({ posts, projects }) => {
           borderColor: "$border",
           textAlign: "center",
           pb: "$4",
-        }}
-      >
+        }}>
         <Box as="h1" css={{ mt: 0, fontSize: "$7", mb: 24 }}>
           Blog
         </Box>
@@ -80,8 +76,7 @@ const Index = ({ posts, projects }) => {
             fontSize: "$4",
             opacity: 0.5,
             mb: 40,
-          }}
-        >
+          }}>
           Welcome to The Web3 Index Blog
         </Box>
       </Box>
@@ -98,7 +93,7 @@ const Index = ({ posts, projects }) => {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
-                }
+                },
               )}
               abstract={post.data.abstract}
               slug={post.slug}

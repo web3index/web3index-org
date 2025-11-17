@@ -1,9 +1,14 @@
 import matter from "gray-matter";
-import renderToString from "next-mdx-remote/render-to-string";
-import MDXComponents from "../components/MDXComponents";
+import { serialize } from "next-mdx-remote/serialize";
+import type { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 const { readFileSync, readdirSync } = require("fs");
 
+/**
+ * Reads a content directory and returns MDX slugs without extensions.
+ *
+ * @param directory - Relative folder path inside the repo.
+ */
 export async function getSlugs(directory: string) {
   const files = await readdirSync(process.cwd() + "/" + directory);
   const slugs = files.map((file) => file.replace(/\.mdx/, ""));
@@ -11,15 +16,19 @@ export async function getSlugs(directory: string) {
   return slugs;
 }
 
+/**
+ * Loads the raw MDX file contents for a given directory + slug.
+ */
 export async function getFile(directory: string, slug: string) {
   const file = await readFileSync(
     process.cwd() + `/${directory}/${slug}.mdx`,
-    "utf8"
+    "utf8",
   );
 
   return file;
 }
 
+/** Extracts frontmatter metadata from an MDX file string. */
 export const getFileData = (file: string) => {
   const { data } = matter(file);
 
@@ -30,21 +39,26 @@ export const getFileData = (file: string) => {
   return fileData;
 };
 
-export const getFileContent = (file: string) => {
+const getFileContent = (file: string) => {
   const { content } = matter(file);
 
   return content;
 };
 
-export async function getContent(file: string, mdxOptions = {}) {
-  const content = await renderToString(getFileContent(file), {
-    components: MDXComponents,
+/**
+ * Serializes MDX content so it can be rendered with next-mdx-remote.
+ */
+export async function getContent(
+  file: string,
+  mdxOptions = {},
+): Promise<MDXRemoteSerializeResult> {
+  return serialize(getFileContent(file), {
     mdxOptions,
+    parseFrontmatter: false,
   });
-
-  return content;
 }
 
+/** Loads FAQ entries (frontmatter + content) from the content/faq directory. */
 export const getFaq = async () => {
   const slugs = await getSlugs("content/faq");
 
@@ -61,12 +75,13 @@ export const getFaq = async () => {
       };
 
       return faq;
-    })
+    }),
   );
 
   return faq;
 };
 
+/** Returns the list of blog posts (metadata only) for the blog index. */
 export async function getPosts() {
   const slugs = await getSlugs("content/posts");
 
@@ -80,7 +95,7 @@ export async function getPosts() {
       };
 
       return post;
-    })
+    }),
   );
 
   return posts;
