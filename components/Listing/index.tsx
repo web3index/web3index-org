@@ -74,6 +74,12 @@ type ColumnMeta = {
   minWidth?: number;
 };
 
+const getPaymentType = (project) => {
+  const name =
+    typeof project?.name === "string" ? project.name.toLowerCase() : "";
+  return registry[name]?.paymentType === "dilution" ? "dilution" : "revenue";
+};
+
 const createSortingFn =
   (selector: (project: any) => number | null | undefined): SortingFn<any> =>
   (rowA, rowB) =>
@@ -227,14 +233,12 @@ const Listing = ({ data, ...props }) => {
             id: "usage.totalFees",
             header: "",
             accessorFn: (row) => {
-              const nameKey = row?.name?.toLowerCase?.();
-              const paymentType =
-                registry[nameKey]?.paymentType === "dilution"
-                  ? "dilution"
-                  : "revenue";
+              const paymentType = getPaymentType(row);
               return row?.usage?.[paymentType]?.now ?? 0;
             },
-            sortingFn: sortingFn,
+            sortingFn: createSortingFn(
+              (project) => project?.usage?.[getPaymentType(project)]?.now,
+            ),
             meta: {
               css: { fontSize: "11px", color: "$gray400" },
               minWidth: 65,
@@ -245,11 +249,7 @@ const Listing = ({ data, ...props }) => {
               if (warning) {
                 return <WarningPlaceholder />;
               }
-              const nameKey = row.original?.name?.toLowerCase();
-              const paymentType =
-                registry[nameKey]?.paymentType === "dilution"
-                  ? "dilution"
-                  : "revenue";
+              const paymentType = getPaymentType(row.original);
               const total = row.original?.usage?.[paymentType]?.now ?? 0;
               if (!total) {
                 return <Box>$0</Box>;
