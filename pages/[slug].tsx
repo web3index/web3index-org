@@ -291,10 +291,13 @@ const Project = ({ slug, index, projects, project }) => {
                             <Box
                               css={{ display: "flex", alignItems: "center" }}>
                               <Box css={{ mr: "$1" }}>
-                                $
-                                {Math.round(
+                                {isNaN(
                                   project.usage[paymentType].thirtyDayTotal,
-                                ).toLocaleString()}
+                                )
+                                  ? "N/A"
+                                  : `$${Math.round(
+                                      project.usage[paymentType].thirtyDayTotal,
+                                    ).toLocaleString()}`}
                               </Box>
                               <TooltipTrigger>
                                 <InfoCircledIcon />
@@ -320,10 +323,13 @@ const Project = ({ slug, index, projects, project }) => {
                             <Box
                               css={{ display: "flex", alignItems: "center" }}>
                               <Box css={{ mr: "$1" }}>
-                                $
-                                {Math.round(
+                                {isNaN(
                                   project.usage[paymentType].ninetyDayTotal,
-                                ).toLocaleString()}
+                                )
+                                  ? "N/A"
+                                  : `$${Math.round(
+                                      project.usage[paymentType].ninetyDayTotal,
+                                    ).toLocaleString()}`}
                               </Box>
                               <TooltipTrigger>
                                 <InfoCircledIcon />
@@ -345,11 +351,15 @@ const Project = ({ slug, index, projects, project }) => {
                           ? "Total Dilution"
                           : "Total Fees"
                       }
-                      value={`$${Math.round(
-                        project.name == "The Graph"
-                          ? project.usage[paymentType].now - 71840.14 // remove fees from day the graph migrated to arbitrum
-                          : project.usage[paymentType].now,
-                      ).toLocaleString()}`}
+                      value={
+                        isNaN(project.usage[paymentType].now)
+                          ? "N/A"
+                          : `$${Math.round(
+                              project.name == "The Graph"
+                                ? project.usage[paymentType].now - 71840.14 // remove fees from day the graph migrated to arbitrum
+                                : project.usage[paymentType].now,
+                            ).toLocaleString()}`
+                      }
                     />
                     <Metric
                       label="30d Trend"
@@ -359,14 +369,21 @@ const Project = ({ slug, index, projects, project }) => {
                             <Box
                               css={{ display: "flex", alignItems: "center" }}>
                               <Box css={{ mr: "$1" }}>
-                                <RevenueChange
-                                  percentChange={Intl.NumberFormat("en-US", {
-                                    maximumFractionDigits: 2,
-                                  }).format(
-                                    project.usage[paymentType]
-                                      .thirtyDayPercentChange,
-                                  )}
-                                />
+                                {isNaN(
+                                  project.usage[paymentType]
+                                    .thirtyDayPercentChange,
+                                ) ? (
+                                  "N/A"
+                                ) : (
+                                  <RevenueChange
+                                    percentChange={Intl.NumberFormat("en-US", {
+                                      maximumFractionDigits: 2,
+                                    }).format(
+                                      project.usage[paymentType]
+                                        .thirtyDayPercentChange,
+                                    )}
+                                  />
+                                )}
                               </Box>
                               <TooltipTrigger>
                                 <InfoCircledIcon />
