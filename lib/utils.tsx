@@ -353,18 +353,29 @@ type RankableProject = Pick<Project, "slug" | "usage"> & {
 };
 
 /**
- * Normalizes a project's 30-day total so we can sort missing/invalid values
- * alongside real numbers (missing metrics fall to -Infinity).
+ * Normalizes a value for sorting; missing/invalid becomes -Infinity.
+ * @param value - Numeric value to normalize.
+ * @returns Normalized numeric value or -Infinity.
  */
-export const normalizeThirtyDayTotal = (project?: RankableProject) => {
-  const total = project?.usage?.revenue?.thirtyDayTotal;
-  return Number.isFinite(total) ? (total as number) : -Infinity;
+export const normalizeNumericMetric = (value: unknown) => {
+  return typeof value === "number" && Number.isFinite(value)
+    ? value
+    : -Infinity;
 };
 
 /**
- * Sorts the provided projects array by 30d totals (descending) and writes the
- * resulting rank (1-based) on each project. Projects with warnings are assigned
- * a null rank so the UI can render "--".
+ * Normalizes a project's 30-day total using the generic helper above.
+ * @param project - Project whose 30-day total to normalize.
+ * @returns Normalized 30-day total or -Infinity.
+ */
+export const normalizeThirtyDayTotal = (project?: RankableProject) => {
+  return normalizeNumericMetric(project?.usage?.revenue?.thirtyDayTotal);
+};
+
+/**
+ * Sorts projects by 30d total (desc) and assigns rank; warnings get null rank.
+ * @param projects - Array of projects to sort and rank.
+ * @returns New array of projects sorted by 30d total with rank assigned.
  */
 export const sortProjectsByThirtyDayTotal = <T extends RankableProject>(
   projects: T[],

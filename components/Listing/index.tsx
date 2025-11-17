@@ -28,7 +28,7 @@ import {
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 import registry from "../../registry.json";
-import { normalizeThirtyDayTotal } from "../../lib/utils";
+import { normalizeNumericMetric } from "../../lib/utils";
 
 const StyledImage = styled("img", {
   mr: "$3",
@@ -74,9 +74,11 @@ type ColumnMeta = {
   minWidth?: number;
 };
 
-const sortingFn: SortingFn<any> = (rowA, rowB) =>
-  normalizeThirtyDayTotal(rowA.original) -
-  normalizeThirtyDayTotal(rowB.original);
+const createSortingFn =
+  (selector: (project: any) => number | null | undefined): SortingFn<any> =>
+  (rowA, rowB) =>
+    normalizeNumericMetric(selector(rowA.original)) -
+    normalizeNumericMetric(selector(rowB.original));
 
 const Listing = ({ data, ...props }) => {
   const [sorting, setSorting] = useState<SortingState>([
@@ -167,7 +169,9 @@ const Listing = ({ data, ...props }) => {
             id: "usage.revenue.thirtyDayTotal",
             header: "",
             accessorFn: (row) => row?.usage?.revenue?.thirtyDayTotal ?? 0,
-            sortingFn: sortingFn,
+            sortingFn: createSortingFn(
+              (project) => project?.usage?.revenue?.thirtyDayTotal,
+            ),
             meta: {
               css: { fontSize: "11px", color: "$gray400" },
               minWidth: 50,
@@ -194,7 +198,9 @@ const Listing = ({ data, ...props }) => {
             id: "usage.revenue.ninetyDayTotal",
             header: "",
             accessorFn: (row) => row?.usage?.revenue?.ninetyDayTotal ?? 0,
-            sortingFn: sortingFn,
+            sortingFn: createSortingFn(
+              (project) => project?.usage?.revenue?.ninetyDayTotal,
+            ),
             meta: {
               css: { fontSize: "11px", color: "$gray400" },
               minWidth: 50,
