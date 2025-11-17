@@ -4,6 +4,7 @@ import registry from "../../../registry.json";
 import dayjs from "dayjs";
 import { getSnapshots, getSubgraph, sumArrays } from "../../../lib/utils";
 import prisma from "../../../lib/prisma";
+import { Project } from "../../../types";
 
 const utcCurrentTime = dayjs();
 const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
@@ -25,94 +26,87 @@ const EMPTY = {
   ninetyDaysAgo: 0,
 };
 
-export const getEmptyUsageResponse = (id, warning) => {
-  const zeroRevenue = { ...EMPTY };
-  const zeroDilution = { ...EMPTY };
-  const isDilution = registry[id]?.paymentType === "dilution";
+/** Returns a warning usage payload with null metrics. */
+export const getEmptyUsageResponse = (warning?: string) => ({
+  revenue: { ...EMPTY },
+  dilution: { ...EMPTY },
+  days: [],
+  warning,
+});
 
+/** Creates a fallback project payload with warning metadata. */
+export const buildFallbackProject = (
+  project: string,
+  warning: string,
+): Project => {
+  const base = registry[project] ?? {};
   return {
-    revenue: isDilution ? zeroDilution : zeroRevenue,
-    dilution: isDilution ? zeroRevenue : zeroDilution,
-    days: [],
-    warning,
-  };
+    ...base,
+    slug: project,
+    untracked: Boolean(base.untracked),
+    usage: getEmptyUsageResponse(warning),
+  } as Project;
 };
 
 const getUsageFromDB = async (name) => {
-  try {
-    const project = await prisma.project.findFirst({
-      where: {
-        name: name,
-      },
-    });
+  const project = await prisma.project.findFirst({
+    where: {
+      name: name,
+    },
+  });
 
-    if (!project) {
-      console.warn("Project not found in database", { name });
-      return getEmptyUsageResponse(name, "No project data found in database.");
-    }
-
-    const now = await prisma.day.aggregate({
-      where: {
-        projectId: project.id,
-      },
-      _sum: {
-        revenue: true,
-      },
-    });
-    const totalRevenue = now._sum.revenue ?? 0;
-
-    const days = await prisma.day.findMany({
-      select: {
-        date: true,
-        revenue: true,
-      },
-      where: {
-        projectId: project.id,
-      },
-      take: 2000,
-    });
-
-    if (!days.length) {
-      console.warn("No revenue day data found in database", { name });
-      return getEmptyUsageResponse(name, "No project data found in database.");
-    }
-
-    const revenue = {
-      now: totalRevenue, // total revenue as of now
-      oneDayAgo: await getRevenueFromDB(project.id, utcOneDayBack, prisma), // total revenue as of 1 day ago
-      twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
-      oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
-      twoWeeksAgo: await getRevenueFromDB(project.id, utcTwoWeeksBack, prisma), // total revenue as of two weeks ago
-      thirtyDaysAgo: await getRevenueFromDB(
-        project.id,
-        utcThirtyDaysBack,
-        prisma,
-      ), // total revenue as of thirty days ago
-      sixtyDaysAgo: await getRevenueFromDB(
-        project.id,
-        utcSixtyDaysBack,
-        prisma,
-      ), // total revenue as of sixty days ago
-      ninetyDaysAgo: await getRevenueFromDB(
-        project.id,
-        utcNinetyDaysBack,
-        prisma,
-      ), // total revenue as of ninety days ago
-    };
-    const tmp = {
-      revenue: registry[name].paymentType === "dilution" ? EMPTY : revenue,
-      dilution: registry[name].paymentType === "dilution" ? revenue : EMPTY,
-      days: days,
-    };
-
-    return tmp;
-  } catch (error) {
-    console.warn("Failed to fetch usage from database", { name, error });
-    return getEmptyUsageResponse(
-      name,
-      "Could not fetch usage data from database.",
-    );
+  if (!project) {
+    throw new Error("Project not found in database");
   }
+
+  const now = await prisma.day.aggregate({
+    where: {
+      projectId: project.id,
+    },
+    _sum: {
+      revenue: true,
+    },
+  });
+
+  const days = await prisma.day.findMany({
+    select: {
+      date: true,
+      revenue: true,
+    },
+    where: {
+      projectId: project.id,
+    },
+    take: 2000,
+  });
+
+  if (!days.length) {
+    throw new Error("No revenue day data found in database");
+  }
+
+  const totalRevenue = now._sum.revenue ?? 0;
+  const revenue = {
+    now: totalRevenue, // total revenue as of now
+    oneDayAgo: await getRevenueFromDB(project.id, utcOneDayBack, prisma), // total revenue as of 1 day ago
+    twoDaysAgo: await getRevenueFromDB(project.id, utcTwoDaysBack, prisma), // total revenue as of two days ago
+    oneWeekAgo: await getRevenueFromDB(project.id, utcOneWeekBack, prisma), // total revenue as of one week ago
+    twoWeeksAgo: await getRevenueFromDB(project.id, utcTwoWeeksBack, prisma), // total revenue as of two weeks ago
+    thirtyDaysAgo: await getRevenueFromDB(
+      project.id,
+      utcThirtyDaysBack,
+      prisma,
+    ), // total revenue as of thirty days ago
+    sixtyDaysAgo: await getRevenueFromDB(project.id, utcSixtyDaysBack, prisma), // total revenue as of sixty days ago
+    ninetyDaysAgo: await getRevenueFromDB(
+      project.id,
+      utcNinetyDaysBack,
+      prisma,
+    ), // total revenue as of ninety days ago
+  };
+  return {
+    revenue: registry[name].paymentType === "dilution" ? EMPTY : revenue,
+    dilution: registry[name].paymentType === "dilution" ? revenue : EMPTY,
+    days: days,
+  };
 };
 
 const getRevenueFromDB = async (projectId, date, prisma) => {
@@ -177,10 +171,9 @@ const getUsageFromSubgraph = async (id, networks) => {
   const dayDataResults = await Promise.all(dayDataPromises);
   const snapshotResults = await Promise.all(snapshotPromises);
 
+  // Keep protocol responses in sync with snapshot arrays so we only sum valid networks.
   const dayData = [];
   const snapshotData = [];
-
-  // Keep protocol responses in sync with snapshot arrays so we only sum valid networks.
   dayDataResults.forEach((result, index) => {
     if (result?.protocol) {
       dayData.push(result);
@@ -192,13 +185,7 @@ const getUsageFromSubgraph = async (id, networks) => {
   });
 
   if (!dayData.length) {
-    console.warn("Returning empty usage response due to subgraph errors", {
-      id,
-    });
-    return getEmptyUsageResponse(
-      id,
-      "Could not fetch usage data from subgraph.",
-    );
+    throw new Error("No usage data available from subgraph");
   }
 
   let totalRevenue = 0;
@@ -282,15 +269,15 @@ export const getMarketDataFromCoingecko = async (id) => {
 };
 
 export const getProject = async (id) => {
-  let usage;
+  try {
+    let usage;
 
-  // if project is part of the web3 index subgraph get it from the subgraph
-  if (registry[id].subgraphs) {
-    usage = await getUsageFromSubgraph(id, registry[id].subgraphs);
-  }
-  // if project is providing its own usage endpoint, fetch it
-  else if (registry[id].usage) {
-    try {
+    // if project is part of the web3 index subgraph get it from the subgraph
+    if (registry[id].subgraphs) {
+      usage = await getUsageFromSubgraph(id, registry[id].subgraphs);
+    }
+    // if project is providing its own usage endpoint, fetch it
+    else if (registry[id].usage) {
       const res = await fetch(registry[id].usage);
       if (!res.ok) {
         throw new Error(`Usage endpoint returned status ${res.status}`);
@@ -299,6 +286,8 @@ export const getProject = async (id) => {
 
       // make sure days in endpoint provided are sorted ascending
       usage.days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
+
+      // Remove negative usage.
       let clamped = false;
       usage.days = usage.days.map((day) => {
         const original = +day.revenue;
@@ -312,27 +301,30 @@ export const getProject = async (id) => {
           endpoint: registry[id].usage,
         });
       }
-    } catch (error) {
-      console.warn("Failed to fetch usage from endpoint", {
-        id,
-        endpoint: registry[id].usage,
-        error,
-      });
-      usage = getEmptyUsageResponse(
-        id,
-        "Could not fetch usage data from endpoint.",
-      );
     }
-  }
-  // else get usage from the Web3 Index DB
-  else {
-    usage = await getUsageFromDB(id);
-  }
+    // else get usage from the Web3 Index DB
+    else {
+      usage = await getUsageFromDB(id);
+    }
 
-  return {
-    ...registry[id],
-    usage,
-  };
+    return {
+      ...registry[id],
+      slug: id,
+      untracked: Boolean(registry[id]?.untracked),
+      usage,
+    };
+  } catch (error) {
+    const warning =
+      error instanceof Error && error.message
+        ? error.message
+        : "Could not fetch usage data for this project.";
+    console.warn("Falling back to empty usage payload for project", {
+      id,
+      warning,
+      error,
+    });
+    return buildFallbackProject(id, warning);
+  }
 };
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {

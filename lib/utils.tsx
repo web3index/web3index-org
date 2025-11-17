@@ -3,6 +3,7 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
+
 type BlocksResponse = {
   blocks: { id: string; number: string; timestamp: string }[];
 };

@@ -531,16 +531,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug?.toString();
-  if (!slug) {
-    return { notFound: true };
-  }
+  if (!slug) return { notFound: true };
 
   const { projects } = await getProjects();
   const project = projects.find((project) => project.slug === slug);
 
-  if (!project) {
-    return { notFound: true };
-  }
+  if (!project) return { notFound: true };
 
   projects.sort((a, b) => {
     return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
