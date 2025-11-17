@@ -215,6 +215,44 @@ const Listing = ({ data, ...props }) => {
         ],
       },
       {
+        header: "Total Fees",
+        columns: [
+          {
+            id: "usage.totalFees",
+            header: "",
+            accessorFn: (row) => {
+              const nameKey = row?.name?.toLowerCase?.();
+              const paymentType =
+                registry[nameKey]?.paymentType === "dilution"
+                  ? "dilution"
+                  : "revenue";
+              return row?.usage?.[paymentType]?.now ?? 0;
+            },
+            meta: {
+              css: { fontSize: "11px", color: "$gray400" },
+              minWidth: 65,
+              width: 65,
+            },
+            cell: ({ row }) => {
+              const warning = row.original?.usage?.warning;
+              if (warning) {
+                return <WarningPlaceholder />;
+              }
+              const nameKey = row.original?.name?.toLowerCase();
+              const paymentType =
+                registry[nameKey]?.paymentType === "dilution"
+                  ? "dilution"
+                  : "revenue";
+              const total = row.original?.usage?.[paymentType]?.now ?? 0;
+              if (!total) {
+                return <Box>$0</Box>;
+              }
+              return <Box>${Math.round(total).toLocaleString()}</Box>;
+            },
+          },
+        ],
+      },
+      {
         header: "30d Trend",
         meta: {
           tooltip:
