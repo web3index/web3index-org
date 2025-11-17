@@ -1,11 +1,20 @@
 import { useTheme } from "next-themes";
-import Box from "./Box";
+import { styled } from "../stitches.config";
 import type { ComponentProps } from "react";
 
-type ThemeAwareLogoProps = Omit<ComponentProps<typeof Box>, "as" | "src"> & {
+const LogoImage = styled("img", {
+  boxSizing: "border-box",
+});
+
+type ThemeAwareLogoProps = Omit<
+  ComponentProps<typeof LogoImage>,
+  "src" | "alt"
+> & {
   lightSrc: string;
   darkSrc: string;
   alt: string;
+  width?: number | string;
+  height?: number | string;
 };
 
 const ThemeAwareLogo = ({
@@ -20,14 +29,7 @@ const ThemeAwareLogo = ({
   const src = resolvedTheme === "light" ? lightSrc : darkSrc;
 
   return (
-    <Box
-      as="img"
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      {...props}
-    />
+    <LogoImage src={src} alt={alt} width={width} height={height} {...props} />
   );
 };
 
