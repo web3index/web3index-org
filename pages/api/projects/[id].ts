@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { getSnapshots, getSubgraph, sumArrays } from "../../../lib/utils";
 import prisma from "../../../lib/prisma";
 import { Project } from "../../../types";
+import { setProjectCacheHeaders } from "../../../lib/cacheHeaders";
 
 const utcCurrentTime = dayjs();
 const utcOneDayBack = utcCurrentTime.subtract(1, "day").unix();
@@ -329,6 +330,7 @@ export const getProject = async (id) => {
 /** Next.js API route handler that returns a single project payload. */
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const project = await getProject(_req.query.id);
+  setProjectCacheHeaders(res);
   res.json(project);
 };
 
