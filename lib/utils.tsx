@@ -3,6 +3,7 @@ import Numeral from "numeral";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import utc from "dayjs/plugin/utc";
+import { Project } from "../types";
 
 type BlocksResponse = {
   blocks: { id: string; number: string; timestamp: string }[];
@@ -346,3 +347,41 @@ export function sumArrays(...arrays) {
     arrays.map((xs) => xs[i] || 0).reduce((sum, x) => sum + x, 0),
   );
 }
+
+type RankableProject = Pick<Project, "slug" | "usage"> & {
+  rank?: number | null;
+};
+
+/**
+ * Normalizes a project's 30-day total so we can sort missing/invalid values
+ * alongside real numbers (missing metrics fall to -Infinity).
+ */
+export const normalizeThirtyDayTotal = (project?: RankableProject) => {
+  const total = project?.usage?.revenue?.thirtyDayTotal;
+  return Number.isFinite(total) ? (total as number) : -Infinity;
+};
+
+/**
+ * Sorts the provided projects array by 30d totals (descending) and writes the
+ * resulting rank (1-based) on each project. Projects with warnings are assigned
+ * a null rank so the UI can render "--".
+ */
+export const sortProjectsByThirtyDayTotal = <T extends RankableProject>(
+  projects: T[],
+) => {
+  const indexed = projects.map((project, index) => ({ project, index }));
+  indexed.sort((a, b) => {
+    const diff =
+      normalizeThirtyDayTotal(b.project) - normalizeThirtyDayTotal(a.project);
+    if (diff !== 0) {
+      return diff;
+    }
+    return a.index - b.index;
+  });
+
+  indexed.forEach(({ project }, rankIndex) => {
+    project.rank = project?.usage?.warning ? null : rankIndex + 1;
+  });
+
+  return indexed.map(({ project }) => project);
+};

@@ -198,7 +198,6 @@ const Project = ({ slug, index, projects, project }) => {
         description={project.description}
       />
       <ProjectHeader
-        rank={index}
         first={projects[0].slug}
         next={
           index === projects.length - 1
@@ -230,7 +229,9 @@ const Project = ({ slug, index, projects, project }) => {
                   {/* <span role="img" aria-label="#1">
                   {trophies[index]}
                 </span>{" "} */}
-                  #{index + 1}
+                  {project.usage.warning
+                    ? "--"
+                    : `#${project.rank ?? index + 1}`}
                 </Box>
               )}
               <Box
@@ -555,10 +556,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const project = projects.find((project) => project.slug === slug);
 
   if (!project) return { notFound: true };
-
-  projects.sort((a, b) => {
-    return b.usage.revenue.thirtyDayTotal - a.usage.revenue.thirtyDayTotal;
-  });
 
   const index = projects.findIndex((p) => p.slug === slug);
   let remoteProject: EverestProjectQuery["project"] | null = null;

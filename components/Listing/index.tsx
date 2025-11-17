@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ColumnDef,
   SortingFn,
@@ -28,6 +28,7 @@ import {
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 import registry from "../../registry.json";
+import { normalizeThirtyDayTotal } from "../../lib/utils";
 
 const StyledImage = styled("img", {
   mr: "$3",
@@ -73,27 +74,14 @@ type ColumnMeta = {
   minWidth?: number;
 };
 
-const normalizeThirtyDayTotal = (project) =>
-  Number.isFinite(project?.usage?.revenue?.thirtyDayTotal)
-    ? project.usage.revenue.thirtyDayTotal
-    : -Infinity;
-
-const sortingFn: SortingFn<any> = (rowA, rowB) => {
-  const result =
-    normalizeThirtyDayTotal(rowA.original) -
-    normalizeThirtyDayTotal(rowB.original);
-  if (result === 0) {
-    return rowA.index - rowB.index;
-  }
-  return result;
-};
+const sortingFn: SortingFn<any> = (rowA, rowB) =>
+  normalizeThirtyDayTotal(rowA.original) -
+  normalizeThirtyDayTotal(rowB.original);
 
 const Listing = ({ data, ...props }) => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "usage.revenue.thirtyDayTotal", desc: true },
   ]);
-
-  const [rankLookup, setRankLookup] = useState<Map<string, number>>(new Map());
 
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
@@ -107,7 +95,7 @@ const Listing = ({ data, ...props }) => {
             cell: ({ row }) =>
               row.original?.usage?.warning
                 ? "--"
-                : (rankLookup.get(row.original?.slug) ?? row.index + 1),
+                : (row.original?.rank ?? row.index + 1),
             meta: { className: "sticky", hideOnMobile: true, width: 90 },
           },
         ],
@@ -277,7 +265,7 @@ const Listing = ({ data, ...props }) => {
         ],
       },
     ],
-    [rankLookup],
+    [],
   );
 
   const table = useReactTable({
@@ -289,13 +277,6 @@ const Listing = ({ data, ...props }) => {
     getSortedRowModel: getSortedRowModel(),
     enableSortingRemoval: false,
   });
-
-  useEffect(() => {
-    const rows = table.getRowModel().rows;
-    setRankLookup(
-      new Map(rows.map((row, index) => [row.original?.slug, index + 1])),
-    );
-  }, [table, data]);
 
   const firstPageRows = table.getRowModel().rows.slice(0, 20);
 

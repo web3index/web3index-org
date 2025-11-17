@@ -32,6 +32,7 @@ export interface Project {
   coingeckoID?: CoingeckoID;
   usage: Usage;
   untracked: boolean;
+  rank?: number | null;
   [k: string]: unknown;
 }
 export interface Usage {

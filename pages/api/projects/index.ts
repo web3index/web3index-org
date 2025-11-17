@@ -4,6 +4,7 @@ import schema from "../../../schema.json";
 import registry from "../../../registry.json";
 import { getProject, buildFallbackProject } from "./[id]";
 import { getTwoPeriodPercentChange } from "../../../lib/utils";
+import { sortProjectsByThirtyDayTotal } from "../../../lib/utils";
 import { Project } from "../../../types";
 
 /**
@@ -137,6 +138,8 @@ export const getProjects = async () => {
     }
   }
 
+  const rankedProjects = sortProjectsByThirtyDayTotal(projects);
+
   const [oneWeekTotal, oneWeekPercentChange] = getTwoPeriodPercentChange(
     totalParticipantRevenueNow,
     totalParticipantRevenueOneWeekAgo,
@@ -150,7 +153,7 @@ export const getProjects = async () => {
   );
 
   return {
-    projects: projects,
+    projects: rankedProjects,
     revenue: {
       totalParticipantRevenueNow,
       totalParticipantRevenueOneWeekAgo,
