@@ -16,8 +16,7 @@ const Index = ({ data = null, children }) => {
         "::-moz-selection": {
           background: "$highlighter",
         },
-      }}
-    >
+      }}>
       {data?.projects && <Ticker projects={data.projects} />}
       {children}
       <Section>

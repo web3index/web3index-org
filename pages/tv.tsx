@@ -9,14 +9,14 @@ const TV = () => {
     "tv",
     async () => {
       const res = await axios.get(
-        "/api/stream/0bb8feda-e95e-4afb-81b3-b9746be1dbf1"
+        "/api/stream/0bb8feda-e95e-4afb-81b3-b9746be1dbf1",
       );
       return res.data;
     },
     {
       // Refetch the data every 5 seconds
       refetchInterval: 5000,
-    }
+    },
   );
 
   const videoJsOptions = {

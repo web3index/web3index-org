@@ -58,7 +58,7 @@ const pocketImport = async () => {
     console.log(day, totalBurned);
 
     const currentDayPrice = pocketPrices.find(
-      (x) => x.date === dayISO.slice(0, 10)
+      (x) => x.date === dayISO.slice(0, 10),
     );
 
     console.log("totalBurned", totalBurned);
@@ -72,8 +72,8 @@ const pocketImport = async () => {
         {
           style: "currency",
           currency: "USD",
-        }
-      )} USD.`
+        },
+      )} USD.`,
     );
 
     const fee = {
@@ -120,7 +120,7 @@ const storeDBData = async (
     date: number;
     fees: number;
   },
-  projectId: number
+  projectId: number,
 ) => {
   const day = await prisma.day.findFirst({
     where: {
@@ -202,7 +202,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
               "Content-Type": "application/json",
               "X-CMC_PRO_API_KEY": cmcAPIKey,
             },
-          }
+          },
         );
 
         if (!response) {
@@ -239,7 +239,7 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
 
     return dayPrices;
   } catch (e) {
-    console.log('test')
+    console.log("test");
     throw new Error(e);
   }
 };
@@ -248,7 +248,7 @@ const getPOKTNetworkData = async (date: Date) => {
   try {
     const ISODateFrom = formatDate(date);
     const ISODateTo = new Date(
-      new Date(date.toString()).setDate(date.getDate() + 1)
+      new Date(date.toString()).setDate(date.getDate() + 1),
     ).toISOString();
 
     console.log("ISODateFrom", ISODateFrom);
