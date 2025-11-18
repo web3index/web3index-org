@@ -201,7 +201,7 @@ const Project = ({ slug, index, projects, project }) => {
             }}>
             <Box css={{ mt: "$5" }}>
               {!project.untracked && (
-                <Box css={{ fontSize: "$5", mb: "$3" }}>
+                <Box css={{ fontSize: "$5", mb: "$3", color: "$hiContrast" }}>
                   {/* <span role="img" aria-label="#1">
                   {trophies[index]}
                 </span>{" "} */}
