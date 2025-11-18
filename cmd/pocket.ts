@@ -1,12 +1,10 @@
 import prisma from "../lib/prisma";
+import { fetchCryptoComparePrice } from "./utils/cryptoCompare";
 
 const axios = require("axios");
-const cmcAPIKey = process.env.CMC_API_KEY;
 const poktscanAPIKey = process.env.POKTSCAN_API_KEY;
 
 // POKT Pricing & Network Data Endpoints
-const cmcAPIEndpoint =
-  "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/historical";
 const poktscanAPIEndpoint = "https://api.poktscan.com/poktscan/api/graphql";
 
 const coin = {
@@ -60,6 +58,11 @@ const pocketImport = async () => {
     const currentDayPrice = pocketPrices.find(
       (x) => x.date === dayISO.slice(0, 10),
     );
+
+    if (!currentDayPrice) {
+      console.warn("No price found for", dayISO);
+      continue;
+    }
 
     console.log("totalBurned", totalBurned);
     console.log("currentDayPrice.price", currentDayPrice.price);
@@ -161,87 +164,18 @@ const storeDBData = async (
   return;
 };
 
-const monthDiff = (d1, d2) => {
-  let months;
-  months = (d2.getFullYear() - d1.getFullYear()) * 12;
-  months -= d1.getMonth();
-  months += d2.getMonth();
-  return months <= 0 ? 0 : months;
-};
-
-const addMonth = (date, months) => {
-  const d1 = new Date(date.toString());
-  const d2 = d1.getDate();
-  d1.setMonth(new Date(date.toString()).getMonth() + +months);
-  if (new Date(date.toString()).getDate() != d2) {
-    d1.setDate(0);
-  }
-  return d1.toISOString();
-};
-
 const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
   const dayPrices: DayPrice[] = [];
-  try {
-    const totalMonths = monthDiff(dateFrom, dateTo);
-    const dateFromISO = formatDate(dateFrom);
-    const dateFromISOArr = [dateFromISO];
-
-    for (let i = 0; i < totalMonths; i++) {
-      const newMonth = addMonth(dateFromISOArr[i], 1);
-      dateFromISOArr.push(newMonth);
-    }
-
-    // Can only request one month of items at a time from cmc
-    for (const d1 of dateFromISOArr) {
-      if (new Date(d1).getTime() < new Date().getTime()) {
-        const d2 = addMonth(d1, 1);
-        const { data: response }: { data: Response } = await axios.get(
-          `${cmcAPIEndpoint}?symbol=POKT&time_start=${d1}&time_end=${d2}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "X-CMC_PRO_API_KEY": cmcAPIKey,
-            },
-          },
-        );
-
-        if (!response) {
-          throw new Error("No data returned by the price API.");
-        }
-
-        const uniqueDates = new Set<string>();
-        const dateQuotes: { [date: string]: number[] } = {};
-
-        response.data.quotes.forEach((quote) => {
-          const date = quote.timestamp.slice(0, 10);
-          uniqueDates.add(date);
-          if (!dateQuotes[date]) {
-            dateQuotes[date] = [];
-          }
-          if (quote?.quote?.USD?.price) {
-            dateQuotes[date].push(quote?.quote?.USD?.price);
-          }
-        });
-
-        const averagePrices: { [date: string]: number } = {};
-
-        Array.from(uniqueDates).forEach((date) => {
-          const prices = dateQuotes[date];
-          const sum = prices.reduce((acc, price) => acc + price, 0);
-          const average = sum / prices.length;
-          averagePrices[date] = average;
-        });
-        for (const [date, price] of Object.entries(averagePrices)) {
-          dayPrices.push({ date, price });
-        }
-      }
-    }
-
-    return dayPrices;
-  } catch (e) {
-    console.log("test");
-    throw new Error(e);
+  for (
+    let cursor = new Date(dateFrom);
+    cursor <= dateTo;
+    cursor.setDate(cursor.getDate() + 1)
+  ) {
+    const timestamp = Math.floor(cursor.getTime() / 1000);
+    const price = await fetchCryptoComparePrice(coin.symbol, timestamp);
+    dayPrices.push({ date: cursor.toISOString().slice(0, 10), price });
   }
+  return dayPrices;
 };
 
 const getPOKTNetworkData = async (date: Date) => {
@@ -352,39 +286,6 @@ const formatDate = (date: Date) => {
 type DayPrice = {
   date: string;
   price: number;
-};
-
-type Quote = {
-  timestamp: string;
-  quote: {
-    USD: {
-      price: number;
-      volume_24h: number;
-      market_cap: number;
-      total_supply: number;
-      circulating_supply: number;
-      timestamp: string;
-    };
-  };
-};
-
-type Response = {
-  status: {
-    timestamp: string;
-    error_code: number;
-    error_message: null | string;
-    elapsed: number;
-    credit_count: number;
-    notice: null | string;
-  };
-  data: {
-    quotes: Quote[];
-    id: number;
-    name: string;
-    symbol: string;
-    is_active: number;
-    is_fiat: number;
-  };
 };
 
 type PoktScanTransaction = {
