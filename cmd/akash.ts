@@ -51,18 +51,16 @@ const akashImport = async () => {
 
   console.log("Project: " + project.name + " - last imported: " + lastId);
 
-  const response = await axios
-    .get<DashboardResponse>(endpoint)
-    .catch(function (error) {
-      console.log("Error getting data from endpoint ", endpoint, error);
-    });
-
-  if (!response?.data) {
-    console.log("No data returned from Akash metrics endpoint.");
+  let responseData: DashboardResponse;
+  try {
+    const response = await axios.get<DashboardResponse>(endpoint);
+    responseData = response.data;
+  } catch (error) {
+    console.log("Error getting data from endpoint ", endpoint, error);
     return;
   }
 
-  const points = [response.data.now, response.data.compare].filter(
+  const points = [responseData.now, responseData.compare].filter(
     (p): p is DashboardPoint =>
       !!p?.date && typeof p.dailyUUsdSpent === "number",
   );
