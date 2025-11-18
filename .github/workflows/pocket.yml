@@ -24,17 +24,9 @@ jobs:
           node-version: 22
       - name: yarn install
         run: yarn install
-      - name: install typescript
-        run: npm install -g typescript@4.5.5
-      - name: change directory
-        run: cd ./cmd
-      - name: compile
-        run: tsc ./cmd/pocket.ts --esModuleInterop
-      - name: list files
-        run: ls ./cmd
-      - name: run
-        run: node ./cmd/pocket.js
+      - name: run importer
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           POKTSCAN_API_KEY: ${{ secrets.POKTSCAN_API_KEY }}
-          CMC_API_KEY: ${{ secrets.CMC_API_KEY }}
+          CRYPTOCOMPARE_API_KEY: ${{ secrets.CRYPTOCOMPARE_API_KEY }}
+        run: yarn cmd cmd/pocket.ts

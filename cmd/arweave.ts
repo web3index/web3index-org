@@ -1,7 +1,7 @@
-import axios from "axios";
 import { GraphQLClient, gql } from "graphql-request";
 import prisma from "../lib/prisma";
 import type { Project } from "@prisma/client";
+import { fetchCryptoComparePrice } from "./utils/cryptoCompare";
 
 const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint);
@@ -51,8 +51,6 @@ const coin = {
   symbol: "AR",
   cryptoCompareSymbol: "AR",
 };
-
-const priceCache = new Map<number, number>();
 
 type DayAccumulator = {
   date: number;
@@ -210,21 +208,7 @@ const arweaveImport = async () => {
 };
 
 const getHistoricalData = async (blockTimestamp: number) => {
-  const dayTimestamp = getMidnightUnixTimestamp(blockTimestamp);
-  if (priceCache.has(dayTimestamp)) {
-    return priceCache.get(dayTimestamp)!;
-  }
-
-  const uri = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coin.cryptoCompareSymbol}&tsyms=USD&ts=${dayTimestamp}`;
-  const response = await axios.get<Record<string, Record<string, number>>>(uri);
-  const price = response.data?.[coin.cryptoCompareSymbol]?.USD;
-
-  if (!Number.isFinite(price)) {
-    throw new Error("Unable to get price data from CryptoCompare.");
-  }
-
-  priceCache.set(dayTimestamp, Number(price));
-  return Number(price);
+  return fetchCryptoComparePrice(coin.cryptoCompareSymbol, blockTimestamp);
 };
 
 const getProject = async (name: string): Promise<Project> => {

@@ -27,4 +27,5 @@ jobs:
       - name: run importer
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CRYPTOCOMPARE_API_KEY: ${{ secrets.CRYPTOCOMPARE_API_KEY }}
         run: yarn cmd cmd/arweave.ts
