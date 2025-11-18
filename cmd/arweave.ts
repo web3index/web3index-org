@@ -1,196 +1,310 @@
+import axios from "axios";
+import { GraphQLClient, gql } from "graphql-request";
 import prisma from "../lib/prisma";
-import type { Day, Project } from "@prisma/client";
+import type { Project } from "@prisma/client";
 
-const params = new URLSearchParams({
-  interval: "daily",
-  daily_granularity: "project",
-});
-const endpoint = "https://api.tokenterminal.com/v2/projects/arweave/metrics";
-const axios = require("axios");
+const endpoint = "https://arweave.net/graphql";
+const gqlclient = new GraphQLClient(endpoint);
+const MAX_BLOCKS_PER_RUN = 1_000;
+const START_BLOCK_HEIGHT = 422250;
+
+const queryGetTransactions = gql`
+  query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
+    transactions(
+      first: 100
+      sort: HEIGHT_ASC
+      block: { min: $minblock, max: $maxblock }
+      after: $cursor
+    ) {
+      pageInfo {
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          block {
+            id
+            timestamp
+            height
+          }
+          fee {
+            winston
+            ar
+          }
+        }
+      }
+    }
+  }
+`;
+
+const queryGetLastBlock = gql`
+  query queryGetLastBlock {
+    block {
+      height
+    }
+  }
+`;
 
 const coin = {
   name: "arweave",
   symbol: "AR",
+  cryptoCompareSymbol: "AR",
 };
 
-const today = new Date();
-today.setUTCHours(0, 0, 0, 0);
+const priceCache = new Map<number, number>();
 
-// Update arweave daily revenue data
-// a cron job should hit this endpoint every half hour or so (can use github actions for cron)
+type DayAccumulator = {
+  date: number;
+  fees: number;
+  lastBlockHeight: number;
+};
+
+type TransactionEdge = {
+  cursor: string;
+  node: {
+    block: {
+      id: string;
+      timestamp: string;
+      height: number;
+    } | null;
+    fee: {
+      ar: string;
+    };
+  };
+};
+
+type TransactionsResponse = {
+  transactions: {
+    edges: TransactionEdge[];
+    pageInfo: {
+      hasNextPage: boolean;
+    };
+  };
+};
+
 const arweaveImport = async () => {
-  // Use the updatedAt field in the Day model and compare it with the
-  // timestamp associated with the fee, if it's less than the timestamp
-  // then update the day's revenue
-
-  // Get last imported id: we will start importing from there
   const project = await getProject(coin.name);
 
-  // Delete project if delete: true
-  const deleteProject = project.delete;
-  if (deleteProject) {
+  if (project.delete) {
     await prisma.project.update({
-      where: {
-        name: coin.name,
-      },
+      where: { id: project.id },
       data: {
         delete: false,
-        lastImportedId: "0",
+        lastImportedId: START_BLOCK_HEIGHT.toString(),
       },
     });
   }
 
-  const response = await axios
-    .get(endpoint, {
-      params: params,
-      headers: { Authorization: "Bearer " + process.env.TOKENTERMINAL_API_KEY },
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-
-  const days = project.days ?? [];
-  let lastDate: Date;
-
-  if (!days.length) {
-    lastDate = new Date(
-      response.data[response.data.length - 1].datetime.split("+")[0],
-    );
-  } else {
-    const latestDay = days[days.length - 1];
-    lastDate = new Date(latestDay.date * 1000);
+  const lastId = parseInt(project.lastImportedId, 10);
+  if (Number.isNaN(lastId)) {
+    throw new Error("Unable to parse lastImportedId for Arweave.");
   }
 
-  const fromDate = lastDate;
-  fromDate.setUTCHours(0, 0, 0, 0);
+  const latestChainHeight = await getLastBlockId();
+  const maxBlockHeight = Math.min(
+    latestChainHeight,
+    lastId + MAX_BLOCKS_PER_RUN,
+  );
 
-  console.log("Project: " + project.name + ", from date: " + fromDate);
+  console.log(
+    `Project: ${project.name}, from block ${lastId} to ${maxBlockHeight}`,
+  );
 
-  const toDate = new Date();
-  toDate.setUTCHours(0, 0, 0, 0);
+  if (maxBlockHeight <= lastId) {
+    console.log("Nothing new to import.");
+    return;
+  }
 
-  const difference = dateDiffInDays(fromDate, toDate);
+  let cursor: string | undefined;
+  let exit = false;
+  let dayData: DayAccumulator | null = null;
+  let cachedPriceBlock = -1;
+  let cachedPriceUsd = 0;
+  let lastProcessedBlock = lastId;
 
-  for (let index = difference; index >= 0; index--) {
-    const element = response.data.filter((obj) => {
-      const objDate = new Date(obj.datetime.split("+")[0]);
-      objDate.setUTCHours(0, 0, 0, 0);
-      return objDate.getTime() === fromDate.getTime();
-    })[0];
+  while (!exit) {
+    const data = await gqlclient.request<TransactionsResponse>(
+      queryGetTransactions,
+      {
+        minblock: lastId,
+        maxblock: maxBlockHeight,
+        cursor,
+      },
+    );
 
-    if (element === undefined) {
-      console.log("In continue");
-      fromDate.setDate(fromDate.getDate() + 1);
+    if (!data.transactions.edges.length) {
+      console.log("No transactions returned for this range.");
+      break;
+    }
+
+    for (const edge of data.transactions.edges) {
+      if (!edge.node.block) {
+        exit = true;
+        break;
+      }
+
+      const blockUnixTimestamp = parseInt(edge.node.block.timestamp, 10);
+      const blockHeight = Number(edge.node.block.height);
+      if (
+        Number.isNaN(blockUnixTimestamp) ||
+        Number.isNaN(blockHeight) ||
+        blockUnixTimestamp <= 0
+      ) {
+        continue;
+      }
+
+      lastProcessedBlock = blockHeight;
+
+      if (!dayData) {
+        dayData = {
+          date: getMidnightUnixTimestamp(blockUnixTimestamp),
+          fees: 0,
+          lastBlockHeight: blockHeight,
+        };
+      }
+
+      if (!isSameDate(dayData.date, blockUnixTimestamp)) {
+        await storeDBData(dayData, project.id);
+        dayData = {
+          date: getMidnightUnixTimestamp(blockUnixTimestamp),
+          fees: 0,
+          lastBlockHeight: blockHeight,
+        };
+      }
+
+      if (cachedPriceBlock !== blockHeight) {
+        cachedPriceUsd = await getHistoricalData(blockUnixTimestamp);
+        cachedPriceBlock = blockHeight;
+      }
+
+      const transactionFee = parseFloat(edge.node.fee?.ar ?? "0");
+      if (!Number.isFinite(transactionFee)) {
+        continue;
+      }
+
+      dayData.fees += transactionFee * cachedPriceUsd;
+      dayData.lastBlockHeight = blockHeight;
+      cursor = edge.cursor;
+    }
+
+    if (data.transactions.pageInfo.hasNextPage && !exit) {
       continue;
     }
 
-    const fee = {
-      date: fromDate.getTime() / 1000,
-      fees: element.revenue,
-    };
-
-    console.log(
-      "Store day " +
-        fromDate +
-        " - " +
-        fromDate.getTime() / 1000 +
-        "to DB - " +
-        fee.fees,
-    );
-    await storeDBData(fee, project.id);
-    fromDate.setDate(fromDate.getDate() + 1);
+    break;
   }
-  console.log("exit scrape function.");
 
-  return;
+  if (dayData && dayData.fees > 0) {
+    await storeDBData(dayData, project.id);
+  }
+
+  await prisma.project.update({
+    where: { id: project.id },
+    data: {
+      lastImportedId: Math.max(lastProcessedBlock, maxBlockHeight).toString(),
+    },
+  });
+
+  console.log("exit scrape function.");
 };
 
-type ProjectWithDays = Project & { days: Pick<Day, "date">[] };
+const getHistoricalData = async (blockTimestamp: number) => {
+  const dayTimestamp = getMidnightUnixTimestamp(blockTimestamp);
+  if (priceCache.has(dayTimestamp)) {
+    return priceCache.get(dayTimestamp)!;
+  }
 
-const getProject = async (name: string): Promise<ProjectWithDays> => {
-  const includeDays = {
-    days: {
-      select: { date: true },
-      orderBy: { date: "asc" },
-    },
-  } as const;
+  const uri = `https://min-api.cryptocompare.com/data/pricehistorical?fsym=${coin.cryptoCompareSymbol}&tsyms=USD&ts=${dayTimestamp}`;
+  const response = await axios.get<Record<string, Record<string, number>>>(uri);
+  const price = response.data?.[coin.cryptoCompareSymbol]?.USD;
 
+  if (!Number.isFinite(price)) {
+    throw new Error("Unable to get price data from CryptoCompare.");
+  }
+
+  priceCache.set(dayTimestamp, Number(price));
+  return Number(price);
+};
+
+const getProject = async (name: string): Promise<Project> => {
   let project = await prisma.project.findFirst({
     where: { name },
-    include: includeDays,
   });
 
   if (!project) {
-    console.log("Project " + name + " doesn't exist. Create it");
+    console.log(`Project ${name} doesn't exist. Creating it`);
     await prisma.project.create({
       data: {
         name,
-        lastImportedId: "0",
+        lastImportedId: START_BLOCK_HEIGHT.toString(),
       },
     });
 
     project = await prisma.project.findUnique({
       where: { name },
-      include: includeDays,
     });
   }
 
   if (!project) {
-    throw new Error(`Unable to create or fetch project with name ${name}`);
+    throw new Error(`Unable to initialize project ${name}`);
   }
 
   return project;
 };
 
-const storeDBData = async (
-  dayData: { date: any; fees: any; blockHeight?: string },
-  projectId: number,
-) => {
+const getLastBlockId = async () => {
+  const data = await gqlclient.request<{ block: { height: number } }>(
+    queryGetLastBlock,
+  );
+
+  return data.block.height;
+};
+
+const storeDBData = async (dayData: DayAccumulator, projectId: number) => {
   const day = await prisma.day.findFirst({
     where: {
       date: dayData.date,
-      projectId: projectId,
+      projectId,
     },
   });
 
-  if (day != null) {
+  if (day) {
     await prisma.day.update({
-      where: {
-        id: day.id,
-      },
+      where: { id: day.id },
       data: {
-        revenue: dayData?.fees ? dayData.fees : 0,
+        revenue: dayData.fees,
       },
     });
   } else {
     await prisma.day.create({
       data: {
         date: dayData.date,
-        revenue: dayData?.fees ? dayData.fees : 0,
-        projectId: projectId,
+        revenue: dayData.fees,
+        projectId,
       },
     });
   }
 
-  // update lastBlockID
-  await prisma.project.updateMany({
-    where: {
-      name: coin.name,
-    },
+  await prisma.project.update({
+    where: { id: projectId },
     data: {
-      lastImportedId: dayData.date.toString(),
+      lastImportedId: dayData.lastBlockHeight.toString(),
     },
   });
-
-  return;
 };
 
-const dateDiffInDays = (a: Date, b: Date) => {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  const utc1 = Date.UTC(a.getUTCFullYear(), a.getUTCMonth(), a.getUTCDate());
-  const utc2 = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate());
+const getMidnightUnixTimestamp = (unixTimestamp: number) => {
+  const date = new Date(unixTimestamp * 1000);
+  date.setUTCHours(0, 0, 0, 0);
 
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  return Math.floor(date.getTime() / 1000);
+};
+
+const isSameDate = (firstDate: number, secondDate: number) => {
+  return (
+    getMidnightUnixTimestamp(firstDate) === getMidnightUnixTimestamp(secondDate)
+  );
 };
 
 arweaveImport()
