@@ -73,9 +73,8 @@ const OldTV = () => {
               .step(1)
               .max(10000)
               .onChange((val) => {
-                screen.effects[
-                  effect
-                ].node.style.animationDuration = `${val}ms`;
+                screen.effects[effect].node.style.animationDuration =
+                  `${val}ms`;
               });
           }
 

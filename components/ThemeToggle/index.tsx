@@ -8,15 +8,13 @@ const ThemeToggle = ({ ...props }) => {
       onClick={() =>
         resolvedTheme === "dark" ? setTheme("light") : setTheme("dark")
       }
-      {...props}
-    >
+      {...props}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="15"
         height="15"
         viewBox="0 0 15 15"
-        fill="none"
-      >
+        fill="none">
         <path
           d="M7.5 0.5V2.5"
           stroke="currentColor"

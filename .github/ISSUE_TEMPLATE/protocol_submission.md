@@ -32,7 +32,9 @@ Please provide the protocol’s subcategory (i.e. "Storage")
 
 ## Please provide the protocol’s cumulative demand-side fees over the past 30- and 90-day periods.
 
-An example of a demand-side fee could be a single payment for work rendered by a protocol. Examples of this would be a payment to query indexed data on The Graph, or a payment to store data on Arweave.
+An example of a demand-side fee could be a single payment for work rendered by a
+protocol. Examples of this would be a payment to query indexed data on The
+Graph, or a payment to store data on Arweave.
 
 ## Fee data source
 

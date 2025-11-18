@@ -75,8 +75,7 @@ const Markdown = ({ children }) => {
         kbd: {
           display: "inline-block",
           padding: "3px 5px",
-          font:
-            "11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace",
+          font: "11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace",
           lineHeight: "10px",
           color: "#444d56",
           verticalAlign: "middle",
@@ -342,8 +341,7 @@ const Markdown = ({ children }) => {
           whiteSpace: "nowrap",
           width: "1px",
         },
-      }}
-    >
+      }}>
       {children}
     </Box>
   );

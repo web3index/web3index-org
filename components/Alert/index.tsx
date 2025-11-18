@@ -21,8 +21,7 @@ const Alert = ({ children }) => {
         px: "$3",
         py: "$3",
         borderRadius: "10px",
-      }}
-    >
+      }}>
       <StyledExclamationTriangleIcon />
       <Box>{children}</Box>
     </Box>

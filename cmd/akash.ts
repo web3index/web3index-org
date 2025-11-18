@@ -63,7 +63,7 @@ const akashImport = async () => {
       "Store day " +
         element.date +
         " to DB - value: " +
-        element.revenue * conversionFactor
+        element.revenue * conversionFactor,
     );
     const fee = {
       date: element.date,
@@ -105,7 +105,7 @@ const getProject = async (name: string) => {
 
 const storeDBData = async (
   dayData: { date: any; fees: any; blockHeight?: string },
-  projectId: number
+  projectId: number,
 ) => {
   const day = await prisma.day.findFirst({
     where: {
