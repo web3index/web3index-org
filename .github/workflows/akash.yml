@@ -24,15 +24,7 @@ jobs:
           node-version: 22
       - name: yarn install
         run: yarn install
-      - name: install typescript
-        run: npm install -g typescript@4.5.5
-      - name: change directory
-        run: cd ./cmd
-      - name: compile
-        run: tsc ./cmd/akash.ts --esModuleInterop
-      - name: list files
-        run: ls ./cmd
-      - name: run
-        run: node ./cmd/akash.js
+      - name: run importer
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: yarn cmd cmd/akash.ts
