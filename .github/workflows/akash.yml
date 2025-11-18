@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 22
       - name: yarn install
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: run importer
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
