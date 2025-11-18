@@ -16,3 +16,7 @@ yarn-error.log*
 
 .vscode
 *.code-workspace
+
+# CLI build artifacts
+cmd/*.js
+lib/*.js

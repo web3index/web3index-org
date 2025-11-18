@@ -1,16 +1,22 @@
+import axios from "axios";
 import prisma from "../lib/prisma";
 
-const endpoint = "https://api.cloudmos.io/web3-index/revenue";
-const conversionFactor = 1;
-const axios = require("axios");
+const endpoint = "https://console-api.akash.network/v1/dashboard-data";
+
+type DashboardPoint = {
+  date: string;
+  dailyUUsdSpent: number;
+};
+
+type DashboardResponse = {
+  now: DashboardPoint;
+  compare?: DashboardPoint;
+};
 
 const coin = {
   name: "akash",
   symbol: "AKT",
 };
-
-const today = new Date();
-today.setUTCHours(0, 0, 0, 0);
 
 // Update akash daily revenue data
 // a cron job should hit this endpoint every half hour or so (can use github actions for cron)
@@ -38,43 +44,54 @@ const akashImport = async () => {
   }
 
   console.log("Project id: ", project);
-  const lastId = project.lastImportedId;
-  const parsedId = parseInt(lastId, 10);
-  if (isNaN(parsedId)) {
+  const lastId = parseInt(project.lastImportedId, 10);
+  if (Number.isNaN(lastId)) {
     throw new Error("unable to parse int.");
   }
 
-  const toDate = new Date();
-  toDate.setUTCHours(0, 0, 0, 0);
+  console.log("Project: " + project.name + " - last imported: " + lastId);
 
-  console.log("Project: " + project.name + " - to date: " + toDate);
+  const response = await axios
+    .get<DashboardResponse>(endpoint)
+    .catch(function (error) {
+      console.log("Error getting data from endpoint ", endpoint, error);
+    });
 
-  const response = await axios.get(endpoint).catch(function (error) {
-    console.log("Error getting data from endpoint ", endpoint, error);
-  });
+  if (!response?.data) {
+    console.log("No data returned from Akash metrics endpoint.");
+    return;
+  }
 
-  console.log("response: ", response.data);
-  console.log(response.data.days.length);
-  console.log(response.data.days[0]);
+  const points = [response.data.now, response.data.compare].filter(
+    (p): p is DashboardPoint =>
+      !!p?.date && typeof p.dailyUUsdSpent === "number",
+  );
 
-  for (let index = 0; index < response.data.days.length - 1; index++) {
-    const element = response.data.days[index];
+  const orderedPoints = points.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+
+  for (const point of orderedPoints) {
+    const timestamp = getMidnightUnixTimestamp(point.date);
+    if (timestamp <= lastId) {
+      continue;
+    }
+
+    const usdValue = point.dailyUUsdSpent / 1_000_000; // convert uUSD -> USD
     console.log(
       "Store day " +
-        element.date +
+        point.date +
         " to DB - value: " +
-        element.revenue * conversionFactor,
+        usdValue.toLocaleString(),
     );
+
     const fee = {
-      date: element.date,
-      fees: element.revenue * conversionFactor,
-      blockHeight: element.date.toString(),
+      date: timestamp,
+      fees: usdValue,
     };
     await storeDBData(fee, project.id);
   }
   console.log("exit scrape function.");
-
-  return;
 };
 
 const getProject = async (name: string) => {
@@ -144,6 +161,12 @@ const storeDBData = async (
   });
 
   return;
+};
+
+const getMidnightUnixTimestamp = (dateInput: string | number | Date) => {
+  const date = new Date(dateInput);
+  date.setUTCHours(0, 0, 0, 0);
+  return Math.floor(date.getTime() / 1000);
 };
 
 console.log("import akash");

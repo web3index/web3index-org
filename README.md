@@ -167,3 +167,24 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 result.
+
+## Running the `cmd` import scripts locally
+
+1. Configure env vars (`DATABASE_URL`, `CMC_API_KEY`, `POKTSCAN_API_KEY`, etc.),
+   run the relevant Prisma commands (`yarn prisma:generate` / `yarn pry:generate:ossl3`,
+   `yarn prisma:migrate:dev` / `yarn prisma:migrate:dev:ossl3`) depending on your host.
+2. Run the desired importer via the helper scripts:
+
+   ```bash
+   DATABASE_URL=postgres://... yarn cmd cmd/pocket.ts
+   ```
+
+   On OpenSSL‑3 hosts use `yarn cmd:ossl3 cmd/pocket.ts`. Swap `cmd/pocket.ts`
+   for `cmd/akash.ts`, `cmd/arweave.ts`, or `cmd/filecoin.ts` as needed.
+3. Optional debugging aids:
+   - `DEBUG=prisma:query` or `PRISMA_LOG_LEVEL=info` for verbose Prisma logs.
+   - `NODE_OPTIONS="--inspect-brk" yarn cmd cmd/akash.ts` (or `yarn cmd:ossl3 cmd/akash.ts`)
+     to use the Node inspector.
+   - `psql "$DATABASE_URL" -c 'select date, revenue from "Day" where "projectId" = … order by date desc limit 5'` (or `yarn prisma studio`) to confirm results.
+
+These scripts mirror the scheduled GitHub Actions jobs, so a successful local run means the cron run will behave the same.

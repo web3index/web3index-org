@@ -18,7 +18,9 @@
     "prisma:migrate:ossl3": "PRISMA_SCHEMA_ENGINE_BINARY=node_modules/@prisma/engines/schema-engine-debian-openssl-3.0.x prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:dev:ossl3": "PRISMA_SCHEMA_ENGINE_BINARY=node_modules/@prisma/engines/schema-engine-debian-openssl-3.0.x prisma migrate dev",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "cmd": "ts-node --project tsconfig.cmd.json --transpile-only",
+    "cmd:ossl3": "PRISMA_QUERY_ENGINE_LIBRARY=./node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ts-node --project tsconfig.cmd.json --transpile-only"
   },
   "engines": {
     "node": ">=22.0.0"
