@@ -1,11 +1,6 @@
 import prisma from "../lib/prisma";
 import type { Day, Project } from "@prisma/client";
 
-const params = new URLSearchParams({
-  interval: "daily",
-  daily_granularity: "project",
-});
-const endpoint = "https://api.tokenterminal.com/v1/projects/filecoin/metrics";
 const axios = require("axios");
 
 const coin = {
@@ -13,17 +8,9 @@ const coin = {
   symbol: "FIL",
 };
 
-const today = new Date();
-today.setUTCHours(0, 0, 0, 0);
-
 // Update Filecoin daily revenue data
-// a cron job should hit this endpoint every half hour or so (can use github actions for cron)
+// a cron job should hit this endpoint every hour
 const filecoinImport = async () => {
-  // Use the updatedAt field in the Day model and compare it with the
-  // timestamp associated with the fee, if it's less than the timestamp
-  // then update the day's revenue
-
-  // Get last imported id: we will start importing from there
   const project = await getProject(coin.name);
 
   // Delete project if delete: true
@@ -40,68 +27,24 @@ const filecoinImport = async () => {
     });
   }
 
-  const response = await axios
-    .get(endpoint, {
-      params: params,
-      headers: { Authorization: "Bearer " + process.env.TOKENTERMINAL_API_KEY },
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-
-  const days = project.days ?? [];
-  let lastDate: Date;
-
-  if (!days.length) {
-    lastDate = new Date(
-      response.data[response.data.length - 1].datetime.split("+")[0],
-    );
-  } else {
-    lastDate = new Date(days[days.length - 1].date * 1000);
-  }
-
-  const fromDate = lastDate;
-  fromDate.setUTCHours(0, 0, 0, 0);
-
+  const { fromDate, toDate } = getImportWindow(project);
   console.log("Project: " + project.name + ", from date: " + fromDate);
 
-  const toDate = new Date();
-  toDate.setUTCHours(0, 0, 0, 0);
+  const revenues = await getFilecoinSupplySideRevenue(fromDate, toDate);
 
-  const difference = dateDiffInDays(fromDate, toDate);
-
-  for (let index = difference; index >= 0; index--) {
-    const element = response.data.filter((obj) => {
-      const objDate = new Date(obj.datetime.split("+")[0]);
-      objDate.setUTCHours(0, 0, 0, 0);
-      return objDate.getTime() === fromDate.getTime();
-    })[0];
-
-    if (element === undefined) {
-      console.log("In continue");
-      fromDate.setDate(fromDate.getDate() + 1);
-      continue;
-    }
-
-    const fee = {
-      date: fromDate.getTime() / 1000,
-      fees: element.revenue_supply_side,
-    };
-
+  for (const revenue of revenues) {
     console.log(
       "Store day " +
-        fromDate +
+        new Date(revenue.date * 1000) +
         " - " +
-        fromDate.getTime() / 1000 +
-        "to DB - " +
-        fee.fees,
+        revenue.date +
+        " to DB - " +
+        revenue.fees,
     );
-    await storeDBData(fee, project.id);
-    fromDate.setDate(fromDate.getDate() + 1);
+    await storeDBData(revenue, project.id);
   }
-  console.log("exit scrape function.");
 
-  return;
+  console.log("exit scrape function.");
 };
 
 type ProjectWithDays = Project & { days: Pick<Day, "date">[] };
@@ -184,12 +127,134 @@ const storeDBData = async (
   return;
 };
 
-const dateDiffInDays = (a: Date, b: Date) => {
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  const utc1 = Date.UTC(a.getUTCFullYear(), a.getUTCMonth(), a.getUTCDate());
-  const utc2 = Date.UTC(b.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate());
+const getImportWindow = (project: ProjectWithDays) => {
+  const days = project.days ?? [];
+  let lastDate: Date;
 
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  if (!days.length) {
+    lastDate = new Date();
+    lastDate.setUTCHours(0, 0, 0, 0);
+    lastDate.setDate(lastDate.getDate() - 1);
+  } else {
+    lastDate = new Date(days[days.length - 1].date * 1000);
+  }
+
+  const fromDate = new Date(lastDate);
+  fromDate.setUTCHours(0, 0, 0, 0);
+
+  const toDate = new Date();
+  toDate.setUTCHours(0, 0, 0, 0);
+
+  return { fromDate, toDate };
+};
+
+type SpacescopeRecord = {
+  stat_date?: string;
+  date?: string;
+  miner_fee?: number | string;
+  miner_tip?: number | string;
+};
+
+type SpacescopeResponse =
+  | {
+      code: number;
+      data: SpacescopeRecord[];
+      message?: string;
+      request_id?: string;
+    }
+  | {
+      code: number;
+      data: {
+        records?: SpacescopeRecord[];
+      };
+      message?: string;
+      request_id?: string;
+    };
+
+const formatDateParam = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};
+
+const getFilecoinSupplySideRevenue = async (fromDate: Date, toDate: Date) => {
+  const endpoint =
+    "https://api.spacescope.io/v2/gas/daily_network_fee_breakdown";
+  const params = new URLSearchParams({
+    start_date: formatDateParam(fromDate),
+    end_date: formatDateParam(toDate),
+  });
+
+  let response: SpacescopeResponse | null = null;
+  try {
+    const { data }: { data: SpacescopeResponse } = await axios.get(
+      `${endpoint}?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.SPACESCOPE_API_KEY}`,
+        },
+      },
+    );
+    response = data;
+  } catch (err: any) {
+    const status = err?.response?.status;
+    const statusText = err?.response?.statusText;
+    const errorBody = JSON.stringify(err?.response?.data ?? {});
+    throw new Error(
+      `Spacescope request failed (${status ?? "unknown"} ${
+        statusText ?? ""
+      }): ${errorBody}`,
+    );
+  }
+
+  const records = extractRecords(response?.data);
+
+  if (response?.code !== 0 || !records.length) {
+    throw new Error("No data returned by Spacescope API.");
+  }
+
+  return records
+    .map((record) => {
+      const isoDate = record.stat_date ?? record.date;
+      if (!isoDate) {
+        return null;
+      }
+
+      const normalizedISO = isoDate.includes("T")
+        ? isoDate
+        : `${isoDate}T00:00:00Z`;
+      const timestamp = new Date(normalizedISO).getTime() / 1000;
+      const rawFee = record.miner_tip ?? record.miner_fee ?? 0;
+      let minerFee =
+        typeof rawFee === "string" ? parseFloat(rawFee) : (rawFee ?? 0);
+
+      if (Number.isNaN(minerFee)) {
+        minerFee = 0;
+      }
+
+      return {
+        date: timestamp,
+        fees: minerFee,
+      };
+    })
+    .filter((record): record is { date: number; fees: number } => !!record)
+    .sort((a, b) => a.date - b.date);
+};
+
+const extractRecords = (
+  payload: SpacescopeResponse["data"],
+): SpacescopeRecord[] => {
+  if (!payload) {
+    return [];
+  }
+
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (Array.isArray(payload.records)) {
+    return payload.records;
+  }
+
+  return [];
 };
 
 filecoinImport()

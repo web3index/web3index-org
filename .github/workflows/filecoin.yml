@@ -17,23 +17,15 @@ jobs:
     name: run-filecoin-import
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: install node v22
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: yarn install
-        run: yarn install
-      - name: install typescript
-        run: npm install -g typescript@4.5.5
-      - name: change directory
-        run: cd ./cmd
-      - name: compile
-        run: tsc ./cmd/filecoin.ts --esModuleInterop
-      - name: list files
-        run: ls ./cmd
-      - name: run
-        run: node ./cmd/filecoin.js
+        run: yarn install --frozen-lockfile
+      - name: run importer
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          TOKENTERMINAL_API_KEY: ${{ secrets.TOKENTERMINAL_API_KEY }}
+          SPACESCOPE_API_KEY: ${{ secrets.SPACESCOPE_API_KEY }}
+        run: yarn cmd cmd/filecoin.ts
