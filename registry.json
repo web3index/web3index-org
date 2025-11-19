@@ -39,7 +39,8 @@
     "subcategory": "Storage",
     "symbol": "AR",
     "coingeckoID": "arweave",
-    "genesisDate": "2018-06-08"
+    "genesisDate": "2018-06-08",
+    "hide": true
   },
   "helium": {
     "blockchain": "Solana",
