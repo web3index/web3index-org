@@ -25,8 +25,6 @@ const akashImport = async () => {
   // timestamp associated with the fee, if it's less than the timestamp
   // then update the day's revenue
 
-  // Get last imported id: we will start importing from there
-  console.log("Getting project id for ", coin.name);
   const project = await getProject(coin.name);
 
   // Delete project if delete: true
@@ -43,13 +41,14 @@ const akashImport = async () => {
     });
   }
 
-  console.log("Project id: ", project);
   const lastId = parseInt(project.lastImportedId, 10);
   if (Number.isNaN(lastId)) {
     throw new Error("unable to parse int.");
   }
 
-  console.log("Project: " + project.name + " - last imported: " + lastId);
+  console.log(
+    `Starting ${project.name} import: last imported timestamp ${lastId}`,
+  );
 
   let responseData: DashboardResponse;
   try {
