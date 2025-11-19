@@ -96,7 +96,8 @@
     "stack": "Middleware",
     "subcategory": "Bandwidth",
     "symbol": "POKT",
-    "genesisDate": "2020-07-28"
+    "genesisDate": "2020-07-28",
+    "hide": true
   },
   "sia": {
     "blockchain": "Sia",

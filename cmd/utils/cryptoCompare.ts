@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const endpoint = "https://min-api.cryptocompare.com/data/pricehistorical";
+const histoDayEndpoint = "https://min-api.cryptocompare.com/data/v2/histoday";
 const apiKey = process.env.CRYPTOCOMPARE_API_KEY;
 const cache = new Map<string, number>();
 const MIN_REQUEST_INTERVAL_MS = 1200; // stay within both free + key plans
@@ -82,4 +83,86 @@ export const fetchCryptoComparePrice = async (
   throw new Error(
     "CryptoCompare: exhausted retries due to rate limits. Consider adding CRYPTOCOMPARE_API_KEY.",
   );
+};
+
+type HistoDayPoint = {
+  time: number;
+  close?: number;
+  high?: number;
+  low?: number;
+};
+
+type HistoDayResponse = {
+  Response?: string;
+  Message?: string;
+  Data?: {
+    Data: HistoDayPoint[];
+  };
+};
+
+export const fetchCryptoCompareDailyPrices = async (
+  symbol: string,
+  startTimestamp: number,
+  endTimestamp: number,
+) => {
+  const upperSymbol = symbol.toUpperCase();
+  const normalizedStart = normalizeTimestamp(startTimestamp);
+  const normalizedEnd = normalizeTimestamp(endTimestamp);
+  if (normalizedEnd < normalizedStart) {
+    throw new Error(
+      "fetchCryptoCompareDailyPrices: endTimestamp < startTimestamp",
+    );
+  }
+
+  const results = new Map<number, number>();
+  let currentEnd = normalizedEnd;
+
+  while (currentEnd >= normalizedStart) {
+    const remainingDays =
+      Math.floor((currentEnd - normalizedStart) / 86400) + 1;
+    const limit = Math.min(2000, remainingDays);
+    const url = `${histoDayEndpoint}?fsym=${upperSymbol}&tsym=USD&toTs=${currentEnd}&limit=${limit}`;
+
+    await waitForRateLimit();
+    const { data } = await axios.get<HistoDayResponse>(url, {
+      headers: apiKey ? { Authorization: `Apikey ${apiKey}` } : undefined,
+    });
+
+    if (
+      typeof data?.Response === "string" &&
+      data.Response.toLowerCase() === "error"
+    ) {
+      const message = data?.Message ?? "Unknown CryptoCompare error";
+      throw new Error(
+        `CryptoCompare histoday error: ${message}. Add CRYPTOCOMPARE_API_KEY or try again later.`,
+      );
+    }
+
+    const points = data?.Data?.Data ?? [];
+    if (!points.length) {
+      break;
+    }
+
+    for (const point of points) {
+      const time = normalizeTimestamp(point.time ?? 0);
+      if (time < normalizedStart || time > normalizedEnd) {
+        continue;
+      }
+      if (results.has(time)) {
+        continue;
+      }
+      const price = Number(point.close ?? point.high ?? point.low ?? 0);
+      if (Number.isFinite(price)) {
+        results.set(time, price);
+      }
+    }
+
+    const earliest = points[0]?.time;
+    if (!Number.isFinite(earliest) || earliest <= normalizedStart) {
+      break;
+    }
+    currentEnd = normalizeTimestamp((earliest as number) - 86400);
+  }
+
+  return results;
 };
