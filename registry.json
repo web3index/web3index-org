@@ -31,7 +31,7 @@
   "arweave": {
     "blockchain": "Arweave",
     "category": "Network Protocol",
-    "color": "#3b3c40",
+    "color": "#808080",
     "everestID": "0x37453b7b89521570abee5d696eae5449f4e549ff",
     "image": "/logos/arweave.svg",
     "name": "Arweave",
