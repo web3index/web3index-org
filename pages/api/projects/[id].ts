@@ -95,11 +95,19 @@ const getUsageFromDB = async (name) => {
       projectId: project.id,
     },
     take: 2000,
+    orderBy: {
+      date: "asc",
+    },
   });
 
   if (!days.length) {
     throw new Error("No revenue day data found in database");
   }
+
+  const normalizedDays = days.map((day) => ({
+    date: day.date,
+    revenue: Number(day.revenue) ?? 0,
+  }));
 
   const totalRevenue = now._sum.revenue ?? 0;
   const revenue = {
@@ -123,7 +131,7 @@ const getUsageFromDB = async (name) => {
   return {
     revenue: registry[name].paymentType === "dilution" ? EMPTY : revenue,
     dilution: registry[name].paymentType === "dilution" ? revenue : EMPTY,
-    days: days,
+    days: normalizedDays,
   };
 };
 
@@ -263,9 +271,6 @@ const getUsageFromSubgraph = async (id, networks) => {
     ninetyDaysAgo,
   ] = [...sumArrays(...snapshotData)];
 
-  const dayIndexSet = new Set();
-  const oneDay = 24 * 60 * 60;
-
   let daysRaw = [];
   dayData.map((d) => {
     daysRaw = [...daysRaw, ...d.days];
@@ -273,7 +278,6 @@ const getUsageFromSubgraph = async (id, networks) => {
 
   let days = [];
   daysRaw.forEach((day) => {
-    dayIndexSet.add((day.date / oneDay).toFixed(0));
     days.push({
       date: day.date,
       // ignore revenue from day the graph migrated to arbitrum
@@ -282,21 +286,6 @@ const getUsageFromSubgraph = async (id, networks) => {
   });
 
   if (days.length) {
-    let timestamp = days[0].date;
-    while (timestamp < Math.floor(+new Date() / 1000) - oneDay) {
-      const nextDay = timestamp + oneDay;
-      const currentDayIndex = (nextDay / oneDay).toFixed(0);
-
-      if (!dayIndexSet.has(currentDayIndex)) {
-        days.push({
-          date: nextDay,
-          revenue: 0,
-          empty: true,
-        });
-      }
-      timestamp = nextDay;
-    }
-
     days = days.sort((a, b) => (parseInt(a.date) > parseInt(b.date) ? 1 : -1));
   }
 
