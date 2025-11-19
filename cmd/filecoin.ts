@@ -8,6 +8,8 @@ const coin = {
   symbol: "FIL",
 };
 
+const MAX_DAYS_PER_REQUEST = 90;
+
 // Update Filecoin daily revenue data
 // a cron job should hit this endpoint every hour
 const filecoinImport = async () => {
@@ -28,7 +30,9 @@ const filecoinImport = async () => {
   }
 
   const { fromDate, toDate } = getImportWindow(project);
-  console.log("Project: " + project.name + ", from date: " + fromDate);
+  console.log(
+    `Starting ${project.name} import: fetching revenues from ${fromDate.toISOString()} to ${toDate.toISOString()}`,
+  );
 
   const revenues = await getFilecoinSupplySideRevenue(fromDate, toDate);
 
@@ -176,42 +180,30 @@ const formatDateParam = (date: Date) => {
 };
 
 const getFilecoinSupplySideRevenue = async (fromDate: Date, toDate: Date) => {
-  const endpoint =
-    "https://api.spacescope.io/v2/gas/daily_network_fee_breakdown";
-  const params = new URLSearchParams({
-    start_date: formatDateParam(fromDate),
-    end_date: formatDateParam(toDate),
-  });
+  const allRecords: SpacescopeRecord[] = [];
+  const chunkStart = new Date(fromDate);
+  chunkStart.setUTCHours(0, 0, 0, 0);
+  const finalDate = new Date(toDate);
+  finalDate.setUTCHours(0, 0, 0, 0);
 
-  let response: SpacescopeResponse | null = null;
-  try {
-    const { data }: { data: SpacescopeResponse } = await axios.get(
-      `${endpoint}?${params.toString()}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.SPACESCOPE_API_KEY}`,
-        },
-      },
-    );
-    response = data;
-  } catch (err: any) {
-    const status = err?.response?.status;
-    const statusText = err?.response?.statusText;
-    const errorBody = JSON.stringify(err?.response?.data ?? {});
-    throw new Error(
-      `Spacescope request failed (${status ?? "unknown"} ${
-        statusText ?? ""
-      }): ${errorBody}`,
-    );
+  while (chunkStart <= finalDate) {
+    const chunkEnd = new Date(chunkStart);
+    chunkEnd.setUTCDate(chunkEnd.getUTCDate() + MAX_DAYS_PER_REQUEST - 1);
+    if (chunkEnd > finalDate) {
+      chunkEnd.setTime(finalDate.getTime());
+    }
+
+    const chunkRecords = await fetchSpacescopeRecords(chunkStart, chunkEnd);
+    allRecords.push(...chunkRecords);
+
+    chunkStart.setUTCDate(chunkEnd.getUTCDate() + 1);
   }
 
-  const records = extractRecords(response?.data);
-
-  if (response?.code !== 0 || !records.length) {
+  if (!allRecords.length) {
     throw new Error("No data returned by Spacescope API.");
   }
 
-  return records
+  return allRecords
     .map((record) => {
       const isoDate = record.stat_date ?? record.date;
       if (!isoDate) {
@@ -255,6 +247,44 @@ const extractRecords = (
   }
 
   return [];
+};
+
+const fetchSpacescopeRecords = async (
+  startDate: Date,
+  endDate: Date,
+): Promise<SpacescopeRecord[]> => {
+  const endpoint =
+    "https://api.spacescope.io/v2/gas/daily_network_fee_breakdown";
+  const params = new URLSearchParams({
+    start_date: formatDateParam(startDate),
+    end_date: formatDateParam(endDate),
+  });
+
+  try {
+    const { data }: { data: SpacescopeResponse } = await axios.get(
+      `${endpoint}?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.SPACESCOPE_API_KEY}`,
+        },
+      },
+    );
+
+    if (data?.code !== 0) {
+      throw new Error(JSON.stringify(data));
+    }
+
+    return extractRecords(data?.data);
+  } catch (err: any) {
+    const status = err?.response?.status;
+    const statusText = err?.response?.statusText;
+    const errorBody = JSON.stringify(err?.response?.data ?? {});
+    throw new Error(
+      `Spacescope request failed (${status ?? "unknown"} ${
+        statusText ?? ""
+      }): ${errorBody}`,
+    );
+  }
 };
 
 filecoinImport()
