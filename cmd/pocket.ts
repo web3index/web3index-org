@@ -1,11 +1,45 @@
+/**
+ * @file This script retrieves Pocket transaction fee data via the PoktScan GraphQL API.
+ * I however haven't found a reliable way to use this endpoint without running into
+ * timeout problems. As a result I disabled tracking of pocket right now. If you have a
+ * solution please open an issue or PR.
+ */
 import prisma from "../lib/prisma";
-import { fetchCryptoComparePrice } from "./utils/cryptoCompare";
+import {
+  fetchCryptoCompareDailyPrices,
+  fetchCryptoComparePrice,
+} from "./utils/cryptoCompare";
 
 const axios = require("axios");
 const poktscanAPIKey = process.env.POKTSCAN_API_KEY;
 
 // POKT Pricing & Network Data Endpoints
 const poktscanAPIEndpoint = "https://api.poktscan.com/poktscan/api/graphql";
+const TX_FEES_BY_DATE_QUERY = `
+  query TxFeesByDate($start: Datetime!, $end: Datetime!, $after: Cursor) {
+    transactions(
+      first: 50
+      after: $after
+      filter: {
+        block: {
+          timestamp: { greaterThanOrEqualTo: $start, lessThan: $end }
+        }
+      }
+    ) {
+      totalCount
+      nodes {
+        fees
+        block {
+          timestamp
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
 
 const coin = {
   name: "pocket",
@@ -45,15 +79,18 @@ const pocketImport = async () => {
 
   const days = dateRangeToList(fromDate, toDate);
 
+  console.log(
+    `Starting ${project.name} import: fetching POKT daily prices between ${fromDate.toISOString()} and ${toDate.toISOString()}`,
+  );
   const pocketPrices = await getPOKTDayPrices(fromDate, toDate);
 
   for (const day of days) {
     const dayISO = formatDate(day); // YYYY-MM-DDTHH:mm:ss.SSSZ
     const dateUnixTimestamp = day.getTime() / 1000;
 
-    const { totalBurned } = await getPOKTNetworkData(day);
+    const { totalFees } = await getPOKTNetworkData(day);
 
-    console.log(day, totalBurned);
+    console.log(day, totalFees);
 
     const currentDayPrice = pocketPrices.find(
       (x) => x.date === dayISO.slice(0, 10),
@@ -64,10 +101,10 @@ const pocketImport = async () => {
       continue;
     }
 
-    console.log("totalBurned", totalBurned);
+    console.log("totalFees", totalFees);
     console.log("currentDayPrice.price", currentDayPrice.price);
 
-    revenue = totalBurned * currentDayPrice.price;
+    revenue = totalFees * currentDayPrice.price;
 
     console.log(
       `${project.name} estimated revenue on ${dayISO}: ${revenue.toLocaleString(
@@ -165,14 +202,26 @@ const storeDBData = async (
 };
 
 const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
+  const startTimestamp = Math.floor(dateFrom.getTime() / 1000);
+  const endTimestamp = Math.floor(dateTo.getTime() / 1000);
+  const priceMap = await fetchCryptoCompareDailyPrices(
+    coin.symbol,
+    startTimestamp,
+    endTimestamp,
+  );
+
   const dayPrices: DayPrice[] = [];
   for (
     let cursor = new Date(dateFrom);
     cursor <= dateTo;
     cursor.setDate(cursor.getDate() + 1)
   ) {
-    const timestamp = Math.floor(cursor.getTime() / 1000);
-    const price = await fetchCryptoComparePrice(coin.symbol, timestamp);
+    const normalized = Math.floor(cursor.getTime() / 1000 / 86400) * 86400;
+    let price = priceMap.get(normalized);
+    if (price === undefined) {
+      price = await fetchCryptoComparePrice(coin.symbol, normalized);
+    }
+
     dayPrices.push({ date: cursor.toISOString().slice(0, 10), price });
   }
   return dayPrices;
@@ -180,85 +229,21 @@ const getPOKTDayPrices = async (dateFrom: Date, dateTo: Date) => {
 
 const getPOKTNetworkData = async (date: Date) => {
   try {
-    const ISODateFrom = formatDate(date);
-    const ISODateTo = new Date(
-      new Date(date.toString()).setDate(date.getDate() + 1),
-    ).toISOString();
+    const start = new Date(date);
+    start.setUTCHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setUTCDate(end.getUTCDate() + 1);
 
-    console.log("ISODateFrom", ISODateFrom);
-    console.log("ISODateTo", ISODateTo);
+    console.log("ISODateFrom", start.toISOString());
+    console.log("ISODateTo", end.toISOString());
 
-    const data = JSON.stringify({
-      query: `query ($pagination: ListInput!) {
-        ListPoktTransaction(pagination: $pagination) {
-          items {
-            amount
-            block_time
-            result_code
-          }
-        }
-      }`,
-      // TODO: Make use of hourly data instead of days
-      variables: {
-        pagination: {
-          limit: 10,
-          filter: {
-            operator: "AND",
-            properties: [
-              {
-                operator: "EQ",
-                type: "STRING",
-                property: "type",
-                value: "dao_tranfer",
-              },
-              {
-                operator: "EQ",
-                type: "STRING",
-                property: "action",
-                value: "dao_burn",
-              },
-              {
-                operator: "GTE",
-                type: "DATE",
-                property: "block_time",
-                value: ISODateFrom,
-              },
-              {
-                operator: "LT",
-                type: "DATE",
-                property: "block_time",
-                value: ISODateTo,
-              },
-            ],
-          },
-        },
-      },
-    });
-
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: poktscanAPIEndpoint,
-      headers: {
-        Authorization: poktscanAPIKey,
-        "Content-Type": "application/json",
-      },
-      data,
-    };
-
-    const response: PoktScanResponse = await axios.request(config);
-
-    if (!response || !response.data) {
-      throw new Error("No data returned by the PoktScan API.");
-    }
-
-    // This is the total burned for a single day
-    const totalBurned = response.data.data.ListPoktTransaction.items
-      .filter((burnTx) => burnTx.result_code === 0)
-      .reduce((sum, burnTx) => sum + burnTx.amount, 0);
+    const totalFees = await fetchTotalFeesForRange(
+      start.toISOString(),
+      end.toISOString(),
+    );
 
     return {
-      totalBurned: totalBurned / 1000000, // uPOKT to POKT
+      totalFees,
     };
   } catch (e) {
     throw new Error(e);
@@ -288,22 +273,100 @@ type DayPrice = {
   price: number;
 };
 
-type PoktScanTransaction = {
-  amount: number;
-  block_time: string;
-  result_code: number;
-};
-
-type PoktScanTransactionList = {
-  items: PoktScanTransaction[];
-};
-
 type PoktScanResponse = {
-  data: {
-    data: {
-      ListPoktTransaction: PoktScanTransactionList;
+  data?: {
+    transactions?: {
+      nodes?: { fees?: number | string | null }[];
+      pageInfo?: {
+        hasNextPage?: boolean;
+        endCursor?: string | null;
+      };
     };
   };
+  errors?: { message?: string }[];
+};
+
+const ensurePoktScanHeaders = () => {
+  if (!poktscanAPIKey) {
+    throw new Error("POKTSCAN_API_KEY environment variable is not set.");
+  }
+  return {
+    Authorization: poktscanAPIKey,
+    "Content-Type": "application/json",
+  };
+};
+
+const fetchTotalFeesForRange = async (startISO: string, endISO: string) => {
+  let cursor: string | null = null;
+  let hasNextPage = true;
+  let totalFees = 0;
+
+  while (hasNextPage) {
+    const payload = {
+      query: TX_FEES_BY_DATE_QUERY,
+      variables: {
+        start: startISO,
+        end: endISO,
+        after: cursor,
+      },
+    };
+
+    let data;
+    try {
+      ({ data } = await axios.post(
+        poktscanAPIEndpoint,
+        JSON.stringify(payload),
+        {
+          headers: ensurePoktScanHeaders(),
+        },
+      ));
+    } catch (error: any) {
+      const status = error?.response?.status;
+      const statusText = error?.response?.statusText;
+      const body = error?.response?.data;
+      console.error(
+        `PoktScan request failed (${status ?? "unknown"} ${
+          statusText ?? ""
+        }) body: ${JSON.stringify(body)}`,
+      );
+      throw error;
+    }
+
+    const response: PoktScanResponse = data;
+
+    if (response.errors?.length) {
+      throw new Error(
+        `PoktScan GraphQL error: ${JSON.stringify(response.errors)}`,
+      );
+    }
+
+    const transactions = response.data?.transactions;
+    if (!transactions) {
+      throw new Error("PoktScan GraphQL response missing transactions data.");
+    }
+
+    const nodes = transactions.nodes ?? [];
+    totalFees += nodes.reduce((sum, node) => {
+      const feeValue = normalizeNumber(node.fees);
+      return sum + feeValue;
+    }, 0);
+
+    hasNextPage = Boolean(transactions.pageInfo?.hasNextPage);
+    cursor = hasNextPage ? (transactions.pageInfo?.endCursor ?? null) : null;
+  }
+
+  return totalFees;
+};
+
+const normalizeNumber = (value: string | number | null | undefined) => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+  if (typeof value === "string") {
+    const parsed = parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
 };
 
 pocketImport()
