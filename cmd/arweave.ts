@@ -1,3 +1,10 @@
+/**
+ * @file This script retrieves Arweave transaction fee data via their GraphQL endpoint.
+ * Note: Processing a large number of blocks is slow, so this script is currently
+ * disabled. For a faster alternative, see arweave_tokenterminal.ts (requires a paid
+ * TokenTerminal API subscription). If you have a better solution please open an issue
+ * or PR.
+ */
 import { GraphQLClient, gql } from "graphql-request";
 import prisma from "../lib/prisma";
 import type { Project } from "@prisma/client";
@@ -113,7 +120,7 @@ const arweaveImport = async () => {
   );
 
   console.log(
-    `Project: ${project.name}, from block ${lastId} to ${maxBlockHeight}`,
+    `Starting ${project.name} import: processing blocks ${lastId} to ${maxBlockHeight}`,
   );
 
   if (maxBlockHeight <= lastId) {
@@ -276,6 +283,14 @@ const requestWithRetry = async <T>(requestFn: () => Promise<T>) => {
 };
 
 const storeDBData = async (dayData: DayAccumulator, projectId: number) => {
+  console.log(
+    "Store day " +
+      new Date(dayData.date * 1000) +
+      " - " +
+      dayData.date +
+      " to DB - " +
+      dayData.fees,
+  );
   const day = await prisma.day.findFirst({
     where: {
       date: dayData.date,
