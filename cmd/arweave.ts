@@ -7,6 +7,13 @@ const endpoint = "https://arweave.net/graphql";
 const gqlclient = new GraphQLClient(endpoint);
 const MAX_BLOCKS_PER_RUN = 1_000;
 const START_BLOCK_HEIGHT = 422250;
+const MAX_RATE_LIMIT_RETRIES = 5;
+const INITIAL_RETRY_DELAY_MS = 1_000;
+type GraphQLRequestError = {
+  response?: {
+    status?: number;
+  };
+};
 
 const queryGetTransactions = gql`
   query GetTransactions($minblock: Int!, $maxblock: Int!, $cursor: String) {
@@ -122,13 +129,12 @@ const arweaveImport = async () => {
   let lastProcessedBlock = lastId;
 
   while (!exit) {
-    const data = await gqlclient.request<TransactionsResponse>(
-      queryGetTransactions,
-      {
+    const data = await requestWithRetry<TransactionsResponse>(() =>
+      gqlclient.request(queryGetTransactions, {
         minblock: lastId,
         maxblock: maxBlockHeight,
         cursor,
-      },
+      }),
     );
 
     if (!data.transactions.edges.length) {
@@ -238,11 +244,35 @@ const getProject = async (name: string): Promise<Project> => {
 };
 
 const getLastBlockId = async () => {
-  const data = await gqlclient.request<{ block: { height: number } }>(
-    queryGetLastBlock,
+  const data = await requestWithRetry<{ block: { height: number } }>(() =>
+    gqlclient.request(queryGetLastBlock),
   );
 
   return data.block.height;
+};
+
+const requestWithRetry = async <T>(requestFn: () => Promise<T>) => {
+  let delay = INITIAL_RETRY_DELAY_MS;
+  for (let attempt = 1; attempt <= MAX_RATE_LIMIT_RETRIES; attempt++) {
+    try {
+      return await requestFn();
+    } catch (err) {
+      const error = err as GraphQLRequestError;
+      const status = error.response?.status;
+      if (status === 429 && attempt < MAX_RATE_LIMIT_RETRIES) {
+        console.warn(
+          `Rate limit hit (attempt ${attempt}/${MAX_RATE_LIMIT_RETRIES}). Retrying in ${
+            delay / 1000
+          }s...`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error("Max retries reached while querying Arweave GraphQL API.");
 };
 
 const storeDBData = async (dayData: DayAccumulator, projectId: number) => {
