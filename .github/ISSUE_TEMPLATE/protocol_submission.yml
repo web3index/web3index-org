@@ -1,0 +1,100 @@
+name: Protocol Submission
+description: Submit a protocol to be considered for The Web3 Index.
+title: "New Protocol Submission: "
+labels:
+  - protocol-submission
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for recommending a protocol! Please provide as much detail as possible so we can evaluate the submission.
+  - type: input
+    id: protocol-name
+    attributes:
+      label: Protocol Name
+      placeholder: Livepeer
+    validations:
+      required: true
+  - type: input
+    id: symbol
+    attributes:
+      label: Symbol
+      placeholder: LPT
+    validations:
+      required: true
+  - type: input
+    id: category
+    attributes:
+      label: Category
+      placeholder: Work Protocol
+    validations:
+      required: true
+  - type: input
+    id: subcategory
+    attributes:
+      label: Subcategory
+      placeholder: Storage
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Protocol Description
+      description: Provide a concise description of the protocol.
+    validations:
+      required: true
+  - type: textarea
+    id: fit
+    attributes:
+      label: Why is this protocol a good fit for The Web3 Index?
+    validations:
+      required: true
+  - type: textarea
+    id: tokenomics
+    attributes:
+      label: Describe the protocol's tokenomics
+    validations:
+      required: true
+  - type: textarea
+    id: participants
+    attributes:
+      label: Demand and supply side participants
+      description: Explain who participates on both sides and how they interact with the protocol.
+    validations:
+      required: true
+  - type: textarea
+    id: fees
+    attributes:
+      label: Cumulative demand-side fees
+      description: Provide 30- and 90-day cumulative demand-side fees. Include sources if possible.
+    validations:
+      required: true
+  - type: input
+    id: fee-source
+    attributes:
+      label: Fee data source
+      placeholder: Link to data source
+    validations:
+      required: false
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      placeholder: https://example.com
+    validations:
+      required: false
+  - type: input
+    id: twitter
+    attributes:
+      label: Twitter
+      placeholder: https://twitter.com/example
+    validations:
+      required: false
+  - type: input
+    id: cg-cmc
+    attributes:
+      label: Coingecko or CoinMarketCap URL
+      placeholder: https://www.coingecko.com/en/coins/example
+    validations:
+      required: false

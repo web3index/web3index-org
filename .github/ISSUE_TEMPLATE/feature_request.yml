@@ -1,0 +1,50 @@
+name: Feature Request
+description: Suggest an idea for this project.
+title: "[Feature]: "
+labels:
+  - enhancement
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea with us! Please fill in the details below so we can understand the problem and the solution you have in mind.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we reach you if we need more information?
+      placeholder: email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your request related to a problem?
+      description: Describe the problem you're experiencing and why it matters.
+      placeholder: I'm frustrated when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+      description: Tell us what you expect to happen or what you'd like us to build.
+      placeholder: I'd like to see...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Describe alternatives you've considered
+      description: List any alternative solutions or features you've thought about.
+      placeholder: Alternatives considered...
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots, links, or any other context that would help us understand your idea.
+    validations:
+      required: false
