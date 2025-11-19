@@ -32,8 +32,11 @@ const LineAndBarGraph = ({
 
   // parse the data and format for tradingview consumption
   const formattedData = weeks.map((week) => {
+    const time = new Date(week.date * 1000).toLocaleDateString("fr-CA");
+    if (week?.empty) return { time };
+
     return {
-      time: new Date(week.date * 1000).toLocaleDateString("fr-CA"),
+      time,
       value: week.revenue,
     };
   });

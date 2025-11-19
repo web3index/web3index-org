@@ -142,7 +142,69 @@ export const formattedNum = (number, unit = "usd") => {
   return Number(num.toFixed(5));
 };
 
-// format weekly data for weekly sized chunks
+/**
+ * Buckets raw day entries by their week start timestamp.
+ */
+const bucketDaysByWeek = (days) => {
+  const weeklyBuckets = new Map<
+    number,
+    { date: number; revenue: number; onlyEmpty: boolean }
+  >();
+  const sortedDays = [...days].sort((a, b) =>
+    parseInt(a.date) > parseInt(b.date) ? 1 : -1,
+  );
+
+  for (const weeklySizedChunk of sortedDays) {
+    const timestamp = Number(weeklySizedChunk?.date);
+    if (!Number.isFinite(timestamp)) continue;
+    const weekStart = dayjs.unix(timestamp).utc().startOf("week").unix();
+    const bucket = weeklyBuckets.get(weekStart) ?? {
+      date: weekStart,
+      revenue: 0,
+      onlyEmpty: true,
+    };
+
+    if (weeklySizedChunk.empty) {
+      bucket.onlyEmpty = bucket.onlyEmpty ?? true;
+    } else {
+      bucket.onlyEmpty = false;
+      bucket.revenue += Number(weeklySizedChunk.revenue ?? 0);
+    }
+
+    weeklyBuckets.set(weekStart, bucket);
+  }
+
+  return weeklyBuckets;
+};
+
+/**
+ * Fills in missing weeks in a sequence up to a specified end week.
+ */
+const fillMissingWeeks = (
+  weeks: { date: number; revenue: number; onlyEmpty: boolean }[],
+  endWeek: number,
+) => {
+  const oneWeek = 7 * 24 * 60 * 60;
+  const bucketMap = new Map(weeks.map((week) => [week.date, week]));
+  const filled = [];
+  for (let ts = weeks[0].date; ts <= endWeek; ts += oneWeek) {
+    const bucket = bucketMap.get(ts);
+    filled.push(
+      bucket
+        ? {
+            date: bucket.date,
+            revenue: bucket.onlyEmpty ? null : (bucket.revenue ?? 0),
+            empty: bucket.onlyEmpty,
+          }
+        : {
+            date: ts,
+            revenue: null,
+            empty: true,
+          },
+    );
+  }
+  return filled;
+};
 
 /**
  * Groups daily revenue data into weekly buckets for graphing.
@@ -153,25 +215,20 @@ export const formatDataForWeekly = (days) => {
   dayjs.extend(utc);
   dayjs.extend(weekOfYear);
 
-  const weeklyData = [];
-  const weeklySizedChunks = [...days].sort((a, b) =>
-    parseInt(a.date) > parseInt(b.date) ? 1 : -1,
-  );
-  let startIndexWeekly = -1;
-  let currentWeek = -1;
+  if (!Array.isArray(days) || !days.length) return [];
 
-  for (const weeklySizedChunk of weeklySizedChunks) {
-    const week = dayjs.utc(dayjs.unix(weeklySizedChunk.date)).week();
-    if (week !== currentWeek) {
-      currentWeek = week;
-      startIndexWeekly++;
-    }
-    weeklyData[startIndexWeekly] = weeklyData[startIndexWeekly] || {};
-    weeklyData[startIndexWeekly].date = weeklySizedChunk.date;
-    weeklyData[startIndexWeekly].revenue =
-      (weeklyData[startIndexWeekly].revenue ?? 0) + +weeklySizedChunk.revenue;
-  }
-  return weeklyData;
+  const weeklyBuckets = bucketDaysByWeek(days);
+
+  if (!weeklyBuckets.size) return [];
+
+  const sequentialWeeks = [...weeklyBuckets.values()].sort((a, b) =>
+    a.date > b.date ? 1 : -1,
+  );
+  const lastWeekWithData = sequentialWeeks[sequentialWeeks.length - 1].date;
+  const currentWeek = dayjs.utc().subtract(1, "day").startOf("week").unix();
+  const endWeek = Math.max(currentWeek, lastWeekWithData);
+
+  return fillMissingWeeks(sequentialWeeks, endWeek);
 };
 
 export const trophies = ["🏆", "🥈", "🥉"];
