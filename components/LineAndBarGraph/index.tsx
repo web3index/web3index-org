@@ -73,15 +73,17 @@ const LineAndBarGraph = ({
       return;
     }
     if (typeof window === "undefined" || width === undefined) return;
+    if (!resolvedTheme) return;
 
     destroyChart();
 
     const { createChart } = require("lightweight-charts");
+    const isDarkTheme = resolvedTheme === "dark";
     const chart = createChart(chartRef.current, {
       width,
       height: chartHeight,
       layout: {
-        textColor: "black",
+        textColor: isDarkTheme ? "white" : "black",
         backgroundColor: "transparent",
       },
       rightPriceScale: {
