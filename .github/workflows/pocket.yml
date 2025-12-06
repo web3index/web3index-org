@@ -3,7 +3,7 @@ name: pocket update
 # Controls when the action will run.
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 */4 * * *"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
