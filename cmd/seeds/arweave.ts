@@ -79,14 +79,13 @@ const arweaveImport = async () => {
   const parsedId = parseInt(lastId, 10);
   if (isNaN(parsedId)) {
     throw new Error("unable to parse int.");
-    return;
   }
 
   // Get last block id
   let lastBlockId;
   try {
     lastBlockId = await getLastBlockId();
-  } catch (e) {
+  } catch {
     throw new Error("unable to get last block id from blockchain.");
   }
   lastBlockId = lastId + 1000;
@@ -96,9 +95,8 @@ const arweaveImport = async () => {
   let previousBlockHeight;
   try {
     previousBlockHeight = await getBlockHeight(parsedId);
-  } catch (e) {
+  } catch {
     throw new Error("unable to get block height from blockchain.");
-    return;
   }
   console.log("Last imported block: " + previousBlockHeight);
 
@@ -123,7 +121,7 @@ const arweaveImport = async () => {
     console.log(JSON.stringify(variables));
     try {
       data = await gqlclient.request(queryGetTranasctions, variables);
-    } catch (e) {
+    } catch {
       throw new Error("Error executing gql query GetTransactions.");
     }
 

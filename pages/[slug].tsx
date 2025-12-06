@@ -45,31 +45,32 @@ type EverestProjectQuery = {
   } | null;
 };
 
+const StyledSocialButton = styled(Button, {
+  borderRadius: 10,
+  border: "1px solid",
+  borderColor: "$border",
+  backgroundColor: "$loContrast",
+  color: "$hiContrast",
+  textDecoration: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  mb: "$3",
+  py: 18,
+  fontSize: "$2",
+  boxShadow: "rgb(0 0 0 / 5%) 0px 10px 20px",
+});
+
 const SocialButton = ({ icon, children, ...props }) => {
-  const SocialButton = styled(Button, {
-    borderRadius: 10,
-    border: "1px solid",
-    borderColor: "$border",
-    backgroundColor: "$loContrast",
-    color: "$hiContrast",
-    textDecoration: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    mb: "$3",
-    py: 18,
-    fontSize: "$2",
-    boxShadow: "rgb(0 0 0 / 5%) 0px 10px 20px",
-  });
   return (
-    <SocialButton {...props}>
+    <StyledSocialButton {...props}>
       <Box css={{ display: "flex", alignItems: "center" }}>
         <Box css={{ mr: "$2" }}>{icon}</Box>
         {children}
       </Box>
       <ExternalLinkIcon />
-    </SocialButton>
+    </StyledSocialButton>
   );
 };
 const MessariIcon = (props) => (

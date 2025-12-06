@@ -81,10 +81,11 @@ const getPaymentType = (project) => {
 };
 
 const createSortingFn =
+  // eslint-disable-next-line no-unused-vars
   (selector: (project: any) => number | null | undefined): SortingFn<any> =>
-  (rowA, rowB) =>
-    normalizeNumericMetric(selector(rowA.original)) -
-    normalizeNumericMetric(selector(rowB.original));
+    (rowA, rowB) =>
+      normalizeNumericMetric(selector(rowA.original)) -
+      normalizeNumericMetric(selector(rowB.original));
 
 const Listing = ({ data, ...props }) => {
   const [sorting, setSorting] = useState<SortingState>([
@@ -313,6 +314,8 @@ const Listing = ({ data, ...props }) => {
     [],
   );
 
+  // TanStack's useReactTable is flagged by react-compiler as incompatible; safe to use here.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data,
     columns,

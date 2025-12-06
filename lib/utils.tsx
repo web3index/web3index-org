@@ -234,6 +234,7 @@ export const formatDataForWeekly = (days) => {
 export const trophies = ["🏆", "🥈", "🥉"];
 
 declare global {
+  // eslint-disable-next-line no-unused-vars
   interface Window {
     gtag: any;
   }
@@ -258,7 +259,7 @@ export const event = ({ action, params }) => {
 };
 
 const getEnvValue = (key: string) => {
-  const value = process.env[key as keyof NodeJS.ProcessEnv];
+  const value = process.env[key as keyof typeof process.env];
   if (typeof value !== "string") {
     return undefined;
   }

@@ -324,7 +324,7 @@ const Markdown = ({ children }) => {
           backgroundColor: "initial",
           border: "0",
         },
-        "p:first-of-type .dropcap": {
+        "p:first-of-type::first-letter": {
           float: "left",
           fontSize: "5rem",
           fontWeight: "bold",

@@ -19,7 +19,9 @@
     "jsx": "react-jsx",
     "incremental": true,
     "types": [
-      "node"
+      "node",
+      "react",
+      "react-dom"
     ]
   },
   "include": [
