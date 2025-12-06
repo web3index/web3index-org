@@ -73,16 +73,18 @@ const LineAndBarGraph = ({
       return;
     }
     if (typeof window === "undefined" || width === undefined) return;
+    if (!resolvedTheme) return;
 
     destroyChart();
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createChart } = require("lightweight-charts");
+    const isDarkTheme = resolvedTheme === "dark";
     const chart = createChart(chartRef.current, {
       width,
       height: chartHeight,
       layout: {
-        textColor: "black",
+        textColor: isDarkTheme ? "white" : "black",
         backgroundColor: "transparent",
       },
       rightPriceScale: {
