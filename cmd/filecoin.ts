@@ -8,7 +8,8 @@ const coin = {
   symbol: "FIL",
 };
 
-const MAX_DAYS_PER_REQUEST = 90;
+// Spacescope gas endpoints allow <31 days per request, so chunk accordingly
+const MAX_DAYS_PER_REQUEST = 31;
 
 // Update Filecoin daily revenue data
 // a cron job should hit this endpoint every hour
