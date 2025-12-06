@@ -23,7 +23,7 @@
     "cmd:ossl3": "PRISMA_QUERY_ENGINE_LIBRARY=./node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node ts-node --project tsconfig.cmd.json --transpile-only"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": "24.x"
   },
   "dependencies": {
     "@influxdata/influxdb-client": "^1.18.0",
