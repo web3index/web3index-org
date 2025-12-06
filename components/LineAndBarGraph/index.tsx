@@ -76,7 +76,6 @@ const LineAndBarGraph = ({
 
     destroyChart();
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createChart } = require("lightweight-charts");
     const chart = createChart(chartRef.current, {
       width,

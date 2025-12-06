@@ -203,9 +203,7 @@ export async function getStaticProps({ params }) {
   const { projects } = await getProjects();
   const slug = params?.slug ? params?.slug.toString() : "";
   const file = await getFile("content/posts", slug);
-  const content = await getContent(file, {
-    remarkPlugins: [[require("remark-dropcap")]],
-  });
+  const content = await getContent(file);
   const data = getFileData(file);
 
   return {

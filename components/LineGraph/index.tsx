@@ -28,7 +28,6 @@ const LineGraph = ({ color, days, dimensions }: props) => {
       chartInstanceRef.current = null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createChart } = require("lightweight-charts");
     const chart = createChart(chartRef.current, {
       width: dimensions ? dimensions.width : 70,

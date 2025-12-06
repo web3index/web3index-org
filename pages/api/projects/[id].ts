@@ -106,7 +106,7 @@ const getUsageFromDB = async (name) => {
 
   const normalizedDays = days.map((day) => ({
     date: day.date,
-    revenue: Number(day.revenue) ?? 0,
+    revenue: Number(day.revenue ?? 0),
   }));
 
   const totalRevenue = now._sum.revenue ?? 0;
