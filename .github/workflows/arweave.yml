@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: install node v22
+      - name: install node v24
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: yarn install
         run: yarn install --frozen-lockfile
       - name: run importer
