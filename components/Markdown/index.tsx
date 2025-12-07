@@ -1,6 +1,6 @@
 import Box from "../Box";
 
-const Markdown = ({ children }) => {
+const Markdown = ({ children, dropcap = false }) => {
   return (
     <Box
       css={{
@@ -324,14 +324,16 @@ const Markdown = ({ children }) => {
           backgroundColor: "initial",
           border: "0",
         },
-        "p:first-of-type::first-letter": {
-          float: "left",
-          fontSize: "5rem",
-          fontWeight: "bold",
-          lineHeight: "3.5rem",
-          margin: "0",
-          padding: "0.8rem 0.8rem 0.8rem 0",
-        },
+        ...(dropcap && {
+          "p:first-of-type::first-letter": {
+            float: "left",
+            fontSize: "5rem",
+            fontWeight: "bold",
+            lineHeight: "3.5rem",
+            margin: "0",
+            padding: "0.8rem 0.8rem 0.8rem 0",
+          },
+        }),
         ".invisible": {
           clip: "rect(1px, 1px, 1px, 1px)",
           height: "1px",
