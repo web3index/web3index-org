@@ -161,7 +161,7 @@ const Post = ({ slug, content, data, projects }: PostProps) => {
               </Box>
             </Box>
           </Box>
-          <Markdown>
+          <Markdown dropcap>
             <Box
               css={{
                 px: "$3",
