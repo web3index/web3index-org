@@ -56,7 +56,7 @@
     "limestone-api": "^3.0.7",
     "mux.js": "^5.14.0",
     "next": "^16.0.7",
-    "next-mdx-remote": "^4.4.1",
+    "next-mdx-remote": "^6.0.0",
     "next-seo": "^6.0.0",
     "next-themes": "^0.3.0",
     "numeral": "^2.0.6",
