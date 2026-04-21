@@ -422,20 +422,22 @@ const Project = ({ slug, index, projects, project }) => {
                   icon={<GitHubLogoIcon />}>
                   Github
                 </SocialButton>
-                <SocialButton
-                  href={
-                    registry[slug].website
-                      ? registry[slug].website
-                      : project.website.includes("https")
-                        ? project.website
-                        : `https://${project.website}`
-                  }
-                  as="a"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  icon={<Link1Icon />}>
-                  Website
-                </SocialButton>
+                {(registry[slug].website || project.website) && (
+                  <SocialButton
+                    href={
+                      registry[slug].website
+                        ? registry[slug].website
+                        : project.website?.includes("https")
+                          ? project.website
+                          : `https://${project.website}`
+                    }
+                    as="a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    icon={<Link1Icon />}>
+                    Website
+                  </SocialButton>
+                )}
                 <SocialButton
                   href={`https://messari.io/project/${registry[slug].coingeckoID}`}
                   as="a"
@@ -565,16 +567,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       slug,
       project: {
         ...project,
-        description: project.description
-          ? project.description
-          : remoteProject?.description,
-        website: remoteProject?.website
-          ? remoteProject?.website
-          : project.website,
-        github: remoteProject?.github ? remoteProject?.github : project.github,
-        twitter: remoteProject?.twitter
-          ? remoteProject?.twitter
-          : project.twitter,
+        description: project.description ?? remoteProject?.description ?? null,
+        website: remoteProject?.website ?? project.website ?? null,
+        github: remoteProject?.github ?? project.github ?? null,
+        twitter: remoteProject?.twitter ?? project.twitter ?? null,
       },
       projects,
     },
